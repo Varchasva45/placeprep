@@ -1,8 +1,9 @@
 import express from 'express';
 import { spawn } from "child_process";
+import InterviewModel from '../models/interviewSchema';
 const router = express.Router();
 
-router.post('/take-interview', (req, res) => {
+router.post('/take-interview', async (req, res) => {
 
   console.log("inside /take-interview in interview route");
 
@@ -22,6 +23,7 @@ router.post('/take-interview', (req, res) => {
   pythonProcess.on("close", (code) => {
     console.log(`Python script exited with code ${code}`);
   })
+ 
 });
 
 export default router;
