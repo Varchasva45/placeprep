@@ -13,5 +13,10 @@
   "scripts": {
     "dev": "node dist/index.js",
     "build": "tsc"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0",
+    "eslint": "^8.57.0"
   }
 }
