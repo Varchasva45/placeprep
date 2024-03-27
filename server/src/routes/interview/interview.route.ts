@@ -1,8 +1,9 @@
 import express from 'express';
 import { spawn } from "child_process";
-const router = express.Router();
 import mongoose from 'mongoose';
-import InterviewModel from '../models/interviewSchema';
+import InterviewModel from '../../models/interview/interview.model';
+
+const router = express.Router();
 
 router.post('/take-interview', async (req, res) => {
 
@@ -48,4 +49,4 @@ router.post('/take-interview', async (req, res) => {
 
 });
 
-export default router;
+export { router as interviewRouter };

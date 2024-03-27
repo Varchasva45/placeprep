@@ -1,9 +1,13 @@
 import express, { Request, Response } from 'express';
-import router from './routes/interview.route';
 import mongoose, { ConnectOptions } from 'mongoose';
+import { questionRouter } from './routes/interview/question.route';
+import { interviewRouter }  from './routes/interview/interview.route';
+
 
 const app = express();
 const PORT = 3000;
+
+app.use(express.json());
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello, World!');
@@ -29,5 +33,5 @@ async function startServer() {
 }
 
 startServer();
-
-app.use('/interview', router);
+app.use('/interview', interviewRouter);
+app.use('/question', questionRouter);

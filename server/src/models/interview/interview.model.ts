@@ -60,7 +60,7 @@ const interviewSchema = new Schema<Interview>({
 
 function InterviewModel(intervieweeId: mongoose.Types.ObjectId): Model<Interview> {
     const modelName = intervieweeId.toHexString(); 
-    return getDb('interview_db').models[modelName] || getDb('interview_db').model<Interview>(modelName, interviewSchema);
+    return getDb('interviews').models[modelName] || getDb('interviews').model<Interview>(modelName, interviewSchema);
 }
 
 export default InterviewModel;
