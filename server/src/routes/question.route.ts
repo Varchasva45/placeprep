@@ -1,5 +1,5 @@
 import express from 'express';
-import questionModel from '../../models/interview/question.model';
+import questionModel from '../models/interview/question.model';
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.post('/add-question', async (req, res) => {
             questions
         };
 
-        await questionModel(position).create(questionData);
+        await questionModel.create(questionData);
         res.status(200).send("Question added successfully!");
     } catch (error) {
         console.error("Error adding question:", error);

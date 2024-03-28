@@ -44,25 +44,12 @@ const questionSchema = new Schema<Questions>({
         }
     },
     questions: {
-        type: [{
-            statement: {
-                type: String,
-                required: true,
-                trim: true
-            },
-            testCases: {
-                type: [{input: Object, output: Object}]
-            }, 
-            constraints: {
-                type: Object
-            }
-        }],
+        type: [Object],
         required: true
     }
 });
 
-function questionModel(position: string): Model<Questions> { 
-    return getDb('questions').models[position] || getDb('questions').model<Questions>(position, questionSchema);
-}
+
+const questionModel = mongoose.connection.model<Questions>("Questions", questionSchema);
 
 export default questionModel;

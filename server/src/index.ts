@@ -1,12 +1,15 @@
 import express, { Request, Response } from 'express';
 import mongoose, { ConnectOptions } from 'mongoose';
-import { questionRouter } from './routes/interview/question.route';
-import { interviewRouter }  from './routes/interview/interview.route';
+import { questionRouter } from './routes/question.route';
+import { interviewRouter }  from './routes/interview.route';
+import dotenv from 'dotenv';
 
+
+dotenv.config();
+const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/';
 
 const app = express();
-const PORT = 3000;
-
 app.use(express.json());
 
 app.get('/', (req: Request, res: Response) => {
@@ -15,7 +18,7 @@ app.get('/', (req: Request, res: Response) => {
 
 async function startServer() {
   try {
-    await mongoose.connect('mongodb://localhost:27017/placeprep_db', {
+    await mongoose.connect(MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     } as ConnectOptions);

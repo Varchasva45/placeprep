@@ -6,9 +6,10 @@ interface Interview extends Document {
     intervieweeName: string;
     intervieweeId: mongoose.Types.ObjectId;
     position: string;
+    topics: string[];
     date: Date;
-    questions: string[];
-    evaluation: string[];
+    questions: Object;
+    evaluation: string;
     feedback: string;
 }
 
@@ -39,17 +40,20 @@ const interviewSchema = new Schema<Interview>({
         required: true,
         trim: true
     },
+    topics: {
+        type: [String]
+    },
     date: {
         type: Date,
         required: true,
         default: Date.now
     },
     questions: {
-        type: [String],
+        type: Object,
         required: true
     },
     evaluation: {
-        type: [String],
+        type: String,
         required: true
     },
     feedback: {
