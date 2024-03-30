@@ -1,12 +1,20 @@
-import './App.css'
-import './index.css'
+import React from 'react';
+import { BrowserRouter as Router, Routes } from 'react-router-dom';
+import './App.css';
+import './index.css';
+import NavBar from './components/NavBar';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className='bg-gray-900 text-blue-300'>
-      react app
+    <div>
+      <Router>
+        <NavBar />
+        <Routes>
+          {/* Define your routes here */}
+        </Routes>
+      </Router>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

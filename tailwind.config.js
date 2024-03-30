@@ -4,5 +4,12 @@ module.exports = {
   theme: {
     extend: {},
   },
+  colors: {
+    navbar: "#1a202c",
+  },
+  maxWidth: {
+    maxContent: "1260px",
+    maxContentTab: "650px"
+  },
   plugins: [],
 }

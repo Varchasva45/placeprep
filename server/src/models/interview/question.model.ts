@@ -1,6 +1,5 @@
 import mongoose, { Document, Model, Schema } from "mongoose";
 import getDb from "./db";
-import { isQuestionOrPlusOrMinusToken } from "typescript";
 
 interface Questions extends Document {
     position: string;
