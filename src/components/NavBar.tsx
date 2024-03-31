@@ -1,5 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+
 
 const NavBar: React.FC = () => {
     
@@ -7,27 +10,35 @@ const NavBar: React.FC = () => {
     const path = location.pathname;
 
     return (
-        <div className='w-full max-w-maxContent bg-blue-100 p-3 border-b-black border-b-[1px] flex justify-between'>
-            <Link to="/">
-                Logo
+        <div className='w-full max-w-maxContent bg-white flex py-3 justify-between shadow-lg'>
+
+            <Link to="/" className='pl-4 font-bold'>
+                PlacePrep
             </Link>
 
-            <nav className='hidden md:flex'>
-                <ul className='flex flex-row gap-10'>
+            <nav className='hidden lg:flex'>
+                <ul className='flex flex-row gap-8'>
                     <li>
-                        <a href="/interview" className={path === '/interview' ? 'bg-gray-200' : ''}>Interview</a>
+                        <a href="/interview" className={`${path === '/interview' ? 'bg-gray-200' : ''} rounded-2xl`}>Interview</a>
+                        <span><FontAwesomeIcon icon={faChevronDown} height={10} width={10} className='pl-1'/></span>
                     </li>
                     <li>
-                        <a href="/practice" className={path === '/practice' ? 'bg-gray-200' : ''}>Practice</a>
+                        <a href="/practice" className={path === '/practice' ? 'bg-gray-200' : ''}>Coding Practice</a>
                     </li>
                     <li>
-                        <a href="/playground" className={path === '/playground' ? 'bg-gray-200' : ''}>Playground</a>
+                        <div>
+                            <a href="/playground" className={path === '/playground' ? 'bg-gray-200' : ''}>Playground</a>
+                            <span><FontAwesomeIcon icon={faChevronDown} height={10} width={10} className='pl-1'/></span>
+                            <div className='z-[1000]'>
+                                DropDown List
+                            </div>
+                        </div>
                     </li>
                     <li>
-                        <a href="/explore" className={path === '/explore' ? 'bg-gray-200' : ''}>AI Explore</a>
+                        <a href="/explore" className={path === '/explore' ? 'bg-gray-200' : ''}>AI Docs Explore</a>
                     </li>
                     <li>
-                        <a href="/assistance" className={path === '/assistance' ? 'bg-gray-200' : ''}>Assistance</a>
+                        <a href="/assistance" className={path === '/assistance' ? 'bg-gray-200' : ''}>Coding Assistance</a>
                     </li>
                     <li>
                         <a href="/community" className={path === '/community' ? 'bg-gray-200' : ''}>Community</a>

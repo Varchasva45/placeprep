@@ -5,7 +5,7 @@ module.exports = {
     extend: {},
   },
   colors: {
-    navbar: "#1a202c",
+    white: "#fff",
   },
   maxWidth: {
     maxContent: "1260px",
