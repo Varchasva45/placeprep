@@ -1,9 +1,8 @@
-import React from "react";
 import Select from "react-select";
 import { customStyles } from "../constants/customStyles";
 import { languageOptions } from "../constants/languageOptions";
 
-const LanguageDropdown = ({ onSelectChange }) => {
+const LanguageDropdown: React.FC<any> = ({ onSelectChange }) => {
   return (
     <Select
       placeholder={`Filter By Category`}

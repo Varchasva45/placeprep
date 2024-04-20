@@ -11,11 +11,7 @@ const App: React.FC = () => {
       <Router>
         <NavBar />
         <Routes>
-<<<<<<< HEAD
-          <Route path="/practice" element={<Problems/>} />
-=======
           <Route path="/playground" element={<Playground/>} />
->>>>>>> 532d53e57ad47e0d4227e9b41d8a44476029b150
         </Routes>
       </Router>
     </div>
