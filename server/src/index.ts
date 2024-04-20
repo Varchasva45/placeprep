@@ -31,7 +31,7 @@ async function startServer() {
 
   } catch (error) {
     console.error('Error connecting to database: ', error);
-    process.exit(1); // Exit the process if unable to connect to the database
+    process.exit(1); 
   }
 }
 
