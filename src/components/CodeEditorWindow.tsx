@@ -18,7 +18,7 @@ const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({ onChange, language,
   
 
   return (
-    <div className="overlay rounded-md overflow-hidden w-full h-full shadow-4xl">
+    <div className="overlay rounded-lg overflow-hidden w-full h-full shadow-4xl">
       <Editor
         height="85vh"
         width={`100%`}
