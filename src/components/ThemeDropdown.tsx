@@ -1,6 +1,7 @@
 import Select from "react-select";
 import { customStyles } from "../constants/customStyles";
 import monacoThemes from "monaco-themes/themes/themelist";
+import { Placeholder } from "react-select/animated";
 
 
 const ThemeDropdown: React.FC<any>= ({handleThemeChange, theme}) => {

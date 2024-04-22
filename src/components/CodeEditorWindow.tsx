@@ -11,12 +11,14 @@ interface CodeEditorWindowProps {
 const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({ onChange, language, code, theme }) => {
   const [value, setValue] = useState<string>(code || "");
 
-  const handleEditorChange = (value: string | undefined) => {
+  const handleEditorChange = (value: string | undefined | undefined) => {
     if (value !== undefined) {
+      if (value !== undefined) {
       setValue(value);
-      onChange("code", value);
+        onChange("code", value);
     }
-  };
+    }
+  };
   
   return (
     <div className="overlay rounded-lg overflow-hidden w-full h-full shadow-4xl">
