@@ -11,10 +11,12 @@ interface CodeEditorWindowProps {
 const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({ onChange, language, code, theme }) => {
   const [value, setValue] = useState<string>(code || "");
 
-  const handleEditorChange = (value: string) => {
-    setValue(value);
-    onChange("code", value);
-  };
+  const handleEditorChange = (value: string | undefined) => {
+    if (value !== undefined) {
+      setValue(value);
+      onChange("code", value);
+    }
+  };
   
 
   return (
@@ -26,7 +28,7 @@ const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({ onChange, language,
         value={value}
         theme={theme}
         defaultValue="// some comment"
-        // onChange={handleEditorChange}
+        onChange={handleEditorChange}
       />
     </div>
   );
