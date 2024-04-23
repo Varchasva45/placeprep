@@ -1,39 +1,75 @@
 export const languageOptions = [
     {
-      id: 63,
-      name: "JavaScript (Node.js 12.14.0)",
-      label: "JavaScript (Node.js 12.14.0)",
-      value: "javascript",
+        id: 63,
+        name: "JavaScript (Node.js 12.14.0)",
+        label: "JavaScript (Node.js 12.14.0)",
+        value: "javascript",
+        defaultCode: `console.log("Hello, World!");`
     },
     {
-      id: 45,
-      name: "Assembly (NASM 2.14.02)",
-      label: "Assembly (NASM 2.14.02)",
-      value: "assembly",
+        id: 45,
+        name: "Assembly (NASM 2.14.02)",
+        label: "Assembly (NASM 2.14.02)",
+        value: "assembly",
+        defaultCode: `section .data
+    msg db 'Hello, world!', 0xa  ; our dear string
+    len equ $ - msg ; length of our dear string
+
+section .text
+    global _start   ; let the linker know about our entry point
+
+_start:     ; the standard naming for the entry point in Linux ELF executables
+    ; write our string to stdout
+    mov edx, len     ; third argument: message length
+    mov ecx, msg     ; second argument: pointer to message to write
+    mov ebx, 1       ; first argument: file descriptor (stdout)
+    mov eax, 4       ; system call number (sys_write)
+    int 0x80         ; call kernel
+
+    ; and exit
+    mov eax, 1       ; system call number (sys_exit)
+    xor ebx, ebx     ; first argument: exit code
+    int 0x80         ; call kernel
+`
     },
     {
-      id: 46,
-      name: "Bash (5.0.0)",
-      label: "Bash (5.0.0)",
-      value: "bash",
+        id: 46,
+        name: "Bash (5.0.0)",
+        label: "Bash (5.0.0)",
+        value: "bash",
+        defaultCode: `echo "Hello, World!"`
     },
     {
-      id: 47,
-      name: "Basic (FBC 1.07.1)",
-      label: "Basic (FBC 1.07.1)",
-      value: "basic",
+        id: 47,
+        name: "Basic (FBC 1.07.1)",
+        label: "Basic (FBC 1.07.1)",
+        value: "basic",
+        defaultCode: `PRINT "Hello, World!"`
     },
     {
-      id: 75,
-      name: "C (Clang 7.0.1)",
-      label: "C (Clang 7.0.1)",
-      value: "c",
+        id: 75,
+        name: "C (Clang 7.0.1)",
+        label: "C (Clang 7.0.1)",
+        value: "c",
+        defaultCode: `#include <stdio.h>
+
+int main() {
+    printf("Hello, World!\\n");
+    return 0;
+}`
     },
     {
-      id: 76,
-      name: "C++ (Clang 7.0.1)",
-      label: "C++ (Clang 7.0.1)",
-      value: "cpp",
+        id: 76,
+        name: "C++ (Clang 7.0.1)",
+        label: "C++ (Clang 7.0.1)",
+        value: "cpp",
+        defaultCode: `#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "Hello, World!" << endl;
+    return 0;
+}`
     },
     {
       id: 48,
@@ -46,6 +82,13 @@ export const languageOptions = [
       name: "C++ (GCC 7.4.0)",
       label: "C++ (GCC 7.4.0)",
       value: "cpp",
+      defaultCode: `#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "Hello, World!" << endl;
+    return 0;
+}`
     },
     {
       id: 49,
@@ -58,6 +101,13 @@ export const languageOptions = [
       name: "C++ (GCC 8.3.0)",
       label: "C++ (GCC 8.3.0)",
       value: "cpp",
+      defaultCode: `#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "Hello, World!" << endl;
+    return 0;
+}`
     },
     {
       id: 50,
@@ -70,6 +120,13 @@ export const languageOptions = [
       name: "C++ (GCC 9.2.0)",
       label: "C++ (GCC 9.2.0)",
       value: "cpp",
+      defaultCode: `#include <iostream>
+using namespace std;
+
+int main() {
+    cout << "Hello, World!" << endl;
+    return 0;
+}`
     },
     {
       id: 86,
@@ -174,6 +231,12 @@ export const languageOptions = [
       name: "Objective-C (Clang 7.0.1)",
       label: "Objective-C (Clang 7.0.1)",
       value: "objectivec",
+      defaultCode: `#include <stdio.h>
+
+int main() {
+    printf("Hello, World!\\n");
+    return 0;
+}`
     },
     {
       id: 65,
@@ -222,54 +285,67 @@ export const languageOptions = [
       name: "Python (2.7.17)",
       label: "Python (2.7.17)",
       value: "python",
+      defaultCode: `print("Hello, World!")`
     },
     {
       id: 71,
       name: "Python (3.8.1)",
       label: "Python (3.8.1)",
       value: "python",
+      defaultCode: `print("Hello, World!")`
     },
     {
       id: 80,
       name: "R (4.0.0)",
       label: "R (4.0.0)",
       value: "r",
+      defaultCode: `cat("Hello, World!")`
     },
     {
-      id: 72,
-      name: "Ruby (2.7.0)",
-      label: "Ruby (2.7.0)",
-      value: "ruby",
+        id: 72,
+        name: "Ruby (2.7.0)",
+        label: "Ruby (2.7.0)",
+        value: "ruby",
+        defaultCode: `puts "Hello, World!"`
     },
     {
-      id: 73,
-      name: "Rust (1.40.0)",
-      label: "Rust (1.40.0)",
-      value: "rust",
+        id: 73,
+        name: "Rust (1.40.0)",
+        label: "Rust (1.40.0)",
+        value: "rust",
+        defaultCode: `fn main() {
+        println!("Hello, World!");
+    }`
     },
     {
-      id: 81,
-      name: "Scala (2.13.2)",
-      label: "Scala (2.13.2)",
-      value: "scala",
+        id: 81,
+        name: "Scala (2.13.2)",
+        label: "Scala (2.13.2)",
+        value: "scala",
+        defaultCode: `object Main extends App {
+        println("Hello, World!")
+    }`
     },
     {
-      id: 82,
-      name: "SQL (SQLite 3.27.2)",
-      label: "SQL (SQLite 3.27.2)",
-      value: "sql",
+        id: 82,
+        name: "SQL (SQLite 3.27.2)",
+        label: "SQL (SQLite 3.27.2)",
+        value: "sql",
+        defaultCode: `SELECT 'Hello, World!'`
     },
     {
-      id: 83,
-      name: "Swift (5.2.3)",
-      label: "Swift (5.2.3)",
-      value: "swift",
+        id: 83,
+        name: "Swift (5.2.3)",
+        label: "Swift (5.2.3)",
+        value: "swift",
+        defaultCode: `print("Hello, World!")`
     },
     {
       id: 74,
       name: "TypeScript (3.7.4)",
       label: "TypeScript (3.7.4)",
       value: "typescript",
+      defaultCode: `console.log("Hello, World!")`
     },
     {
       id: 84,

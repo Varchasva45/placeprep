@@ -5,7 +5,6 @@ import { languageOptions } from "../constants/languageOptions";
 import ThemeDropdown from "./ThemeDropdown";
 import { loader } from "@monaco-editor/react";
 import CustomInput from "./CustomInput";
-import OutputDetails from "./OutputDetails";
 import OutputWindow from "./OutputWindow";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,6 +15,7 @@ type Language = {
     name: string;
     value: string;
     label: string;
+    defaultCode?: string;
 }
 
 type Theme = {
@@ -24,7 +24,7 @@ type Theme = {
     key: string;
 }
 
-const codeDefault = `// some comment`;
+const codeDefault = `console.log("Hello, World!");`;
 
 const Playground = () => {
     const [language, setLanguage] = useState<Language>(languageOptions[0]);
@@ -32,16 +32,15 @@ const Playground = () => {
     const [outputDetails, setOutputDetails] = useState(null);
     const [processing, setProcessing] = useState<boolean | null>(null);
     const [customInput, setCustomInput] = useState('');
-    const [code, setCode] = useState<string>(codeDefault);
+    const [code, setCode] = useState<string | undefined>(codeDefault);
 
     useEffect(() => {
-      console.log('useEffect')
       const setInitialTheme = async () => {
         try {
           const themeData = await fetch(`/themes/Blackboard.json`).then((res) => res.json());
           const monaco = await loader.init();
-          monaco.editor.defineTheme("Blackboard", themeData);
-          setTheme("Blackboard");
+          monaco.editor.defineTheme("Select Theme", themeData);
+          setTheme("Select Theme");
         } catch (error) {
           console.log("Error setting theme:", error);
         }
@@ -51,8 +50,9 @@ const Playground = () => {
     }, []);
 
     const onSelectChange = (selectedLanguage: Language) => {
-        console.log("Selected language:", selectedLanguage);
-        setLanguage(selectedLanguage);
+      console.log("Selected language:", selectedLanguage, selectedLanguage.defaultCode);
+      setLanguage(selectedLanguage);
+      setCode(selectedLanguage.defaultCode || '');
     };
 
     const handleThemeChange = async (selectedTheme: Theme) => {
@@ -114,34 +114,34 @@ const Playground = () => {
     const handleCompile = async () => {
       setProcessing(true);
       const formData = {
-          language_id: language.id,
-          source_code: btoa(code),
-          stdin: btoa(customInput),
+        language_id: language.id,
+        source_code: btoa(code),
+        stdin: btoa(customInput),
       }
 
       const options = {
-          method: "POST",
-          url: 'https://judge0-ce.p.rapidapi.com/submissions',
-          params: { base64_encoded: "true", fields: "*" },
-          headers: {
-            "content-type": "application/json",
-            "Content-Type": "application/json",
-            "X-RapidAPI-Host": 'judge0-ce.p.rapidapi.com',
-            "X-RapidAPI-Key": 'a6e9189d6amshea6c01c5706eee7p139652jsn6a7ac716f5f1',
-          },
-          data: formData,
+        method: "POST",
+        url: 'https://judge0-ce.p.rapidapi.com/submissions',
+        params: { base64_encoded: "true", fields: "*" },
+        headers: {
+          "content-type": "application/json",
+          "Content-Type": "application/json",
+          "X-RapidAPI-Host": 'judge0-ce.p.rapidapi.com',
+          "X-RapidAPI-Key": 'a6e9189d6amshea6c01c5706eee7p139652jsn6a7ac716f5f1',
+        },
+        data: formData,
       };
 
       try {
-          const response = await axios.request(options);
-          console.log("res.data", response.data);
-          const token = response.data.token;
-          console.log("Token", token);
-          checkStatus(token);
+        const response = await axios.request(options);
+        console.log("res.data", response.data);
+        const token = response.data.token;
+        console.log("Token", token);
+        checkStatus(token);
       } catch (err: any) {
-          let error = err.response ? err.response.data : err;
-          setProcessing(false);
-          console.log(error);
+        let error = err.response ? err.response.data : err;
+        setProcessing(false);
+        console.log(error);
       }
     }
 

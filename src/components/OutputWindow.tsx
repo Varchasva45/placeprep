@@ -1,5 +1,3 @@
-import React from "react";
-
 const OutputWindow = ({ outputDetails }) => {
   const getOutput = () => {
     let statusId = outputDetails?.status?.id;
