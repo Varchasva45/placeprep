@@ -9,7 +9,7 @@ const NavBar: React.FC = () => {
     const path = location.pathname;
 
     return (
-        <div className='w-full max-w-maxContent shadow-lg flex py-3 justify-between'>
+        <div className='bg-white w-full max-w-maxContent flex py-4 justify-between'>
 
             <Link to="/" className='pl-4 font-bold'>
                 PlacePrep

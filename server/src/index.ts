@@ -1,20 +1,38 @@
 import express, { Request, Response } from 'express';
 import mongoose, { ConnectOptions } from 'mongoose';
-import { questionRouter } from './routes/question.route';
-import { interviewRouter }  from './routes/interview.route';
+import { questionRouter } from './routes/question';
+import { interviewRouter }  from './routes/interview';
+import { authRouter } from './routes/auth';
+import cors from 'cors';
 import dotenv from 'dotenv';
-
+import "./passport";
+import session from 'express-session';
+import passport from 'passport';
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/';
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/placeprep_db';
 
 const app = express();
-app.use(express.json());
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello, World!');
-});
+app.use(
+  session({
+    name: 'placeprep',
+    secret: 'Skey',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false, maxAge: 86400000 }
+  })
+)
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.json());
+app.use(cors());
+
+app.use('/interview', interviewRouter);
+app.use('/question', questionRouter);
+app.use('/auth', authRouter);
 
 async function startServer() {
   try {
@@ -36,5 +54,5 @@ async function startServer() {
 }
 
 startServer();
-app.use('/interview', interviewRouter);
-app.use('/question', questionRouter);
+
+

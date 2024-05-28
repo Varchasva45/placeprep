@@ -1,4 +1,4 @@
-const OutputWindow = ({ outputDetails }) => {
+const OutputWindow = ( outputDetails: any) => {
   const getOutput = () => {
     let statusId = outputDetails?.status?.id;
 
