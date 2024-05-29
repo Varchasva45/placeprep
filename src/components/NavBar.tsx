@@ -1,12 +1,23 @@
 import React from 'react';
+import { useRecoilValue, useSetRecoilState} from 'recoil';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+import Cookies from "js-cookie";
+import authState from '../recoil/atoms/auth';
 
 const NavBar: React.FC = () => {
     
     const location = useLocation();
     const path = location.pathname;
+    const auth = useRecoilValue(authState);
+    const setAuthState = useSetRecoilState(authState);
+
+    const handleLogout = () => {
+      Cookies.remove('token');
+      Cookies.remove('user');
+      setAuthState({ isAuthenticated: false, token: null });
+    }
 
     return (
         <div className='bg-white w-full max-w-maxContent flex py-4 justify-between'>
@@ -78,13 +89,27 @@ const NavBar: React.FC = () => {
             </nav>
 
             <div className='flex gap-6 pr-4'>
-                <Link to={"/profile"}>
-                    Profile
-                </Link>
-
-                <Link to={"/login"}>
-                    Login
-                </Link>
+                {auth.isAuthenticated ?
+                  <>
+                    <Link to={"/profile"}>
+                      Profile
+                    </Link>
+                    or
+                    <Link to={"#"} onClick={handleLogout}>
+                      Logout
+                    </Link>
+                  </>   : 
+                  <>
+                    <Link to={"/signup"}>
+                        Signup
+                    </Link>
+                    or
+                    <Link to={"/login"}>
+                        Login
+                    </Link>
+                  </>
+                }
+                
             </div>
         </div>
     );

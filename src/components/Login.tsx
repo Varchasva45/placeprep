@@ -39,6 +39,8 @@ const Login: React.FC = () => {
                 const { token, user } = response.data;
                 Cookies.set('token', token);
                 Cookies.set('user', JSON.stringify(user));
+                setAuthState({ isAuthenticated: true, token });
+                // setUserState(user);
                 toast.success(response.data.message);
             } else {
                 toast.error(response.data.message);

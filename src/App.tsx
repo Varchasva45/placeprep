@@ -6,6 +6,7 @@ import './index.css';
 import Playground from './components/Playground';
 import Home from './components/Home';
 import Login from './components/Login';
+import Signup from './components/Signup';
 
 const App: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const App: React.FC = () => {
           <Route path="/playground" element={<Playground/>} />
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </Router>
     </div>

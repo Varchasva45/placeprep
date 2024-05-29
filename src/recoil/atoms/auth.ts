@@ -6,7 +6,7 @@ const token = Cookies.get('token') || null;
 const authState = atom({   
     key: 'authState',
     default: {
-        isAuthenticated: false,
+        isAuthenticated: token? true : false,
         token: token,
     },
 });
