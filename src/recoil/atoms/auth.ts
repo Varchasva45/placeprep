@@ -2,11 +2,12 @@ import { atom } from 'recoil';
 import Cookies from 'js-cookie';
 
 const token = Cookies.get('token') || null;
+console.log(token);
 
 const authState = atom({   
     key: 'authState',
     default: {
-        isAuthenticated: token? true : false,
+        isAuthenticated: token ? true : false,
         token: token,
     },
 });

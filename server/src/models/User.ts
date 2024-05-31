@@ -5,27 +5,30 @@ interface User extends Document {
     email: string;
     password: string;
     role: string;
+    githubAccount: string;
 }
 
 const userSchema = new Schema<User>({
     name: {
         type: String,
-        // required: true,
         trim: true
     },
     email: {
         type: String,
-        required: true,
         trim: true
     },
     password: {
         type: String,
-        required: true
+        trim: true
     },
     role: {
-        type: String
-        // required: true
-        // add validation for role
+        type: String,
+        default: "user",
+        trim: true
+    },
+    githubAccount: {
+        type: String,
+        trim: true
     }
 });
 

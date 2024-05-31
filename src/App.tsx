@@ -5,8 +5,8 @@ import './App.css';
 import './index.css';
 import Playground from './components/Playground';
 import Home from './components/Home';
-import Login from './components/Login';
-import Signup from './components/Signup';
+import Login from './components/LoginForm';
+import Signup from './components/SignupForm';
 
 const App: React.FC = () => {
   return (

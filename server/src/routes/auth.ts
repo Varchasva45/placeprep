@@ -2,12 +2,34 @@ import express from 'express'
 import passport from 'passport'
 import { validateData } from '../middlewares/validateData'
 import { loginSchema, signupSchema } from '../validations/auth'
-import { googleLogin, login, signup } from '../controllers/auth'
+import { googleLogin, githubLogin, login, signup } from '../controllers/auth'
 
 const router = express.Router();
 
 router.post('/signup', validateData(signupSchema), signup);
 router.post('/login', validateData(loginSchema), login);
+
+router.get('/google', 
+    passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+router.get('/google/callback', 
+    passport.authenticate('google', {
+        failureRedirect: '/login/failed',
+    }),
+    googleLogin
+);
+
+router.get('/github',
+    passport.authenticate('github', { scope: ['profile', 'email'] })
+);
+
+router.get('/github/callback',
+    passport.authenticate('github', {
+        failureRedirect: '/login/failed',
+    }),
+    githubLogin
+);
 
 router.get('/login/failed', (req, res) => { 
     res.status(401).json({ message: 'Login failed' });
@@ -32,17 +54,5 @@ router.get('/logout', (req, res, next) => {
         res.redirect('http://localhost:5173/');
     });
 });
-
-router.get('/google', 
-    passport.authenticate('google', { scope: ['profile', 'email'] })
-);
-
-router.get('/google/callback', 
-    passport.authenticate('google', {
-        successRedirect: 'http://localhost:5173/login',
-        failureRedirect: '/login/failed',
-    }),
-    googleLogin
-);
 
 export { router as authRouter };

@@ -8,11 +8,10 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || 'samplejwtsecret';
 
 export const signup = async (req: Request, res: Response) => {
-
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
-        
+
         if(user) {
             return res.status(409).json({ message: 'User already exists' });
         }
@@ -30,8 +29,11 @@ export const signup = async (req: Request, res: Response) => {
             email: newUser.email,
         };
 
+        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+
         res.status(201).json({
             success: true,
+            token,
             message: 'User signed up successfully',
             user: newUser
         });
@@ -45,7 +47,6 @@ export const signup = async (req: Request, res: Response) => {
 
 
 export const login = async (req: Request, res: Response) => {
-
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
@@ -90,17 +91,79 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const googleLogin = async (req: Request, res: Response) => {
-
     try {
-        const user = req.user;
+        const user: any = req.user;
+        if(!user || !user.emails || !user.emails[0].value) {
+            return res.status(401).json({ message: 'Login failed' });
+        }
 
+        const email = user.emails[0].value;
+        const name = user.displayName;
+        const userExists = await User.findOne({ email });
+
+        if(userExists) {
+            const payload = {
+                id: userExists._id,
+                email: userExists.email,
+            };
+    
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+            res.cookie('token', token).redirect('http://localhost:5173/login');
+        } else {
+            const newUser = await User.create({
+                email,
+                name,
+            });
+
+            const payload = {
+                id: newUser._id,
+                email: newUser.email,
+            };
+
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+            res.cookie('token', token).redirect('http://localhost:5173/login');
+        }        
+    } catch (error) {
+        res.status(500).redirect('http://localhost:5173/');
+    }
+}
+
+export const githubLogin = async (req: Request, res: Response) => {
+    try {
+        const user: any = req.user;
+        
         if(!user) {
             return res.status(401).json({ message: 'Login failed' });
         }
 
-        console.log('user', user);
-        res.status(200).redirect('http://localhost:5173/playground');
+        const githubAccount = user.profileUrl;
+        const userName = user.username;
+
+        const userExists = await User.findOne({ githubAccount });
+
+        if(userExists) {
+            const payload = {
+                id: userExists._id,
+                githubAccount: userExists.githubAccount,
+            };
+
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+            res.cookie('token', token).redirect('http://localhost:5173/login');
+        } else {
+            const newUser = await User.create({
+                githubAccount,
+                name: userName,
+            });
+
+            const payload = {
+                id: newUser._id,
+                githubAccount: newUser.githubAccount,
+            };
+
+            const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+            res.cookie('token', token).redirect('http://localhost:5173/login');
+        }
     } catch (error) {
-        res.status(500).redirect('http://localhost:5173/');
+        res.redirect('http://localhost:5173/');
     }
 }

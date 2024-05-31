@@ -1,6 +1,7 @@
 const passport = require('passport');
 require('dotenv').config();
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const GithubStrategy = require('passport-github').Strategy;
 
 passport.use(
     new GoogleStrategy(
@@ -14,9 +15,26 @@ passport.use(
             refreshToken: string,
             profile: any,
             done: any
+        ) => {;
+            console.log('profile', profile);
+            done(null, profile);
+        }
+    )
+);
+
+passport.use(
+    new GithubStrategy(
+        {
+            clientID: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+            callbackURL: '/auth/github/callback',
+        },
+        async (
+            accessToken: string,
+            refreshToken: string,
+            profile: any,
+            done: any
         ) => {
-            console.log('accessToken', accessToken);
-            console.log('refreshToken', refreshToken);
             console.log('profile', profile);
             done(null, profile);
         }
