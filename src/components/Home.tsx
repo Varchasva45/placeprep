@@ -35,8 +35,6 @@ const Home: React.FC = () => {
     return (
         <div>
             <NavBar />
-            <h1>Home: {JSON.stringify(user)}</h1>
-            <p>Welcome to the home page</p>
         </div>
     );
 }
