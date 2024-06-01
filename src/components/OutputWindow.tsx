@@ -1,36 +1,20 @@
-const OutputWindow = (outputDetails: any ) => {
-  const isBase64 = (str: string) => {
-    try {
-      return btoa(atob(str)) === str;
-    } catch (err) {
-      return false;
-    }
-  };
-
-  const decodeBase64 = (str: string) => {
-    if (isBase64(str)) {
-      return atob(str);
-    } else {
-      return 'Invalid Base64 string';
-    }
-  };
-
+const OutputWindow = ( outputDetails: any ) => {
   const getOutput = () => {
-    let statusId = outputDetails?.status?.id;
+    let statusId = outputDetails?.outputDetails?.status?.id;
 
     if (statusId === 6) {
-      // Compilation error
+      // compilation error
       return (
         <pre className="px-2 py-1 font-normal text-xs text-red-500">
-          {decodeBase64(outputDetails?.compile_output)}
+          {atob(outputDetails?.outputDetails?.compile_output)}
         </pre>
       );
     } else if (statusId === 3) {
       return (
         <pre className="px-2 py-1 font-normal text-xs text-green-500">
-          {outputDetails?.stdout && isBase64(outputDetails.stdout)
-            ? decodeBase64(outputDetails.stdout)
-            : 'No output available'}
+          {atob(outputDetails?.outputDetails.stdout) !== null
+            ? `${atob(outputDetails?.outputDetails.stdout)}`
+            : null}
         </pre>
       );
     } else if (statusId === 5) {
@@ -42,19 +26,18 @@ const OutputWindow = (outputDetails: any ) => {
     } else {
       return (
         <pre className="px-2 py-1 font-normal text-xs text-red-500">
-          {decodeBase64(outputDetails?.stderr)}
+          {atob(outputDetails?.outputDetails?.stderr)}
         </pre>
       );
     }
   };
-
   return (
     <>
       <h1 className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 mb-2">
         Output
       </h1>
       <div className="w-full h-56 bg-[#1e293b] rounded-md text-white font-normal text-sm overflow-y-auto">
-        {outputDetails ? getOutput() : null}
+        {outputDetails?.outputDetails ? <>{getOutput()}</> : null}
       </div>
     </>
   );

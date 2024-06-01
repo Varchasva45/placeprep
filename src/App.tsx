@@ -7,6 +7,7 @@ import Playground from './components/Playground';
 import Home from './components/Home';
 import Login from './components/LoginForm';
 import Signup from './components/SignupForm';
+import ExploreLanding from './components/ExploreLanding';
 
 const App: React.FC = () => {
   return (
@@ -14,10 +15,11 @@ const App: React.FC = () => {
       <Toaster />
       <Router>
         <Routes>
-          <Route path="/playground" element={<Playground/>} />
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path='/playground' element={<Playground/>} />
+          <Route path='/' element={<Home />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<Signup />} />
+          <Route path='/explore' element={<ExploreLanding />}  />
         </Routes>
       </Router>
     </div>
