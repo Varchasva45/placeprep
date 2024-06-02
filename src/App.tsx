@@ -8,6 +8,7 @@ import Home from './components/Home';
 import Login from './components/LoginForm';
 import Signup from './components/SignupForm';
 import ExploreLanding from './components/ExploreLanding';
+import ExploreDashboard from './components/ExploreDashboard';
 
 const App: React.FC = () => {
   return (
@@ -20,6 +21,7 @@ const App: React.FC = () => {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
           <Route path='/explore' element={<ExploreLanding />}  />
+          <Route path='/dashboard' element={<ExploreDashboard/>} />
         </Routes>
       </Router>
     </div>
