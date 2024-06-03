@@ -96,7 +96,7 @@ const NavBar: React.FC = () => {
                             Profile
                         </Link>
 
-                        <Link to={"/logout"} onClick={handleLogout}>
+                        <Link to={"#"} onClick={handleLogout}>
                             Logout
                         </Link>
                     </>   : 

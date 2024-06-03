@@ -11,6 +11,8 @@ import ExploreLanding from './components/ExploreLanding';
 import ExploreDashboard from './components/ExploreDashboard';
 import AuthenticatedRoute from './components/AuthticatedRoute';
 import ChatPage from './components/ChatPage';
+import AddProblems from './components/AddProblems';
+import AllProblems from './components/AllProblems';
 
 const App: React.FC = () => {
   return (
@@ -30,6 +32,9 @@ const App: React.FC = () => {
           <Route path='/explore' element={<ExploreLanding />}  />
           <Route path='/dashboard' element={<AuthenticatedRoute><ExploreDashboard/></AuthenticatedRoute>} />
           <Route path='/dashboard/:pdfId' element={<AuthenticatedRoute><ChatPage/></AuthenticatedRoute>} />
+          <Route path='/dashboard' element={<ExploreDashboard/>} />
+          <Route path='/add-problems' element={<AddProblems />} />
+          <Route path='/all-problems' element={<AllProblems />} />
         </Routes>
       </Router>
     </div>
