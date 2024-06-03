@@ -38,7 +38,6 @@ const ExploreDashboard = () => {
 
                 if(response.data.success) {
                     setFiles(response.data.files);
-                    toast.success('Files fetched successfully');
                 } else {
                     toast.error(response.data.message ? response.data.message : 'Failed to fetch files');
                 }

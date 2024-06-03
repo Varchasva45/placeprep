@@ -9,6 +9,8 @@ import Login from './components/LoginForm';
 import Signup from './components/SignupForm';
 import ExploreLanding from './components/ExploreLanding';
 import ExploreDashboard from './components/ExploreDashboard';
+import AuthenticatedRoute from './components/AuthticatedRoute';
+import ChatPage from './components/ChatPage';
 
 const App: React.FC = () => {
   return (
@@ -16,12 +18,18 @@ const App: React.FC = () => {
       <Toaster />
       <Router>
         <Routes>
-          <Route path='/playground' element={<Playground/>} />
           <Route path='/' element={<Home />} />
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
+          {/* <Route path='/playground' element={<AuthenticatedRoute><Playground/></AuthenticatedRoute>} /> */}
+          <Route path='/playground' element={<Home />} />
+          <Route path='/interview' element={<Home />} />
+          <Route path='/problems' element={<Home />} />
+          <Route path='/assistance' element={<Home />} />
+          <Route path='/community' element={<Home />} />
           <Route path='/explore' element={<ExploreLanding />}  />
-          <Route path='/dashboard' element={<ExploreDashboard/>} />
+          <Route path='/dashboard' element={<AuthenticatedRoute><ExploreDashboard/></AuthenticatedRoute>} />
+          <Route path='/dashboard/:pdfId' element={<AuthenticatedRoute><ChatPage/></AuthenticatedRoute>} />
         </Routes>
       </Router>
     </div>

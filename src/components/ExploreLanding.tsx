@@ -24,7 +24,7 @@ const ExploreLanding: React.FC = () => {
                 <Link className={buttonVariants({
                     size: 'lg',
                     className: 'mt-5'
-                })} to={'/dashboard'} target='_blank'>
+                })} to={'/dashboard'}>
                     Get Started <FaArrowRight className='ml-2 h-5 w-5' />
                 </Link>
             </MaxWidthWrapper>
