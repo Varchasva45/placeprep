@@ -31,59 +31,59 @@ const NavBar: React.FC = () => {
                     <li>
                         <div className='group'>
 
-                            <a href="/interview" className={`rounded-full p-2 ${path === '/interview' ? 'bg-gray-200' : ''}`}>Interview</a>
+                            <Link to="/interview" className={`rounded-full p-2 ${path === '/interview' ? 'bg-gray-200' : ''}`}>Interview</Link>
                             <span><FontAwesomeIcon icon={faChevronDown} height={10} width={10}/></span>
 
                             <div className='absolute invisible opacity-0 flex justify-center items-center w-5/12 h-2/5 bg-blue-100 rounded-xl shadow-lg translate-x-[-25%] translate-y-[15%] translate-z-[-20%] group-hover:visible group-hover:translate-y-[6%] group-hover:translate-z-[20%]  group-hover:opacity-100 transition-all duration-200'>
                                 <ul className='w-full h-full flex p-3'>
                                     <li className='w-full h-full flex flex-col justify-center items-center hover:bg-white rounded-lg p-2'>
-                                        <a href="/playground">AI Interview</a>
+                                        <Link to="/playground">AI Interview</Link>
                                     </li>
                                     <li className='w-full h-full flex flex-col justify-center items-center hover:bg-white rounded-lg p-2'>
-                                        <a href="/playground">SDE Interview</a>
+                                        <Link to="/playground">SDE Interview</Link>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     </li>
                     <li>
-                        <a href="/practice" className={`rounded-full p-2 ${path === '/practice' ? 'bg-gray-200' : ''}`}>Coding Practice</a>
+                        <Link to="/practice" className={`rounded-full p-2 ${path === '/practice' ? 'bg-gray-200' : ''}`}>Coding Practice</Link>
                     </li>
                     <li>
                         <div className='group'>
 
-                            <a href="/playground" className={`rounded-full p-2 ${path === '/playground' ? 'bg-gray-300' : ''}`}>Playground</a>
+                            <Link to="/playground" className={`rounded-full p-2 ${path === '/playground' ? 'bg-gray-300' : ''}`}>Playground</Link>
                             <span><FontAwesomeIcon icon={faChevronDown} height={10} width={10}/></span>
 
                             <div className='absolute invisible opacity-0 flex justify-center items-center bg-blue-100 rounded-xl shadow-lg w-[180px] translate-x-[-25%] translate-y-[15%] translate-z-[-20%] group-hover:visible group-hover:translate-y-[8%] group-hover:translate-z-[20%]  group-hover:opacity-100 transition-all duration-200'>
                                 <ul className='w-full text-center flex flex-col p-3'>
                                     <li className='w-full hover:bg-white rounded-lg p-2'>
-                                        <a href="/playground">Python</a>
+                                        <Link to="/playground">Python</Link>
                                     </li>
                                     <li className='w-full hover:bg-white rounded-lg p-2'>
-                                        <a href="/playground">Java</a>
+                                        <Link to="/playground">Java</Link>
                                     </li>
                                     <li className='w-full hover:bg-white rounded-lg p-2'>
-                                        <a href="/playground">C++</a>
+                                        <Link to="/playground">C++</Link>
                                     </li>
                                     <li className='w-full hover:bg-white rounded-lg p-2'>
-                                        <a href="/playground">C</a>
+                                        <Link to="/playground">C</Link>
                                     </li>
                                     <li className='w-full hover:bg-white rounded-lg p-2'>
-                                        <a href="/playground">JavaScript</a>
+                                        <Link to="/playground">JavaScript</Link>
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     </li>
                     <li>
-                        <a href="/explore" className={`rounded-full p-2 ${path === '/explore' ? 'bg-gray-200' : ''}`}>AI Docs Explore</a>
+                        <Link to="/explore" className={`rounded-full p-2 ${path === '/explore' ? 'bg-gray-200' : ''}`}>AI Docs Explore</Link>
                     </li>
                     <li>
-                        <a href="/assistance" className={`rounded-full p-2 ${path === '/assistance' ? 'bg-gray-200' : ''}`}>Coding Assistance</a>
+                        <Link to="/assistance" className={`rounded-full p-2 ${path === '/assistance' ? 'bg-gray-200' : ''}`}>Coding Assistance</Link>
                     </li>
                     <li>
-                        <a href="/community" className={`rounded-full p-2 ${path === '/community' ? 'bg-gray-200' : ''}`}>Community</a>
+                        <Link to="/community" className={`rounded-full p-2 ${path === '/community' ? 'bg-gray-200' : ''}`}>Community</Link>
                     </li>
                 </ul>
             </nav>
