@@ -20,98 +20,101 @@ const NavBar: React.FC = () => {
     }
 
     return (
-        <div className='bg-white w-full max-w-maxContent flex py-4 justify-between'>
+        <div className='h-14 w-[calc(100vw-3rem)] mx-auto flex items-center text-black'>
 
-            <Link to="/" className='pl-4 font-bold'>
-                PlacePrep
-            </Link>
+            <div className='w-full flex justify-between items-center'>
 
-            <nav className='hidden lg:flex'>
-                <ul className='flex flex-row gap-8'>
-                    <li>
-                        <div className='group'>
+                <Link to="/" className='text-lg mr-6'>
+                    PlacePrep
+                </Link>
 
-                            <Link to="/interview" className={`rounded-full p-2 ${path === '/interview' ? 'bg-gray-200' : ''}`}>Interview</Link>
-                            <span><FontAwesomeIcon icon={faChevronDown} height={10} width={10}/></span>
+                <nav className='hidden lg:flex text-lg'>
+                    <ul className='flex flex-row gap-6'>
+                        <li>
+                            <div className='group'>
 
-                            <div className='absolute invisible opacity-0 flex justify-center items-center w-5/12 h-2/5 bg-blue-100 rounded-xl shadow-lg translate-x-[-25%] translate-y-[15%] translate-z-[-20%] group-hover:visible group-hover:translate-y-[6%] group-hover:translate-z-[20%]  group-hover:opacity-100 transition-all duration-200'>
-                                <ul className='w-full h-full flex p-3'>
-                                    <li className='w-full h-full flex flex-col justify-center items-center hover:bg-white rounded-lg p-2'>
-                                        <Link to="/playground">AI Interview</Link>
-                                    </li>
-                                    <li className='w-full h-full flex flex-col justify-center items-center hover:bg-white rounded-lg p-2'>
-                                        <Link to="/playground">SDE Interview</Link>
-                                    </li>
-                                </ul>
+                                <Link to="/interview" className={`rounded-xl p-2 hover:bg-gray-300 ${path === '/interview' ? 'bg-gray-300 ' : ''}`}>Interview <span><FontAwesomeIcon icon={faChevronDown} height={10} width={10}/></span></Link>
+
+                                <div className='absolute invisible opacity-0 flex justify-center items-center w-5/12 h-2/5 bg-blue-100 rounded-xl shadow-lg translate-x-[-25%] translate-y-[15%] translate-z-[-20%] group-hover:visible group-hover:translate-y-[6%] group-hover:translate-z-[20%]  group-hover:opacity-100 transition-all duration-200'>
+                                    <ul className='w-full h-full flex p-3'>
+                                        <li className='w-full h-full flex flex-col justify-center items-center hover:bg-white rounded-lg p-2'>
+                                            <Link to="/playground">AI Interview</Link>
+                                        </li>
+                                        <li className='w-full h-full flex flex-col justify-center items-center hover:bg-white rounded-lg p-2'>
+                                            <Link to="/playground">SDE Interview</Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
                             </div>
-                        </div>
-                    </li>
-                    <li>
-                        <Link to="/practice" className={`rounded-full p-2 ${path === '/practice' ? 'bg-gray-200' : ''}`}>Coding Practice</Link>
-                    </li>
-                    <li>
-                        <div className='group'>
+                        </li>
+                        <li>
+                            <Link to="/problems" className={`rounded-xl p-2 hover:bg-gray-300 ${path === '/problems' ? 'bg-gray-300 ' : ''}`}>Problems</Link>
+                        </li>
+                        <li>
+                            <div className='group'>
 
-                            <Link to="/playground" className={`rounded-full p-2 ${path === '/playground' ? 'bg-gray-300' : ''}`}>Playground</Link>
-                            <span><FontAwesomeIcon icon={faChevronDown} height={10} width={10}/></span>
-
-                            <div className='absolute invisible opacity-0 flex justify-center items-center bg-blue-100 rounded-xl shadow-lg w-[180px] translate-x-[-25%] translate-y-[15%] translate-z-[-20%] group-hover:visible group-hover:translate-y-[8%] group-hover:translate-z-[20%]  group-hover:opacity-100 transition-all duration-200'>
-                                <ul className='w-full text-center flex flex-col p-3'>
-                                    <li className='w-full hover:bg-white rounded-lg p-2'>
-                                        <Link to="/playground">Python</Link>
-                                    </li>
-                                    <li className='w-full hover:bg-white rounded-lg p-2'>
-                                        <Link to="/playground">Java</Link>
-                                    </li>
-                                    <li className='w-full hover:bg-white rounded-lg p-2'>
-                                        <Link to="/playground">C++</Link>
-                                    </li>
-                                    <li className='w-full hover:bg-white rounded-lg p-2'>
-                                        <Link to="/playground">C</Link>
-                                    </li>
-                                    <li className='w-full hover:bg-white rounded-lg p-2'>
-                                        <Link to="/playground">JavaScript</Link>
-                                    </li>
-                                </ul>
+                                <Link to="/playground" className={`rounded-xl p-2 hover:bg-gray-300 ${path === '/playground' ? 'bg-gray-300 ' : ''}`}>Playground {' '} <span><FontAwesomeIcon icon={faChevronDown} height={10} width={10}/></span></Link>
+                                
+                                <div className='absolute invisible opacity-0 flex justify-center items-center bg-zinc-200 rounded-xl shadow-lg w-[180px] translate-x-[-17%] translate-y-[15%] translate-z-[-20%] group-hover:visible group-hover:translate-y-[6%] group-hover:translate-z-[20%]  group-hover:opacity-100 transition-all duration-200 z-50'>
+                                    <ul className='w-full text-center flex flex-col p-3'>
+                                        <li className='w-full hover:bg-white rounded-lg p-2'>
+                                            <Link to="/playground">Python</Link>
+                                        </li>
+                                        <li className='w-full hover:bg-white rounded-lg p-2'>
+                                            <Link to="/playground">Java</Link>
+                                        </li>
+                                        <li className='w-full hover:bg-white rounded-lg p-2'>
+                                            <Link to="/playground">C++</Link>
+                                        </li>
+                                        <li className='w-full hover:bg-white rounded-lg p-2'>
+                                            <Link to="/playground">C</Link>
+                                        </li>
+                                        <li className='w-full hover:bg-white rounded-lg p-2'>
+                                            <Link to="/playground">JavaScript</Link>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    </li>
-                    <li>
-                        <Link to="/explore" className={`rounded-full p-2 ${path === '/explore' ? 'bg-gray-200' : ''}`}>AI Docs Explore</Link>
-                    </li>
-                    <li>
-                        <Link to="/assistance" className={`rounded-full p-2 ${path === '/assistance' ? 'bg-gray-200' : ''}`}>Coding Assistance</Link>
-                    </li>
-                    <li>
-                        <Link to="/community" className={`rounded-full p-2 ${path === '/community' ? 'bg-gray-200' : ''}`}>Community</Link>
-                    </li>
-                </ul>
-            </nav>
+                        </li>
+                        <li>
+                            <Link to="/explore" className={`rounded-xl p-2 hover:bg-gray-300 ${path === '/explore' ? 'bg-gray-300 ' : ''}`}>AI Documents</Link>
+                        </li>
+                        <li>
+                            <Link to="/assistance" className={`rounded-xl p-2 hover:bg-gray-300 ${path === '/assistance' ? 'bg-gray-300 ' : ''}`}>Assistance</Link>
+                        </li>
+                        <li>
+                            <Link to="/community" className={`rounded-xl p-2 hover:bg-gray-300 ${path === '/community' ? 'bg-gray-300 ' : ''}`}>Community</Link>
+                        </li>
+                    </ul>
+                </nav>
 
-            <div className='flex gap-6 pr-4'>
-                {auth.isAuthenticated ?
-                  <>
-                    <Link to={"/profile"}>
-                      Profile
-                    </Link>
-                    or
-                    <Link to={"#"} onClick={handleLogout}>
-                      Logout
-                    </Link>
-                  </>   : 
-                  <>
-                    <Link to={"/signup"}>
-                        Signup
-                    </Link>
-                    or
-                    <Link to={"/login"}>
-                        Login
-                    </Link>
-                  </>
-                }
-                
+                <div className='flex gap-5 text-lg'>
+                    {auth.isAuthenticated ?
+                    <>
+                        <Link to={"/profile"}>
+                            Profile
+                        </Link>
+
+                        <Link to={"#"} onClick={handleLogout}>
+                            Logout
+                        </Link>
+                    </>   : 
+                    <>
+                        <Link to={"/login"}>
+                            Login
+                        </Link>
+                        or
+                        <Link to={"/signup"}>
+                            Sign Up
+                        </Link>
+                    </>
+                    }
+                    
+                </div>
             </div>
         </div>
+        
     );
 }
 
