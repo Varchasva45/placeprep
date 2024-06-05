@@ -7,8 +7,8 @@ const user = userDataFromCookies ? JSON.parse(userDataFromCookies) : null;
 const userState = atom({   
     key: 'userState',
     default: user || {
-        userEmail: null,
-        role: 'user',
+        id: null,
+        email: null,
         isSubscribed: false,
     },
 });

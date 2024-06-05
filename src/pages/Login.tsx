@@ -5,7 +5,7 @@ import { FaGithub, FaGoogle } from "react-icons/fa";
 import { authEndpoints } from "../services/apis";
 import axios  from "axios";
 import Cookies from "js-cookie";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import authState from "../recoil/atoms/auth";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,6 +17,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { login_API } = authEndpoints;
   const [authAtom, setAuthAtom] = useRecoilState(authState);
+  const setUserAtom = useSetRecoilState(authState);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,11 +47,17 @@ const Login = () => {
           });
       
           if(response.data.success) {
-              const { token } = response.data;
+              const { token , user } = response.data;
               if(token) {
                 Cookies.set('token', token);
               }
+
+              if(user) {
+                Cookies.set('user', JSON.stringify(user));
+              }
+
               setAuthAtom({ isAuthenticated: true, token });
+              setUserAtom(user);
               toast.success(response.data.message);
           } else {
               toast.error(response.data.message);

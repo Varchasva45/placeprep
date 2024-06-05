@@ -2,6 +2,12 @@ import Dropzone from 'react-dropzone';
 import { Cloud, File, Loader2 } from 'lucide-react';
 import { Progress } from './ui/progress';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
+import { getS3Url, uploadToS3 } from '../lib/uploadToS3';
+import { useRecoilValue } from 'recoil';
+import userState from '../recoil/atoms/user';
+import axios from 'axios';
+import authState from '../recoil/atoms/auth';
 
 type UploadDropzoneProps = {
     isSubscribed: boolean;
@@ -11,6 +17,8 @@ const UploadDropzone = ({isSubscribed}: UploadDropzoneProps) => {
 
     const [isUploading, setIsUploading] = useState<boolean>(false);
     const [uploadProgress, setUploadProgress] = useState<number>(0);
+    const user = useRecoilValue(userState);
+    const auth = useRecoilValue(authState);
 
     const startSimulateProgress = () => {   
         setUploadProgress(0);
@@ -28,18 +36,67 @@ const UploadDropzone = ({isSubscribed}: UploadDropzoneProps) => {
         return interval;
     }
 
+    const handleOnDrop = async (acceptedFiles: any) => {
+        setIsUploading(true);
+
+        if(acceptedFiles.length === 0 || acceptedFiles[0].type !== 'application/pdf') {
+            toast.error('Only PDF files are allowed');
+            setIsUploading(false);
+            return;
+        }
+
+        if(isSubscribed) {  
+            if(acceptedFiles[0].size > 16 * 1024 * 1024) {
+                toast.error('Pro Plan allows upto 16 MB file size.');
+                setIsUploading(false);
+                return;
+            }
+        } else {
+            if(acceptedFiles[0].size > 4 * 1024 * 1024) {
+                toast.error('Free Plan allows upto 4 MB file size.');
+                setIsUploading(false);
+                return;
+            }
+        }
+        
+        const interval = startSimulateProgress();
+        
+        try {
+            const data = await uploadToS3(acceptedFiles[0]);
+            const url = getS3Url(data.file_key);
+
+            const newFile = {
+                url: url,
+                name: data.file_name,
+                key: data.file_key,
+                owner: user.id
+            }
+
+            const response = await axios.post('http://localhost:3000/askPdf/createFile', newFile,  {
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                }
+            });
+
+            if(response.data.success) {
+                window.location.href = `/dashboard/${response.data.fileId}`;
+            } else {
+                toast.error('Failed to upload file');
+            }
+        } catch (err: any) {
+            console.log(err);
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        clearInterval(interval);
+        setUploadProgress(100);
+        setIsUploading(false);
+    }
+
     return (
         <Dropzone 
             multiple={false} 
-            onDrop={async () => {
-                setIsUploading(true);
-                const interval = startSimulateProgress();
-                // Logic to upload file on cloud and then redirect to dashboard/:fileId page
-                await new Promise((resolve) => setTimeout(resolve, 1500));
-                clearInterval(interval);
-                setUploadProgress(100);
-                setIsUploading(false);
-            }}
+            onDrop={handleOnDrop}
         >
             {
                 ({ getRootProps, getInputProps, acceptedFiles}) => (

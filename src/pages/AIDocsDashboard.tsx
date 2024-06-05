@@ -5,16 +5,38 @@ import authState from '../recoil/atoms/auth';
 import { useRecoilValue } from 'recoil';
 import { askPDFEndpoints } from '../services/apis';
 import { Ghost, Loader2, MessageSquare, Plus, Trash } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Button } from '../components/ui/button';
+import { buttonVariants } from '../components/ui/button';
 import UploadButton from '../components/UploadButton';
+import mongoose from 'mongoose';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '../components/ui/alert-dialog';
+
+type file = {
+    _id: string,
+    name: string,
+    url: string,
+    key: string,
+    owner: mongoose.Types.ObjectId,
+    uploadStatus: string,
+    messages: string[],
+    createdAt: Date,
+}
 
 const AIDocsDashboard = () => {
 
     const [currentlyDeletingFile, setCurrentlyDeletingFile] = useState<string[] | null>(null)
     const auth = useRecoilValue(authState);
-    const [files, setFiles] = useState<any>();
+    const [files, setFiles] = useState<file[]>();
     const { fetchFiles_API } = askPDFEndpoints;
 
     useEffect(() => {
@@ -28,14 +50,13 @@ const AIDocsDashboard = () => {
                 });
 
                 if(response.data.success) {
+                    toast.dismiss(toastId);
+                    toast.success('Files fetched successfully');
                     setFiles(response.data.files);
                 } else {
-                    console.log(response)
                     toast.error(response.data.message ? response.data.message : 'Failed to fetch files');
                 }
-                
             } catch (error: any) {
-                console.log(error)
                 toast.error(error.response.data.message ? error.response.data.message : 'Failed to fetch files');
             }
     
@@ -45,19 +66,43 @@ const AIDocsDashboard = () => {
         fetchFiles();
     }, []);
 
-    const handleDeleteFile = (fileId: string) => {
+    const handleDeleteFile = async (fileId: string) => {
         setCurrentlyDeletingFile(currentlyDeletingFile ? [...currentlyDeletingFile, fileId] : [fileId]);
-        // Delete file
+        const toastId = toast.loading('Deleting file...');
+        
+        try {
+            const response = await axios.delete(`http://localhost:3000/askPDF/deleteFile/${fileId}`, {
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                }
+            });
+
+            if(response.data.success) {
+                toast.dismiss(toastId);
+                toast.success('File deleted successfully');
+                setFiles(files?.filter((file) => file._id !== fileId));
+            } else {
+                toast.dismiss(toastId);
+                toast.error(response.data.message ? response.data.message : 'Failed to delete file');
+            }
+
+        } catch (error: any) {
+            toast.dismiss(toastId);
+            toast.error(error.response.data.message ? error.response.data.message : 'Failed to delete file');
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        toast.dismiss(toastId);
         setCurrentlyDeletingFile(currentlyDeletingFile ? currentlyDeletingFile.filter((id) => id !== fileId): null);
     }
     
     return (
         <div className='bg-zinc-50 w-screen h-screen'>
-            <div className="bg-white shadow border-b border-zinc-300 h-[3.5rem]">
+            <div className='bg-white shadow border-b border-zinc-300 h-[3.5rem]'>
 
             </div>
             <main className='mx-auto max-w-6xl md:p-10'>
-            <div className='mt-8 flex flex-col items-start justify-between gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:gap-0'>
+            <div className='flex flex-col items-start justify-between gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:gap-0'>
                 <h1 className='mb-3 font-bold text-5xl text-gray-900'>
                     My Files
                 </h1>
@@ -99,17 +144,30 @@ const AIDocsDashboard = () => {
                                     mocked
                                 </div>
 
-                                <Button
-                                    size='sm'
-                                    className='w-full'
-                                    variant='destructive'
-                                    onClick={() => handleDeleteFile(file._id)}
-                                >  
-                                    {
-                                        currentlyDeletingFile?.includes(file._id) ? <Loader2 className='h-4 w-4 animate-spin' /> : <Trash className='h-4 w-4' />
-                                    }
-                                    
-                                </Button>
+                                <AlertDialog>
+                                    <AlertDialogTrigger className='w-full'>
+                                        <div className={buttonVariants({variant: 'destructive', width: 'full'})}>
+                                            {currentlyDeletingFile?.includes(file._id) ? <Loader2 className='h-4 w-4 animate-spin' /> : <Trash className='h-4 w-4' />}
+                                        </div>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you sure you want to delete this file?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently delete this file
+                                                and remove it from our servers.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction>
+                                                <div onClick={() => handleDeleteFile(file._id)}>
+                                                    Continue
+                                                </div>
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </div>
                         </li>
                     ))}

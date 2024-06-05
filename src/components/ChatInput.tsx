@@ -1,4 +1,4 @@
-import { Send } from "lucide-react";
+import { LucideSendHorizontal } from "lucide-react";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 
@@ -31,7 +31,7 @@ const ChatInput = ({ isDisabled } : ChatInputProps) => {
                                 //   textareaRef.current?.focus()
                                 // }}
                             >
-                                <Send className='h-4 w-4' />
+                                <LucideSendHorizontal className='h-4 w-4' />
                             </Button>
 
                         </div>
