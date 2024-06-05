@@ -43,7 +43,7 @@ export function getS3Url(file_key: string) {
 // import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 // import { Pinecone } from '@pinecone-database/pinecone';
 // export const pinecone = new Pinecone({
-//   apiKey: 'd99df904-f8d7-4825-bc82-2db1726bcff6',
+//  
 // });
 
 // export async function indexSavedFile({ fileUrl, fileId} : { fileUrl: string; fileId: string}) {
@@ -55,7 +55,7 @@ export function getS3Url(file_key: string) {
 //     const pageLevelDocs = await loader.load();
 //     const pineconeIndex = pinecone.Index('placeprep');
 //     const embeddings = new OpenAIEmbeddings({
-//       openAIApiKey: 'sk-proj-6P1g0d4KnEh65HjRyxJBT3BlbkFJdElM9I882jVqM1ZILbKt',
+//     
 //     });  
 //     await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {pineconeIndex, namespace: fileId});
 //   } catch (error) {
