@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {toast} from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { FaGithub, FaGoogle } from "react-icons/fa";
-import NavBar from "./NavBar";
 import { authEndpoints } from "../services/apis";
 import axios  from "axios";
 import Cookies from "js-cookie";
@@ -10,9 +9,10 @@ import { useRecoilState } from "recoil";
 import authState from "../recoil/atoms/auth";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "./ui/button";
+import NavBar from "../components/NavBar";
+import { Button } from "../components/ui/button";
 
-const SignupForm: React.FC = () => {
+const Signup = () => {
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const { signUp_API } = authEndpoints;
@@ -169,4 +169,4 @@ const SignupForm: React.FC = () => {
 };
     
 
-export default SignupForm;
+export default Signup;

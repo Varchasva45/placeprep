@@ -1,5 +1,5 @@
 export const customStyles = {
-  control: (styles) => ({
+  control: (styles: any) => ({
     ...styles,
     width: "100%",
     maxWidth: "14rem",
@@ -17,7 +17,7 @@ export const customStyles = {
       boxShadow: "none",
     },
   }),
-  option: (styles) => {
+  option: (styles: any) => {
     return {
       ...styles,
       color: "#000",
@@ -32,7 +32,7 @@ export const customStyles = {
       },
     };
   },
-  menu: (styles) => {
+  menu: (styles: any) => {
     return {
       ...styles,
       backgroundColor: "#fff",
@@ -43,7 +43,7 @@ export const customStyles = {
     };
   },
 
-  placeholder: (defaultStyles) => {
+  placeholder: (defaultStyles: any) => {
     return {
       ...defaultStyles,
       color: "#000",

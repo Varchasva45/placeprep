@@ -6,6 +6,7 @@ interface User extends Document {
     password: string;
     role: string;
     githubAccount: string;
+    isSubscribed: boolean;
 }
 
 const userSchema = new Schema<User>({
@@ -29,6 +30,10 @@ const userSchema = new Schema<User>({
     githubAccount: {
         type: String,
         trim: true
+    },
+    isSubscribed: { 
+        type: Boolean, 
+        default: false 
     }
 });
 

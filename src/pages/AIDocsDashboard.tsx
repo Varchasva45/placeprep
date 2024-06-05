@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import UploadButton from './UploadButton';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import authState from '../recoil/atoms/auth';
@@ -8,18 +7,10 @@ import { askPDFEndpoints } from '../services/apis';
 import { Ghost, Loader2, MessageSquare, Plus, Trash } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { Button } from './ui/button';
+import { Button } from '../components/ui/button';
+import UploadButton from '../components/UploadButton';
 
-// type File = {
-//     name: string;
-//     url: string;
-//     key: string;
-//     owner: string;
-//     createdAt: Date;
-//     updatedAt: Date;
-// }
-
-const ExploreDashboard = () => {
+const AIDocsDashboard = () => {
 
     const [currentlyDeletingFile, setCurrentlyDeletingFile] = useState<string[] | null>(null)
     const auth = useRecoilValue(authState);
@@ -39,10 +30,12 @@ const ExploreDashboard = () => {
                 if(response.data.success) {
                     setFiles(response.data.files);
                 } else {
+                    console.log(response)
                     toast.error(response.data.message ? response.data.message : 'Failed to fetch files');
                 }
                 
             } catch (error: any) {
+                console.log(error)
                 toast.error(error.response.data.message ? error.response.data.message : 'Failed to fetch files');
             }
     
@@ -59,7 +52,11 @@ const ExploreDashboard = () => {
     }
     
     return (
-        <main className='mx-auto max-w-7xl md:p-10'>
+        <div className='bg-zinc-50 w-screen h-screen'>
+            <div className="bg-white shadow border-b border-zinc-300 h-[3.5rem]">
+
+            </div>
+            <main className='mx-auto max-w-6xl md:p-10'>
             <div className='mt-8 flex flex-col items-start justify-between gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:gap-0'>
                 <h1 className='mb-3 font-bold text-5xl text-gray-900'>
                     My Files
@@ -72,8 +69,8 @@ const ExploreDashboard = () => {
                 <ul className='mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
                     {files.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((file: any) => (
                         <li key={file._id} className='col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow transition hover:shadow-lg'>
-                            <Link 
-                                to={`/dashboard/${file._id}`}
+                            <a 
+                                href={`/dashboard/${file._id}`}
                                 className='flex flex-col gap-2'
                             >
                                 <div className='pt-6 px-6 flex w-full items-center justify-between space-x-6'>
@@ -86,7 +83,7 @@ const ExploreDashboard = () => {
                                         </div>
                                     </div>
                                 </div>
-                            </Link>
+                            </a>
 
                             <div className='px-6 mt-4 grid grid-cols-3 place-items-center py-2 gap-6 text-xs text-zinc-500'>
                                 <div className='flex items-center gap-2'>
@@ -126,8 +123,10 @@ const ExploreDashboard = () => {
             )}
 
 
-        </main>
+            </main>
+        </div>
+        
     );
 }
 
-export default ExploreDashboard;
+export default AIDocsDashboard;

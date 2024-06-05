@@ -1,38 +1,36 @@
-import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import './App.css';
 import './index.css';
-import Playground from './components/Playground';
-import Home from './components/Home';
-import Login from './components/LoginForm';
-import Signup from './components/SignupForm';
-import ExploreLanding from './components/ExploreLanding';
-import ExploreDashboard from './components/ExploreDashboard';
+import Playground from './pages/Playground';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import AIDocsLanding from './pages/AIDocsLanding';
+import AIDocsDashboard from './pages/AIDocsDashboard';
 import AuthenticatedRoute from './components/AuthticatedRoute';
-import ChatPage from './components/ChatPage';
-import AddProblems from './components/AddProblems';
-import AllProblems from './components/AllProblems';
+import AddProblems from './pages/AddProblems';
+import AllProblems from './pages/AllProblems';
+import PdfChatPage from './pages/PdfChatPage';
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <div>
       <Toaster />
       <Router>
         <Routes>
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<Landing />} />
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
-          {/* <Route path='/playground' element={<AuthenticatedRoute><Playground/></AuthenticatedRoute>} /> */}
-          <Route path='/playground' element={<Home />} />
-          <Route path='/interview' element={<Home />} />
-          <Route path='/problems' element={<Home />} />
-          <Route path='/assistance' element={<Home />} />
-          <Route path='/community' element={<Home />} />
-          <Route path='/explore' element={<ExploreLanding />}  />
-          <Route path='/dashboard' element={<AuthenticatedRoute><ExploreDashboard/></AuthenticatedRoute>} />
-          <Route path='/dashboard/:pdfId' element={<AuthenticatedRoute><ChatPage/></AuthenticatedRoute>} />
-          <Route path='/dashboard' element={<ExploreDashboard/>} />
+          <Route path='/playground' element={<Playground />} />
+          <Route path='/interview' element={<Landing />} />
+          <Route path='/problems' element={<Landing />} />
+          <Route path='/assistance' element={<Landing />} />
+          <Route path='/community' element={<Landing />} />
+          <Route path='/explore' element={<AIDocsLanding />}  />
+          <Route path='/dashboard' element={<AuthenticatedRoute><AIDocsDashboard/></AuthenticatedRoute>} />
+          <Route path='/dashboard/:pdfId' element={<AuthenticatedRoute><PdfChatPage /></AuthenticatedRoute>} />
+          <Route path='/dashboard' element={<AIDocsDashboard/>} />
           <Route path='/add-problems' element={<AddProblems />} />
           <Route path='/all-problems' element={<AllProblems />} />
         </Routes>

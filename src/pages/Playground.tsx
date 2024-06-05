@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import CodeEditorWindow from "./CodeEditorWindow";
-import LanguageDropdown from "./LanguageDropdown";
 import { languageOptions } from "../constants/languageOptions";
-import ThemeDropdown from "./ThemeDropdown";
 import { loader } from "@monaco-editor/react";
-import CustomInput from "./CustomInput";
-import OutputWindow from "./OutputWindow";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import CodeEditorWindow from "../components/CodeEditorWindow";
+import LanguageDropdown from "../components/LanguageDropdown";
+import ThemeDropdown from "../components/ThemeDropdown";
+import CustomInput from "../components/CustomInput";
+import OutputWindow from "../components/OutputWindow";
 
 type Language = {
     id: number;
@@ -32,7 +32,7 @@ const Playground = () => {
     const [outputDetails, setOutputDetails] = useState(null);
     const [processing, setProcessing] = useState<boolean | null>(null);
     const [customInput, setCustomInput] = useState('');
-    const [code, setCode] = useState<string | undefined>(codeDefault);
+    const [code, setCode] = useState<string>(codeDefault);
 
     useEffect(() => {
       const setInitialTheme = async () => {
@@ -50,7 +50,6 @@ const Playground = () => {
     }, []);
 
     const onSelectChange = (selectedLanguage: Language) => {
-      console.log("Selected language:", selectedLanguage, selectedLanguage.defaultCode);
       setLanguage(selectedLanguage);
       setCode(selectedLanguage.defaultCode || '');
     };
@@ -58,13 +57,11 @@ const Playground = () => {
     const handleThemeChange = async (selectedTheme: Theme) => {
         try {
             const themeData = await fetch(`/themes/${selectedTheme.label}.json`).then((res) => res.json());
-            console.log("Setting theme:", selectedTheme);
             const monaco = await loader.init();
             monaco.editor.defineTheme(selectedTheme.value, themeData);
             setTheme(selectedTheme.value);
         } catch (error) {
             console.error("Error setting theme:", error);
-            // Handle error appropriately (show message to the user, retry, etc.)
         }
     }    
 

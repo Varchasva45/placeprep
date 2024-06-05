@@ -3,6 +3,7 @@ import axios from 'axios';
 import { GrPowerReset } from "react-icons/gr";
 import Select from 'react-select';
 import { Dialog } from '@headlessui/react';
+import { optionTags } from '../constants/problemTags';
 
 const AllProblems: React.FC = () => {
   const [problems, setProblems] = useState<any>([]);
@@ -10,90 +11,7 @@ const AllProblems: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const optionTags: any = [
-    'Array',
-    'String',
-    'Hash Table',
-    'Linked List',
-    'Math',
-    'Two Pointers',
-    'Binary Search',
-    'Divide and Conquer',
-    'Dynamic Programming',
-    'Backtracking',
-    'Stack',
-    'Heap',
-    'Greedy',
-    'Sort',
-    'Bit Manipulation',
-    'Tree',
-    'Depth-first Search',
-    'Breadth-first Search',
-    'Union Find',
-    'Graph',
-    'Design',
-    'Topological Sort',
-    'Trie',
-    'Binary Indexed Tree',
-    'Segment Tree',
-    'Binary Search Tree',
-    'Recursion',
-    'Brainteaser',
-    'Memoization',
-    'Queue',
-    'Minimax',
-    'Reservoir Sampling',
-    'Ordered Map',
-    'Geometry',
-    'Random',
-    'Rejection Sampling',
-    'Sliding Window',
-    'Line Sweep',
-    'Rolling Hash',
-    'Suffix Array',
-    'Geometry',
-    'Random',
-    'Rejection Sampling',
-    'Sliding Window',
-    'Line Sweep',
-    'Rolling Hash',
-    'Suffix Array',
-    'Geometry',
-    'Random',
-    'Rejection Sampling',
-    'Sliding Window',
-    'Line Sweep',
-    'Rolling Hash',
-    'Suffix Array',
-    'Geometry',
-    'Random',
-    'Rejection Sampling',
-    'Sliding Window',
-    'Line Sweep',
-    'Rolling Hash',
-    'Suffix Array',
-    'Geometry',
-    'Random',
-    'Rejection Sampling',
-    'Sliding Window',
-    'Line Sweep',
-    'Rolling Hash',
-    'Suffix Array',
-    'Geometry',
-    'Random',
-    'Rejection Sampling',
-    'Sliding Window',
-    'Line Sweep',
-    'Rolling Hash',
-    'Suffix Array',
-    'Geometry',
-    'Random',
-    'Rejection Sampling',
-    'Sliding Window',
-    'Line Sweep',
-    'Rolling Hash',
-    'Suffix Array',
-  ]
+  
   const initialFilters = {
     title: '',
     difficulty: '',
@@ -253,7 +171,7 @@ const AllProblems: React.FC = () => {
                     isMulti // Customize width as needed
                     value={filters.tags.map(tag => ({ value: tag, label: tag }))}
                     name="tags"
-                    options={optionTags.map((tag: any) => ({ value: tag, label: tag }))}
+                    options={optionTags.map((tag: string) => ({ value: tag, label: tag }))}
                     className="px-2 py-1 border border-gray-400 rounded w-full"
                     onChange={handleChange}
                   />

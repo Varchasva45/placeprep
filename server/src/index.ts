@@ -3,6 +3,7 @@ import mongoose, { ConnectOptions } from 'mongoose';
 import { questionRouter } from './routes/question';
 import { interviewRouter }  from './routes/interview';
 import { authRouter } from './routes/auth';
+import { askPDFRouter } from './routes/askPDF';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import "./passport";
@@ -33,6 +34,7 @@ app.use(cors());
 app.use('/interview', interviewRouter);
 app.use('/question', questionRouter);
 app.use('/auth', authRouter);
+app.use('/askPDF', askPDFRouter);
 
 async function startServer() {
   try {

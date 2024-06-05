@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
-const AddProblems: React.FC = () => {
-//   const [questionId, setQuestionId] = useState<number>(0);
+const AddProblem = () => {
+
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [difficulty, setDifficulty] = useState<string>('Easy');
@@ -11,7 +11,6 @@ const AddProblems: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newProblem = {
-    //   question_id: questionId,
       title,
       description,
       difficulty,
@@ -95,4 +94,4 @@ const AddProblems: React.FC = () => {
   );
 };
 
-export default AddProblems;
+export default AddProblem;

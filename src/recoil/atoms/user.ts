@@ -8,7 +8,8 @@ const userState = atom({
     key: 'userState',
     default: user || {
         userEmail: null,
-        role: null,
+        role: 'user',
+        isSubscribed: false,
     },
 });
 

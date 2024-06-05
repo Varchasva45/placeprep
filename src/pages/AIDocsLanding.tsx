@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
-import MaxWidthWrapper from './MaxWidthWrapper';
 import { FaArrowRight } from 'react-icons/fa';
-import { buttonVariants } from './ui/button';
-import NavBar from './NavBar';
+import NavBar from '../components/NavBar';
+import { buttonVariants } from '../components/ui/button';
+import MaxWidthWrapper from '../components/MaxWidthWrapper';
 
-const ExploreLanding: React.FC = () => {
+const AIDocsLanding = () => {
     return (
         <>
             <NavBar />
@@ -141,4 +141,4 @@ const ExploreLanding: React.FC = () => {
     );
 }
 
-export default ExploreLanding;
+export default AIDocsLanding;
