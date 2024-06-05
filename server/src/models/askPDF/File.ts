@@ -19,7 +19,7 @@ const fileSchema = new Schema<File>({
     },
     uploadStatus: {
         type: String,
-        default: "pending",
+        default: "Success",
         trim: true,
         required: true
     },

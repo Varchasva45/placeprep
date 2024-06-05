@@ -33,9 +33,13 @@ export const signup = async (req: Request, res: Response) => {
 
         res.status(201).json({
             success: true,
-            token,
             message: 'User signed up successfully',
-            user: newUser
+            token,
+            user: {
+                id: newUser._id,
+                email: newUser.email,
+                isSubscribed: newUser.isSubscribed,
+            }
         });
     } catch (error) {
         res.status(500).json({ 
@@ -78,9 +82,13 @@ export const login = async (req: Request, res: Response) => {
 
         res.status(200).json({
             success: true,
-            token,
-            user,
             message: 'User logged in successfully',
+            token,
+            user: {
+                id: user._id,
+                email: user.email,
+                isSubscribed: user.isSubscribed,
+            }
         });
     } catch (error) {
         res.status(500).json({ 
@@ -106,9 +114,18 @@ export const googleLogin = async (req: Request, res: Response) => {
                 id: userExists._id,
                 email: userExists.email,
             };
+
+            const userDetails = {
+                id: userExists._id,
+                email: userExists.email,
+                isSubscribed: userExists.isSubscribed,
+            }
     
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
-            res.cookie('token', token).redirect('http://localhost:5173/login');
+            res.cookie('token', token);
+            res.cookie('user', JSON.stringify(userDetails));
+            res.redirect('http://localhost:5173/');
+
         } else {
             const newUser = await User.create({
                 email,
@@ -120,11 +137,19 @@ export const googleLogin = async (req: Request, res: Response) => {
                 email: newUser.email,
             };
 
+            const userDetails = {
+                id: newUser._id,
+                email: newUser.email,
+                isSubscribed: newUser.isSubscribed,
+            }
+
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
-            res.cookie('token', token).redirect('http://localhost:5173/login');
+            res.cookie('token', token);
+            res.cookie('user', JSON.stringify(userDetails));
+            res.redirect('http://localhost:5173/');
         }        
     } catch (error) {
-        res.status(500).redirect('http://localhost:5173/');
+        res.status(500).redirect('http://localhost:5173/login');
     }
 }
 
@@ -147,8 +172,17 @@ export const githubLogin = async (req: Request, res: Response) => {
                 githubAccount: userExists.githubAccount,
             };
 
+            const userDetails = {
+                id: userExists._id,
+                githubAccount: userExists.githubAccount,
+                isSubscribed: userExists.isSubscribed,
+            }
+
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
-            res.cookie('token', token).redirect('http://localhost:5173/login');
+            res.cookie('token', token);
+            res.cookie('user', JSON.stringify(userDetails));
+            res.redirect('http://localhost:5173/');
+
         } else {
             const newUser = await User.create({
                 githubAccount,
@@ -160,10 +194,18 @@ export const githubLogin = async (req: Request, res: Response) => {
                 githubAccount: newUser.githubAccount,
             };
 
+            const userDetails = {
+                id: newUser._id,
+                githubAccount: newUser.githubAccount,
+                isSubscribed: newUser.isSubscribed,
+            }
+
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
-            res.cookie('token', token).redirect('http://localhost:5173/login');
+            res.cookie('token', token);
+            res.cookie('user', JSON.stringify(userDetails));
+            res.redirect('http://localhost:5173/');
         }
     } catch (error) {
-        res.redirect('http://localhost:5173/');
+        res.redirect('http://localhost:5173/login');
     }
 }
