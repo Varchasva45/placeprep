@@ -9,7 +9,6 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import authState from "../recoil/atoms/auth";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-import NavBar from "../components/NavBar";
 import { Button } from "../components/ui/button";
 import userState from "../recoil/atoms/user";
 
@@ -107,9 +106,8 @@ const Signup = () => {
       };
 
   return (
-    <div className="bg-white flex flex-col h-screen">
-      <NavBar />
-      <div className="grid grid-cols-1 md:grid-cols-2 h-screen w-full">
+    <div className="bg-white flex flex-col h-[calc(100vh-3.5rem)]">
+      <div className="grid grid-cols-1 md:grid-cols-2 h-full w-full">
         <div className="bg-gray-900 flex flex-col justify-center items-center">
           <motion.h1
             className="text-white text-4xl font-bold mb-4"
@@ -135,7 +133,7 @@ const Signup = () => {
             </Button>
           </div>
         </div>
-        <div className="bg-white flex flex-col justify-center items-center">
+        <div className="bg-zinc-100 flex flex-col justify-center items-center">
           <motion.div className="w-full max-w-md bg-white shadow-xl rounded-lg p-8"
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}

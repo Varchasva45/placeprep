@@ -12,25 +12,36 @@ import AuthenticatedRoute from './components/AuthticatedRoute';
 import AddProblems from './pages/AddProblems';
 import AllProblems from './pages/AllProblems';
 import PdfChatPage from './pages/PdfChatPage';
+import LayoutWithAIDocsNavbar from './components/LayoutWithAIDocsNavbar';
+import LayoutWithNavbar from './components/LayoutWithNavbar';
+import Pricing from './pages/Pricing';
 
 const App = () => {
   return (
-    <div>
+    <div className='light bg-light'>
       <Toaster />
       <Router>
         <Routes>
-          <Route path='/' element={<Landing />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
-          <Route path='/playground' element={<Playground />} />
-          <Route path='/interview' element={<Landing />} />
+          <Route element={<LayoutWithNavbar/>}>
+            <Route path='/' element={<Landing />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+            <Route path='/pricing' element={<Pricing />} />
+          </Route>
+
           <Route path='/problems' element={<Landing />} />
+          <Route path='/sheets' element={<Landing />} />
+          <Route path='/interview' element={<Landing />} />
+          <Route path='/playground' element={<Playground />} />
+
+          <Route element={<LayoutWithAIDocsNavbar />} >
+            <Route path='/explore' element={<AIDocsLanding />}  />
+            <Route path='/dashboard' element={<AuthenticatedRoute><AIDocsDashboard/></AuthenticatedRoute>} />
+            <Route path='/dashboard/:pdfId' element={<AuthenticatedRoute><PdfChatPage /></AuthenticatedRoute>} />
+          </Route>
+          
           <Route path='/assistance' element={<Landing />} />
           <Route path='/community' element={<Landing />} />
-          <Route path='/explore' element={<AIDocsLanding />}  />
-          <Route path='/dashboard' element={<AuthenticatedRoute><AIDocsDashboard/></AuthenticatedRoute>} />
-          <Route path='/dashboard/:pdfId' element={<AuthenticatedRoute><PdfChatPage /></AuthenticatedRoute>} />
-          <Route path='/dashboard' element={<AIDocsDashboard/>} />
           <Route path='/add-problems' element={<AddProblems />} />
           <Route path='/all-problems' element={<AllProblems />} />
         </Routes>

@@ -1,13 +1,11 @@
 import { Link } from 'react-router-dom';
 import { FaArrowRight } from 'react-icons/fa';
-import NavBar from '../components/NavBar';
 import { buttonVariants } from '../components/ui/button';
 import MaxWidthWrapper from '../components/MaxWidthWrapper';
 
 const AIDocsLanding = () => {
     return (
         <>
-            <NavBar />
             <MaxWidthWrapper className='mb-12 mt-28 sm:mt-16 flex flex-col items-center justify-center text-center'>
                 <div className='mx-auto mb-8 flex max-w-fit items-center justify-center space-x-2 overflow-hidden rounded-full border border-gray-200 bg-white px-7 py-2 shadow-md backdrop-blur transition-all hover:border-gray-300 hover:bg-white/50'>
                     <p className='text-sm font-semibold text-gray-700'>
@@ -118,9 +116,6 @@ const AIDocsLanding = () => {
                             </li>
                         </ol>
                     </div>
-
-                    
-
 
                     <div className='mx-auto max-w-6xl px-6 lg:px-8'>
                         <div className='mt-16 mb-16 flow-root sm:mt-24'>

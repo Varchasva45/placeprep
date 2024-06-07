@@ -1,121 +1,150 @@
-import React from 'react';
-import { useRecoilValue, useSetRecoilState} from 'recoil';
-import { Link, useLocation } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import Cookies from "js-cookie";
-import authState from '../recoil/atoms/auth';
+import { buttonVariants } from './ui/button'
+import { ArrowRight } from 'lucide-react'
+import AIDocsMobileNavbar from './AIDocsMobileNavbar'
+import { Link } from 'react-router-dom'
+import { useRecoilValue } from 'recoil'
+import authState from '../recoil/atoms/auth'
+import UserAccountNav from './UserAccountNavbar'
+import userState from '../recoil/atoms/user'
+import MaxWidthWrapper2 from './MaxWidthWrapper2'
 
-const NavBar: React.FC = () => {
-    
-    const location = useLocation();
-    const path = location.pathname;
-    const auth = useRecoilValue(authState);
-    const setAuthState = useSetRecoilState(authState);
+const NavBar = () => {
 
-    const handleLogout = () => {
-      Cookies.remove('token');
-      Cookies.remove('user');
-      setAuthState({ isAuthenticated: false, token: null });
-    }
+const user = useRecoilValue(userState);
+const auth = useRecoilValue(authState);
 
-    return (
-        <div className='h-14 w-[calc(100vw-3rem)] mx-auto flex items-center text-black'>
+return ( 
+    <nav className='sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 opacity-95 bg-white/75 backdrop-blur-xl transition-all'>
+      <MaxWidthWrapper2>
+        <div className='flex h-14 items-center justify-between border-b border-zinc-200'>
+          <div className='flex space-x-12 mr-7'>
+              <div className='flex items-center'>
+                  <Link
+                  to='/'
+                  className='flex z-40 font-semibold'>
+                  <span>PlacePrep</span>
+                  </Link>
+              </div>
 
-            <div className='w-full flex justify-between items-center'>
-
-                <Link to="/" className='text-lg mr-6'>
-                    PlacePrep
+              <div className='hidden lg:flex space-x-3'>
+                <Link
+                    to='/problems'
+                    className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'sm',
+                    })}>
+                    Problems
                 </Link>
 
-                <nav className='hidden lg:flex text-lg'>
-                    <ul className='flex flex-row gap-6'>
-                        <li>
-                            <div className='group'>
+                <Link
+                    to='/sheets'
+                    className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'sm',
+                    })}>
+                    OA Sheet
+                </Link>
 
-                                <Link to="/interview" className={`rounded-xl p-2 hover:bg-gray-300 ${path === '/interview' ? 'bg-gray-300 ' : ''}`}>Interview <span><FontAwesomeIcon icon={faChevronDown} height={10} width={10}/></span></Link>
+                <Link
+                    to='/interview'
+                    className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'sm',
+                    })}>
+                    Interview
+                </Link>
 
-                                <div className='absolute invisible opacity-0 flex justify-center items-center w-5/12 h-2/5 bg-blue-100 rounded-xl shadow-lg translate-x-[-25%] translate-y-[15%] translate-z-[-20%] group-hover:visible group-hover:translate-y-[6%] group-hover:translate-z-[20%]  group-hover:opacity-100 transition-all duration-200'>
-                                    <ul className='w-full h-full flex p-3'>
-                                        <li className='w-full h-full flex flex-col justify-center items-center hover:bg-white rounded-lg p-2'>
-                                            <Link to="/playground">AI Interview</Link>
-                                        </li>
-                                        <li className='w-full h-full flex flex-col justify-center items-center hover:bg-white rounded-lg p-2'>
-                                            <Link to="/playground">SDE Interview</Link>
-                                        </li>
-                                    </ul>
-                                </div>
-                                
-                            </div>
-                        </li>
-                        <li>
-                            <Link to="/problems" className={`rounded-xl p-2 hover:bg-gray-300 ${path === '/problems' ? 'bg-gray-300 ' : ''}`}>Problems</Link>
-                        </li>
-                        <li>
-                            <div className='group'>
+                <Link
+                    to='/playground'
+                    className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'sm',
+                    })}>
+                    Playground
+                </Link>
 
-                                <Link to="/playground" className={`rounded-xl p-2 hover:bg-gray-300 ${path === '/playground' ? 'bg-gray-300 ' : ''}`}>Playground {' '} <span><FontAwesomeIcon icon={faChevronDown} height={10} width={10}/></span></Link>
-                                
-                                <div className='absolute invisible opacity-0 flex justify-center items-center bg-zinc-200 rounded-xl shadow-lg w-[180px] translate-x-[-17%] translate-y-[15%] translate-z-[-20%] group-hover:visible group-hover:translate-y-[6%] group-hover:translate-z-[20%]  group-hover:opacity-100 transition-all duration-200 z-50'>
-                                    <ul className='w-full text-center flex flex-col p-3'>
-                                        <li className='w-full hover:bg-white rounded-lg p-2'>
-                                            <Link to="/playground">Python</Link>
-                                        </li>
-                                        <li className='w-full hover:bg-white rounded-lg p-2'>
-                                            <Link to="/playground">Java</Link>
-                                        </li>
-                                        <li className='w-full hover:bg-white rounded-lg p-2'>
-                                            <Link to="/playground">C++</Link>
-                                        </li>
-                                        <li className='w-full hover:bg-white rounded-lg p-2'>
-                                            <Link to="/playground">C</Link>
-                                        </li>
-                                        <li className='w-full hover:bg-white rounded-lg p-2'>
-                                            <Link to="/playground">JavaScript</Link>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <Link to="/explore" className={`rounded-xl p-2 hover:bg-gray-300 ${path === '/explore' ? 'bg-gray-300 ' : ''}`}>AI Documents</Link>
-                        </li>
-                        <li>
-                            <Link to="/assistance" className={`rounded-xl p-2 hover:bg-gray-300 ${path === '/assistance' ? 'bg-gray-300 ' : ''}`}>Assistance</Link>
-                        </li>
-                        <li>
-                            <Link to="/community" className={`rounded-xl p-2 hover:bg-gray-300 ${path === '/community' ? 'bg-gray-300 ' : ''}`}>Community</Link>
-                        </li>
-                    </ul>
-                </nav>
+                <Link
+                    to='/explore'
+                    className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'sm',
+                    })}>
+                    AI Docs
+                </Link>
 
-                <div className='flex gap-5 text-lg'>
-                    {auth.isAuthenticated ?
-                    <>
-                        <Link to={"/profile"}>
-                            Profile
-                        </Link>
+                <Link
+                    to='/assistance'
+                    className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'sm',
+                    })}>
+                    Assistance
+                </Link>
 
-                        <Link to={"#"} onClick={handleLogout}>
-                            Logout
-                        </Link>
-                    </>   : 
-                    <>
-                        <Link to={"/login"}>
-                            Login
-                        </Link>
-                        or
-                        <Link to={"/signup"}>
-                            Sign Up
-                        </Link>
-                    </>
-                    }
-                    
-                </div>
-            </div>
+                <Link
+                    to='/community'
+                    className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'sm',
+                    })}>
+                    Community
+                </Link>
+              </div>
+          </div>
+          
+          <AIDocsMobileNavbar isAuth={auth.isAuthenticated} />
+
+          <div className='hidden items-center space-x-4 sm:flex'>
+            {!auth.isAuthenticated ? (
+              <>
+                <Link
+                  to='/pricing'
+                  className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'sm',
+                  })}>
+                  Pricing
+                </Link>
+                <Link
+                  className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'sm',
+                  })} to={'/login'}>
+                  Login
+                </Link>
+                <Link
+                  className={buttonVariants({
+                    size: 'sm',
+                  })} to={'/signup'}>
+                  Register{' '}
+                  <ArrowRight className='ml-1.5 h-5 w-5' />
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to={`/u/${user.id}`}
+                  className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'sm',
+                  })}>
+                  Profile
+                </Link>
+
+                <UserAccountNav
+                  name={
+                    user.name
+                  }
+                  email={user.email ?? ''}
+                  imageUrl={user.imageUrl ?? ''}
+                />
+              </>
+            )}
+          </div>
         </div>
-        
-    );
+      </MaxWidthWrapper2>
+    </nav>
+  )
 }
 
-export default NavBar;
+export default NavBar

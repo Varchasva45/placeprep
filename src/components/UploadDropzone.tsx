@@ -101,7 +101,7 @@ const UploadDropzone = ({isSubscribed}: UploadDropzoneProps) => {
             {
                 ({ getRootProps, getInputProps, acceptedFiles}) => (
                     <div {...getRootProps()} className='border h-64 m-4 border-dashed border-gray-300 rounded-lg '>
-                        <div className={`flex items-center justify-center h-full w-full transition hover:bg-zinc-100 ${isUploading ? 'bg-zinc-100': 'bg-zinc-50'}`}>
+                        <div className={`flex items-center justify-center h-full w-full transition hover:bg-zinc-200 ${isUploading ? 'bg-zinc-200': 'bg-zinc-100'}`}>
                             <label
                                 htmlFor='dropzone-file'
                                 className='flex flex-col items-center justify-center w-full h-full rounded-lg cursor-pointer'

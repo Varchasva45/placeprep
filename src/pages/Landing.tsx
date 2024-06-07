@@ -1,5 +1,4 @@
 import { useRecoilValue } from "recoil";
-import NavBar from "../components/NavBar";
 import userState from "../recoil/atoms/user";
 import { useEffect } from "react";
 
@@ -14,7 +13,6 @@ const Landing = () => {
 
     return (
         <div>
-            <NavBar />
         </div>
     );
 }

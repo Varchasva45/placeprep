@@ -47,9 +47,6 @@ const PdfChatPage = () => {
 
     return (
         <>
-            <div className="shadow-lg border-b border-zinc-300 h-[3.5rem]">
-
-            </div>
             <div className='flex-1 justify-between flex flex-col h-[calc(100vh-3.5rem)] bg-zinc-100 max-h-screen'>
                 <div className='mx-auto w-full max-w-8xl grow lg:flex xl:px-2 max-h-full'>
 

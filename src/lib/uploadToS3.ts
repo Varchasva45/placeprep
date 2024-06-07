@@ -1,9 +1,9 @@
 import { S3 } from "@aws-sdk/client-s3";
 
-const accessKeyId = import.meta.env.VITE_AWS_ACCESS_KEY_ID;
-const secretAccessKey = import.meta.env.VITE_AWS_SECRET_ACCESS_KEY;
-const region = import.meta.env.VITE_AWS_REGION;
-const bucketName = import.meta.env.VITE_AWS_BUCKET_NAME;
+const accessKeyId = 'AKIAW3MEFTOVP3YWAFQ4';
+const secretAccessKey = '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';
+const region = 'ap-south-1';
+const bucketName = 'placeprep';
 
 const s3 = new S3({
   region: region,

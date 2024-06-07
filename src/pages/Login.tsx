@@ -10,7 +10,6 @@ import authState from "../recoil/atoms/auth";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
-import NavBar from "../components/NavBar";
 
 const Login = () => {
 
@@ -107,72 +106,71 @@ const Login = () => {
     };
 
   return (
-      <div className="bg-white flex flex-col h-screen">
-      <NavBar />
-      <div className="grid grid-cols-1 md:grid-cols-2 h-screen w-full">
-        <div className="bg-gray-900 flex flex-col justify-center items-center">
-          <motion.h1
-          className="text-white text-4xl font-bold mb-4"
-          initial="hidden"
-          animate="visible"
-          variants={textVariant}
-          transition={{
-            default: { duration: 2, ease: "easeInOut" },
-            fill: { duration: 2, ease: [1, 0, 0.8, 1] }
-          }}
-          >
-          Welcome to PlacePrep
-          </motion.h1>
-          <p className="text-gray-400 text-lg mb-8">Sign up or log in to get started.</p>
-          <div className="flex gap-2">
-            <Button className="text-white border-white border-2 px-4 py-2 rounded-lg hover:bg-white hover:text-gray-900 flex items-center mb-4" onClick={handleSignupWithGoogle}>
-              <FaGoogle className="mr-2 h-5 w-5" />
-              Login with Google
-            </Button>
-            <Button className="text-white border-white border-2 px-4 py-2 rounded-lg hover:bg-white hover:text-gray-900 flex items-center mb-4" onClick={handleSignUpWithGithub}>
-              <FaGithub className="mr-2 h-5 w-5" />
-              Login with Github
-            </Button>
+      <div className="bg-white flex flex-col h-[calc(100vh-3.5rem)]">
+        <div className="grid grid-cols-1 md:grid-cols-2 h-full w-full">
+          <div className="bg-gray-900 flex flex-col justify-center items-center">
+            <motion.h1
+            className="text-white text-4xl font-bold mb-4"
+            initial="hidden"
+            animate="visible"
+            variants={textVariant}
+            transition={{
+              default: { duration: 2, ease: "easeInOut" },
+              fill: { duration: 2, ease: [1, 0, 0.8, 1] }
+            }}
+            >
+            Welcome to PlacePrep
+            </motion.h1>
+            <p className="text-gray-400 text-lg mb-8">Sign up or log in to get started.</p>
+            <div className="flex gap-2">
+              <Button className="text-white border-white border-2 px-4 py-2 rounded-lg hover:bg-white hover:text-gray-900 flex items-center mb-4" onClick={handleSignupWithGoogle}>
+                <FaGoogle className="mr-2 h-5 w-5" />
+                Login with Google
+              </Button>
+              <Button className="text-white border-white border-2 px-4 py-2 rounded-lg hover:bg-white hover:text-gray-900 flex items-center mb-4" onClick={handleSignUpWithGithub}>
+                <FaGithub className="mr-2 h-5 w-5" />
+                Login with Github
+              </Button>
+            </div>
+            
           </div>
-          
-        </div>
-        <div className="bg-white flex flex-col justify-center items-center">
-          <motion.div className="w-full max-w-md bg-white shadow-xl rounded-lg p-8"
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{
-            duration: 0.8,
-            delay: 0.3,
-            ease: [0, 0.71, 0.2, 1.01]
-          }}
-          >
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold">Log In</h2>
-              <p className="text-gray-600">Enter your details to login to your account</p>
-            </div>
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="email" className="block text-gray-600">Email</label>
-                <input id="email" name="email" type="email" placeholder="Enter your email" className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          <div className="bg-zinc-100 flex flex-col justify-center items-center">
+            <motion.div className="w-full max-w-md bg-white shadow-xl rounded-lg p-8"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 0.8,
+              delay: 0.3,
+              ease: [0, 0.71, 0.2, 1.01]
+            }}
+            >
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold">Log In</h2>
+                <p className="text-gray-600">Enter your details to login to your account</p>
               </div>
-              <div className="space-y-2">
-                <label htmlFor="password" className="block text-gray-600">Password</label>
-                <div className="relative">
-                  <input id="password" name="password" type={showPassword ? "text" : "password"} placeholder="Enter your password" className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
-                  <button type="button" className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500" onClick={() => setShowPassword(!showPassword)}>
-                    {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
-                  </button>
+              <form onSubmit={handleFormSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <label htmlFor="email" className="block text-gray-600">Email</label>
+                  <input id="email" name="email" type="email" placeholder="Enter your email" className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
                 </div>
+                <div className="space-y-2">
+                  <label htmlFor="password" className="block text-gray-600">Password</label>
+                  <div className="relative">
+                    <input id="password" name="password" type={showPassword ? "text" : "password"} placeholder="Enter your password" className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+                    <button type="button" className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500" onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                    </button>
+                  </div>
+                </div>
+                <Button type="submit" className="w-full py-3 bg-black text-white rounded-lg font-semibold hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Login</Button>
+              </form>
+              <div className="mt-4 text-center text-sm">
+                Don't have an account? 
+                <Link to={'/signup'} className="font-medium underline text-black hover:text-neutral-700 pl-2">Signup</Link>
               </div>
-              <Button type="submit" className="w-full py-3 bg-black text-white rounded-lg font-semibold hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Login</Button>
-            </form>
-            <div className="mt-4 text-center text-sm">
-              Don't have an account? 
-              <Link to={'/signup'} className="font-medium underline text-black hover:text-neutral-700 pl-2">Signup</Link>
-            </div>
-          </motion.div>
+            </motion.div>
+          </div>
         </div>
-      </div>
       </div>
     );
 }
