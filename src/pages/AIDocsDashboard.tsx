@@ -185,7 +185,7 @@ const AIDocsDashboard = () => {
                             <p>Let's upload your first PDF</p>
                         </div>
                     )
-                )};
+                )}
             </main>
         </div>
         

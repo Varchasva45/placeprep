@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { classNameMerge } from "../lib/tailwindMerge";
+import { cn } from "../lib/utils";
+
 
 const MaxWidthWrapper2 = ({
     className,
@@ -9,7 +10,7 @@ const MaxWidthWrapper2 = ({
     children: ReactNode
 }) => {
     return (
-        <div className={classNameMerge('mx-auto w-full max-w-screen-2xl px-2.5 md:px-20', className)} >
+        <div className={cn('mx-auto w-full max-w-screen-2xl px-2.5 md:px-20', className)} >
             {children}
         </div>
     );

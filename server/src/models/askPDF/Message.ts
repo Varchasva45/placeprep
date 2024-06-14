@@ -3,8 +3,8 @@ import mongoose, { Document, Model, ObjectId, Schema } from "mongoose";
 interface Message extends Document {
     text: string;
     isUserMessage: boolean;
-    file: ObjectId;
-    user: ObjectId;
+    fileId: ObjectId;
+    userId: ObjectId;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -19,12 +19,12 @@ const messageSchema = new Schema<Message>({
         type: Boolean,
         required: true
     },
-    file: {
+    fileId: {
         type: Schema.Types.ObjectId,
         ref: "File",
         required: true
     },
-    user: {
+    userId: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true

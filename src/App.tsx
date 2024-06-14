@@ -15,10 +15,13 @@ import PdfChatPage from './pages/PdfChatPage';
 import LayoutWithAIDocsNavbar from './components/LayoutWithAIDocsNavbar';
 import LayoutWithNavbar from './components/LayoutWithNavbar';
 import Pricing from './pages/Pricing';
+import Test from './components/Test';
+import Profile from './pages/Profile';
 
 const App = () => {
+
   return (
-    <div className='light bg-light'>
+    <div className='light h-full w-full'>
       <Toaster />
       <Router>
         <Routes>
@@ -27,6 +30,8 @@ const App = () => {
             <Route path='/login' element={<Login />} />
             <Route path='/signup' element={<Signup />} />
             <Route path='/pricing' element={<Pricing />} />
+            <Route path='/u/:userid' element={<Profile />} />
+            <Route path='/explore' element={<AIDocsLanding />}  />
           </Route>
 
           <Route path='/problems' element={<Landing />} />
@@ -35,7 +40,6 @@ const App = () => {
           <Route path='/playground' element={<Playground />} />
 
           <Route element={<LayoutWithAIDocsNavbar />} >
-            <Route path='/explore' element={<AIDocsLanding />}  />
             <Route path='/dashboard' element={<AuthenticatedRoute><AIDocsDashboard/></AuthenticatedRoute>} />
             <Route path='/dashboard/:pdfId' element={<AuthenticatedRoute><PdfChatPage /></AuthenticatedRoute>} />
           </Route>
@@ -44,6 +48,7 @@ const App = () => {
           <Route path='/community' element={<Landing />} />
           <Route path='/add-problems' element={<AddProblems />} />
           <Route path='/all-problems' element={<AllProblems />} />
+          <Route  path='/test' element={<Test></Test>}/>
         </Routes>
       </Router>
     </div>

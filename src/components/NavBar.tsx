@@ -17,7 +17,7 @@ return (
     <nav className='sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 opacity-95 bg-white/75 backdrop-blur-xl transition-all'>
       <MaxWidthWrapper2>
         <div className='flex h-14 items-center justify-between border-b border-zinc-200'>
-          <div className='flex space-x-12 mr-7'>
+          <div className='flex space-x-12 mr-10'>
               <div className='flex items-center'>
                   <Link
                   to='/'
@@ -26,7 +26,7 @@ return (
                   </Link>
               </div>
 
-              <div className='hidden lg:flex space-x-3'>
+              <div className='hidden lg:flex space-x-1'>
                 <Link
                     to='/problems'
                     className={buttonVariants({

@@ -1,8 +1,9 @@
-import { TooltipContent, TooltipTrigger } from "@radix-ui/react-tooltip";
 import MaxWidthWrapper from "../components/MaxWidthWrapper";
 import { 
     Tooltip,
-    TooltipProvider
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger
 } from "../components/ui/tooltip";
 import { cn } from "../lib/utils";
 import { ArrowRight, Check, HelpCircle, Minus } from "lucide-react";
@@ -106,12 +107,12 @@ const Pricing = () => {
             <div className='mb-10 flex flex-col items-center justify-center w-full'>
                 <h1 className={'text-5xl sm:text-6xl font-bold text-center'}>Pricing</h1>
                 <p className='mt-5 text-gray-600 sm:text-lg text-center w-full font-semibold'>
-                    Wether you are just trying out the platform or you need more, we have got you covered.
+                    Wether you are just trying out the platform or you need more, we have got you covered<span className='text-blue-500'>.</span>
                 </p>
             </div>
 
             
-            <div className='pt-6 grid grid-cols-1 gap-10 lg:grid-cols-2'>
+            <div className='pt-6 grid grid-cols-1 gap-10 lg:grid-cols-2 w-[75%] mx-auto'>
                 <TooltipProvider>
                     {pricingItems.map(({ plan, tagline, quota, features }) => {
                         const price = PLANS.find((p) => p.slug === plan.toLowerCase())?.price.amount || 0

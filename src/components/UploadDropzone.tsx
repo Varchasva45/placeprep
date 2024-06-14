@@ -8,6 +8,7 @@ import { useRecoilValue } from 'recoil';
 import userState from '../recoil/atoms/user';
 import axios from 'axios';
 import authState from '../recoil/atoms/auth';
+// import { vectorizePDF } from '../lib/vectorizePDF';
 
 type UploadDropzoneProps = {
     isSubscribed: boolean;
@@ -39,12 +40,14 @@ const UploadDropzone = ({isSubscribed}: UploadDropzoneProps) => {
     const handleOnDrop = async (acceptedFiles: any) => {
         setIsUploading(true);
 
+        // check if the file is a pdf 
         if(acceptedFiles.length === 0 || acceptedFiles[0].type !== 'application/pdf') {
             toast.error('Only PDF files are allowed');
             setIsUploading(false);
             return;
         }
 
+        // check if the file size in the allowed limit
         if(isSubscribed) {  
             if(acceptedFiles[0].size > 16 * 1024 * 1024) {
                 toast.error('Pro Plan allows upto 16 MB file size.');
@@ -71,6 +74,13 @@ const UploadDropzone = ({isSubscribed}: UploadDropzoneProps) => {
                 key: data.file_key,
                 owner: user.id
             }
+            
+            // dont wait for the response, create the file and redirect to the dashboard
+            axios.post('http://localhost:3000/askPdf/vectorize-pdf', {fileUrl: url, fileKey: data.file_key}, {
+                headers: {
+                    Authorization: `Bearer ${auth.token}`
+                }
+            });
 
             const response = await axios.post('http://localhost:3000/askPdf/createFile', newFile,  {
                 headers: {
@@ -84,7 +94,7 @@ const UploadDropzone = ({isSubscribed}: UploadDropzoneProps) => {
                 toast.error('Failed to upload file');
             }
         } catch (err: any) {
-            console.log(err);
+            toast.error('Failed to upload file');
         }
 
         await new Promise((resolve) => setTimeout(resolve, 1500));

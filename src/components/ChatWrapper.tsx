@@ -3,9 +3,14 @@ import { ChevronLeft, Loader2, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ChatInput from "./ChatInput";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { buttonVariants } from "./ui/button";
 import { plans } from "../constants/plans";
+import { useQuery } from "react-query";
+import { useRecoilValue } from "recoil";
+import authState from "../recoil/atoms/auth";
+import ChatContextProvider from "./ChatContext";
+import Messages from "./Messages";
 
 type ChatWrapperProps = {
     isSubscribed: boolean;
@@ -14,32 +19,28 @@ type ChatWrapperProps = {
 
 const ChatWrapper = ({ isSubscribed, fileId } : ChatWrapperProps) => {
 
-    const [fileStatus, setFileStatus] = useState<string>('Success');
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const auth = useRecoilValue(authState);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const fetchFileStatus = async () => {
-        try {
-            const response = await axios.get(`http://localhost:3000/askPdf/files/fileStatus/${fileId}`);
-            if(!response.data.status) {
-                setFileStatus('Failed');
-                setIsLoading(true)
+    const fetchData = async () => {
+        const response = await axios.get(`http://localhost:3000/askPdf/files/fileStatus/${fileId}`, {
+            headers: {
+                Authorization: `Bearer ${auth.token}`
             }
+        });
 
-            if(response.data.status === 'Pending') {
-                setIsLoading(true);
-            } else if(response.data.status === 'Failed' || response.data.status === 'Success') {
-                setIsLoading(false);
-            }
-
-            setFileStatus(response.data.status);
-        } catch(err) {
-            toast.error('Failed to fetch file status');
-        }
+        return response.data.status;
     }
+  
+    const {data} = useQuery('data', fetchData,
+        {refetchInterval: (data) => data === 'Success' || data === 'Failed' ? false : 500}
+    );
 
     useEffect(() => {
-        // fetchFileStatus();
-    }, []);
+        if (data === 'Success' || data === 'Failed') {
+            setIsLoading(false);
+        }
+    }, [data]);
 
     if (isLoading) {
         return (
@@ -61,7 +62,7 @@ const ChatWrapper = ({ isSubscribed, fileId } : ChatWrapperProps) => {
         );
     }
 
-    if (fileStatus === 'Pending') {
+    if (data === 'Pending') {
         return (
             <div className='relative min-h-full bg-zinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2'>
                 <div className='flex-1 flex justify-center items-center flex-col mb-28'>
@@ -81,7 +82,7 @@ const ChatWrapper = ({ isSubscribed, fileId } : ChatWrapperProps) => {
         );
     }
     
-    if (fileStatus === 'Failed') {
+    if (data === 'Failed') {
         return (
             <div className='relative min-h-full bg-zinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2'>
                 <div className='flex-1 flex justify-center items-center flex-col mb-28'>
@@ -121,13 +122,15 @@ const ChatWrapper = ({ isSubscribed, fileId } : ChatWrapperProps) => {
     }
 
     return (
-        <div className='relative min-h-full bg-zinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2'>
-            <div className='flex-1 justify-between flex flex-col mb-28'>
-                
+        <ChatContextProvider fileId={fileId!}>
+            <div className='relative min-h-full bg-zinc-50 flex divide-y divide-zinc-200 flex-col justify-between gap-2'>
+                <div className='flex-1 justify-between flex flex-col mb-28'>
+                    <Messages fileId={fileId!} />
+                </div>
+        
+                <ChatInput isDisabled={false}/>
             </div>
-    
-            <ChatInput isDisabled={false} />
-        </div>
+        </ChatContextProvider>
     );
 };
 

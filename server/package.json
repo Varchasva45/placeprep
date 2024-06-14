@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@headlessui/react": "^2.0.4",
+    "@langchain/openai": "^0.1.2",
     "@types/express": "^4.17.21",
     "@types/recoil": "^0.0.9",
     "axios": "^1.7.2",
@@ -29,8 +30,9 @@
     "zod": "^3.23.8"
   },
   "scripts": {
-    "dev": "node dist/index.js",
-    "build": "tsc"
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dev": "yarn build && yarn run start"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

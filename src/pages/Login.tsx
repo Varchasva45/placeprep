@@ -136,13 +136,13 @@ const Login = () => {
           </div>
           <div className="bg-zinc-100 flex flex-col justify-center items-center">
             <motion.div className="w-full max-w-md bg-white shadow-xl rounded-lg p-8"
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{
-              duration: 0.8,
-              delay: 0.3,
-              ease: [0, 0.71, 0.2, 1.01]
-            }}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.3,
+                ease: [0, 0.71, 0.2, 1.01]
+              }}
             >
               <div className="mb-6">
                 <h2 className="text-xl font-semibold">Log In</h2>
