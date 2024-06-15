@@ -8,20 +8,25 @@ interface CodeEditorWindowProps {
   theme: any;
 }
 
-const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({ onChange, language, code, theme }) => {
-    const [value, setValue] = useState<string>(code || "");
+const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
+  onChange,
+  language,
+  code,
+  theme,
+}) => {
+  const [value, setValue] = useState<string>(code || "");
 
-    const handleEditorChange = (value: string | undefined) => {
-      if (value !== undefined) {
-        setValue(value);
-        onChange("code", value);
-      }   
-    };
-  
+  const handleEditorChange = (value: string | undefined) => {
+    if (value !== undefined) {
+      setValue(value);
+      onChange("code", value);
+    }
+  };
+
   return (
     <div className="overlay overflow-hidden w-full h-full">
       <Editor
-        height='88vh'
+        height="88vh"
         width={`100%`}
         language={language || "javascript"}
         value={code}

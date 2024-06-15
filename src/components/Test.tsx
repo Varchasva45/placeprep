@@ -1,27 +1,25 @@
-import { useRef, useState } from 'react'
-import { useEffect } from 'react'
+import { useRef, useState } from "react";
+import { useEffect } from "react";
 
 export default function Test() {
-
-  const [name, setName] = useState('')
-  const prevName = useRef('');
+  const [name, setName] = useState("");
+  const prevName = useRef("");
   let ppname;
 
   useEffect(() => {
     prevName.current = name;
     ppname = name;
-    console.log('prevName', prevName.current)
-    console.log('changing name', name);
+    console.log("prevName", prevName.current);
+    console.log("changing name", name);
   }, [name]);
-  
+
   return (
     <main>
       {JSON.stringify(prevName.current)}
-      <input value={name} onChange={e => setName(e.target.value)} />
+      <input value={name} onChange={(e) => setName(e.target.value)} />
     </main>
-  )
+  );
 }
-
 
 // app.post('/vendor-api', async (req, res) => {
 //   const { audience_id } = req.body;
@@ -31,7 +29,7 @@ export default function Test() {
 //   const data = await response.json();
 
 //   const customers = data.audience;
-  
+
 //   // sending message logic
 //   customers.forEach(async (customer) => {
 //     console.log(`Hi ${customer.name}, here is your 10 % discount on next message`);

@@ -1,9 +1,9 @@
 import { S3 } from "@aws-sdk/client-s3";
 
-const accessKeyId = '';
-const secretAccessKey = '';
-const region = '';
-const bucketName = '';
+const accessKeyId = "";
+const secretAccessKey = "";
+const region = "";
+const bucketName = "";
 
 const s3 = new S3({
   region: region,
@@ -13,9 +13,12 @@ const s3 = new S3({
   },
 });
 
-export async function uploadToS3(file: File): Promise<{ file_key: string; file_name: string }> {
+export async function uploadToS3(
+  file: File,
+): Promise<{ file_key: string; file_name: string }> {
   try {
-    const file_key = "uploads/" + Date.now().toString() + file.name.replace(" ", "-");
+    const file_key =
+      "uploads/" + Date.now().toString() + file.name.replace(" ", "-");
 
     const params = {
       Bucket: bucketName,
@@ -23,7 +26,7 @@ export async function uploadToS3(file: File): Promise<{ file_key: string; file_n
       Body: file,
     };
 
-    await s3.putObject(params)
+    await s3.putObject(params);
     return {
       file_key,
       file_name: file.name,

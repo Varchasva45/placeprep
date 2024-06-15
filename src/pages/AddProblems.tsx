@@ -1,12 +1,11 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useState } from "react";
+import axios from "axios";
 
 const AddProblem = () => {
-
-  const [title, setTitle] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [difficulty, setDifficulty] = useState<string>('Easy');
-  const [tags, setTags] = useState<string>('');
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [difficulty, setDifficulty] = useState<string>("Easy");
+  const [tags, setTags] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -14,16 +13,19 @@ const AddProblem = () => {
       title,
       description,
       difficulty,
-      tags: tags.split(',').map(tag => tag.trim()),
+      tags: tags.split(",").map((tag) => tag.trim()),
     };
-    
+
     console.log(newProblem);
     try {
-      await axios.post('http://localhost:3000/problem/api/problems', newProblem);
-      alert('Problem created successfully!');
+      await axios.post(
+        "http://localhost:3000/problem/api/problems",
+        newProblem,
+      );
+      alert("Problem created successfully!");
     } catch (error) {
-      console.error('Error creating problem:', error);
-      alert('Failed to create problem');
+      console.error("Error creating problem:", error);
+      alert("Failed to create problem");
     }
   };
 
@@ -42,7 +44,9 @@ const AddProblem = () => {
           />
         </div> */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Title</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Title
+          </label>
           <input
             type="text"
             value={title}
@@ -52,7 +56,9 @@ const AddProblem = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Description</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Description
+          </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -61,7 +67,9 @@ const AddProblem = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Difficulty</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Difficulty
+          </label>
           <select
             value={difficulty}
             onChange={(e) => setDifficulty(e.target.value)}
@@ -74,7 +82,9 @@ const AddProblem = () => {
           </select>
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Tags (comma separated)</label>
+          <label className="block text-sm font-medium text-gray-700">
+            Tags (comma separated)
+          </label>
           <input
             type="text"
             value={tags}

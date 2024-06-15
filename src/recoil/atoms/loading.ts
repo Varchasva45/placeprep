@@ -1,11 +1,10 @@
+import { atom } from "recoil";
 
-import { atom } from 'recoil';
-
-const loadingState = atom({   
-    key: 'loadingState',
-    default: {
-        loading: false,
-    },
+const loadingState = atom({
+  key: "loadingState",
+  default: {
+    loading: false,
+  },
 });
 
 export default loadingState;
