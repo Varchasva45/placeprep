@@ -5,12 +5,13 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaBuilding, FaGithub, FaLinkedin } from "react-icons/fa";
 import { LuClipboardList } from "react-icons/lu";
 import { GoChecklist } from "react-icons/go";
-import { ChevronRight, Eye, Ghost, Medal } from "lucide-react";
+import { ChevronRight, Eye, Ghost, MailIcon, Medal } from "lucide-react";
 import ProblemHeatMap from "../components/HeatMap";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import SubmissionsFullScreen from "../components/SubmissionsFullScreen";
-import EditProfilePage from "../components/EditProfilePage";
+import PersonalInformationPage from "../components/PersonalnformationPage";
+import AccountInformationPage from "../components/AccountInformationPage";
 
 const Profile = () => {
     const user = useRecoilValue(userState);
@@ -83,19 +84,23 @@ const Profile = () => {
 
                         <div className='text-gray-600 my-5 text-md space-y-5'>
                             <h3 className='flex items-center'>
-                                <FaLocationDot className='mr-3' />
+                                <FaLocationDot className='mr-3 h-4 w-4' />
                                 Noida
                             </h3>
                             <p className='flex items-center truncate'>
-                                <FaBuilding className='mr-3' />
+                                <FaBuilding className='mr-3 h-4 w-4' />
                                 Jaypee Institute of Information Technology
                             </p>
                             <h3 className='flex items-center cursor-pointer hover:text-black'>
-                                <FaLinkedin className='mr-3' />
+                                <MailIcon className='mr-3 h-4 w-4' />
+                                varchasv45@gmail.com
+                            </h3>
+                            <h3 className='flex items-center cursor-pointer hover:text-black'>
+                                <FaLinkedin className='mr-3 h-4 w-4'/>
                                 varchasvaarora
                             </h3>
                             <h3 className='flex items-center cursor-pointer hover:text-black'>
-                                <FaGithub className='mr-3' />
+                                <FaGithub className='mr-3 h-4 w-4'/>
                                 Varchasva45
                             </h3>
                         </div>
@@ -106,11 +111,11 @@ const Profile = () => {
                             <h3 className='font-semibold text-lg'>Profile Stats</h3>
                             <div className='mt-3 space-y-5 text-gray-600 text-md'>
                                 <h3 className='flex items-center cursor-pointer hover:text-black'>
-                                    <Eye className='mr-3 text-blue-500 h-5 w-5' />
+                                    <Eye className='mr-3 text-blue-500 h-4 w-4' />
                                     Views <span className='pl-2 text-black'>1.4K</span>
                                 </h3>
                                 <h3 className='flex items-center cursor-pointer hover:text-black'>
-                                    <Medal className='mr-3 h-5 w-5' />
+                                    <Medal className='mr-3 h-4 w-4' />
                                     Respect <span className='pl-2 text-black'>8</span>
                                 </h3>
                             </div>
@@ -133,6 +138,10 @@ const Profile = () => {
                                     <span className='mr-3 flex items-center bg-gray-200 px-2 rounded-2xl'>My SQL</span>
                                     <span className='mx-2 text-black'>310 <span className='text-gray-600'>problems solved</span></span>
                                 </h3>
+                                <h3 className='flex items-center cursor-pointer hover:text-black justify-between'>
+                                    <span className='mr-3 flex items-center bg-gray-200 px-2 rounded-2xl'>Pyhton</span>
+                                    <span className='mx-2 text-black'>110 <span className='text-gray-600'>problems solved</span></span>
+                                </h3>
                             </div>
                         </div>
                     </div>
@@ -141,9 +150,14 @@ const Profile = () => {
                 {/* Right Cards */}
                 <div className='flex-1 mt-4 lg:mt-0 lg:ml-4 items-center justify-center space-y-4'>
                     {isEditProfilePageVisible && 
-                        <div className='shadow-lg rounded-lg bg-white'>
-                            <EditProfilePage setIsEditProfilePageVisible={setIsEditProfilePageVisible} />
-                        </div>
+                        <>
+                            <div className='shadow-lg rounded-lg bg-white'>
+                                <PersonalInformationPage setIsEditProfilePageVisible={setIsEditProfilePageVisible} />
+                            </div>
+                            <div className='shadow-lg rounded-lg bg-white'>
+                                <AccountInformationPage setIsEditProfilePageVisible={setIsEditProfilePageVisible} />
+                            </div>
+                        </>
                     }
 
                     {!isEditProfilePageVisible && 

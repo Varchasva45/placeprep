@@ -62,6 +62,15 @@ const AIDocsNavbar = () => {
                   Dashboard
                 </Link>
 
+                <Link
+                  to={`/u/${user.id}`}
+                  className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'sm',
+                  })}>
+                  Profile
+                </Link>
+
                 <UserAccountNav
                   name={
                     user.name

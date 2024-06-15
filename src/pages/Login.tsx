@@ -5,11 +5,12 @@ import { FaGithub, FaGoogle } from "react-icons/fa";
 import { authEndpoints } from "../services/apis";
 import axios  from "axios";
 import Cookies from "js-cookie";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import authState from "../recoil/atoms/auth";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
+import userState from "../recoil/atoms/user";
 
 const Login = () => {
 
@@ -18,10 +19,11 @@ const Login = () => {
   const [authAtom, setAuthAtom] = useRecoilState(authState);
   const setUserAtom = useSetRecoilState(authState);
   const navigate = useNavigate();
+  const user = useRecoilValue(userState);
 
   useEffect(() => {
     if(authAtom.isAuthenticated) {
-      navigate('/');
+      navigate(`/u/${user.id}`);
     }
   },  [authAtom, setAuthAtom]);
 
@@ -58,6 +60,7 @@ const Login = () => {
               setAuthAtom({ isAuthenticated: true, token });
               setUserAtom(user);
               toast.success(response.data.message);
+              navigate(`/u/${user.id}`);
           } else {
               toast.error(response.data.message);
           }
@@ -93,17 +96,21 @@ const Login = () => {
   }
 
   const textVariant = {
-      hidden: {
-          opacity: 0,
-          pathLength: 0,
-          fill: "rgba(255, 255, 255, 0)"
-        },
-        visible: {
-          opacity: 1,
-          pathLength: 1,
-          fill: "rgba(255, 255, 255, 1)"
-        }
-    };
+    hidden: {
+      opacity: 0,
+      pathLength: 0,
+      fill: "rgba(255, 255, 255, 0)"
+    },
+    visible: {
+      opacity: 1,
+      pathLength: 1,
+      fill: "rgba(255, 255, 255, 1)"
+    }
+  };
+
+  if(authAtom.isAuthenticated) {
+    return <Link to={`/u/${user.id}`} />;
+  }  
 
   return (
       <div className="bg-white flex flex-col h-[calc(100vh-3.5rem)]">

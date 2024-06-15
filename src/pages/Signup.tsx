@@ -5,7 +5,7 @@ import { FaGithub, FaGoogle } from "react-icons/fa";
 import { authEndpoints } from "../services/apis";
 import axios  from "axios";
 import Cookies from "js-cookie";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import authState from "../recoil/atoms/auth";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
@@ -14,96 +14,102 @@ import userState from "../recoil/atoms/user";
 
 const Signup = () => {
 
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-    const { signUp_API } = authEndpoints;
-    const [authAtom, setAuthAtom] = useRecoilState(authState);
-    const setUserAtom = useSetRecoilState(userState);
-    const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { signUp_API } = authEndpoints;
+  const [authAtom, setAuthAtom] = useRecoilState(authState);
+  const setUserAtom = useSetRecoilState(userState);
+  const user = useRecoilValue(userState);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-      if(authAtom.isAuthenticated) {
-        navigate('/');
+  useEffect(() => {
+    if(authAtom.isAuthenticated) {
+      navigate(`/u/${user.id}`);
+    }
+  }
+  ,  [authAtom, setAuthAtom]);
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const toastId = toast.loading('Signing up...');
+      const formData = new FormData(e.currentTarget);
+      const email = formData.get('email') as string;
+      const password = formData.get('password') as string;
+
+      if(!email || !password) {
+          toast.error('Please fill in all fields');
+          return;
       }
-    }
-    ,  [authAtom, setAuthAtom]);
 
-    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const toastId = toast.loading('Signing up...');
-        const formData = new FormData(e.currentTarget);
-        const email = formData.get('email') as string;
-        const password = formData.get('password') as string;
-
-        if(!email || !password) {
-            toast.error('Please fill in all fields');
-            return;
-        }
-
-        try {
-            const response = await axios.post(signUp_API, {
-                email,
-                password
-            });
-        
-            if(response.data.success) {
-                const { token, user } = response.data;
-                if(token) {
-                  Cookies.set('token', token);
-                }
-
-                if(user) {
-                  Cookies.set('user', JSON.stringify(user));
-                }
-
-                toast.success(response.data.message);
-                setUserAtom(user);
-                setAuthAtom({ isAuthenticated: true, token });
-            } else {
-                toast.error(response.data.message);
-            }
-        } catch (error: any) {
-            toast.error(error.response.data.message ? error.response.data.message : 'An error occurred, please try again');
-        }
-
-        toast.dismiss(toastId);
-    }
-
-    const handleSignupWithGoogle = async () => {
       try {
-        window.open(`http://localhost:3000/auth/google`, '_self');
-        if(Cookies.get('token')) {
-          toast.success('Logged in successfully');
-          setAuthAtom({ isAuthenticated: true, token: Cookies.get('token')! });
-        }
-      } catch (error) {
-        toast.error('Failed to login with Google');
-      }
-    }
+          const response = await axios.post(signUp_API, {
+              email,
+              password
+          });
+      
+          if(response.data.success) {
+              const { token, user } = response.data;
+              if(token) {
+                Cookies.set('token', token);
+              }
 
-    const handleSignUpWithGithub = async () => {
-      try {
-        window.open(`http://localhost:3000/auth/github`, '_self');
-        if(Cookies.get('token')) {
-          setAuthAtom({ isAuthenticated: true, token: Cookies.get('token')! });
-          toast.success('Logged in successfully');
-        }
-      } catch (error) {
-        toast.error('Failed to login with Github');
-      }
-    }
+              if(user) {
+                Cookies.set('user', JSON.stringify(user));
+              }
 
-    const textVariant = {
-        hidden: {
-            opacity: 0,
-            pathLength: 0,
-            fill: "rgba(255, 255, 255, 0)"
-          },
-          visible: {
-            opacity: 1,
-            pathLength: 1,
-            fill: "rgba(255, 255, 255, 1)"
+              setUserAtom(user);
+              setAuthAtom({ isAuthenticated: true, token });
+              toast.success(response.data.message);
+              navigate(`/u/${user.id}`);
+          } else {
+              toast.error(response.data.message);
           }
-      };
+      } catch (error: any) {
+          toast.error(error.response.data.message ? error.response.data.message : 'An error occurred, please try again');
+      }
+
+      toast.dismiss(toastId);
+  }
+
+  const handleSignupWithGoogle = async () => {
+    try {
+      window.open(`http://localhost:3000/auth/google`, '_self');
+      if(Cookies.get('token')) {
+        toast.success('Logged in successfully');
+        setAuthAtom({ isAuthenticated: true, token: Cookies.get('token')! });
+      }
+    } catch (error) {
+      toast.error('Failed to login with Google');
+    }
+  }
+
+  const handleSignUpWithGithub = async () => {
+    try {
+      window.open(`http://localhost:3000/auth/github`, '_self');
+      if(Cookies.get('token')) {
+        setAuthAtom({ isAuthenticated: true, token: Cookies.get('token')! });
+        toast.success('Logged in successfully');
+      }
+    } catch (error) {
+      toast.error('Failed to login with Github');
+    }
+  }
+
+  const textVariant = {
+    hidden: {
+      opacity: 0,
+      pathLength: 0,
+      fill: "rgba(255, 255, 255, 0)"
+    },
+    visible: {
+      opacity: 1,
+      pathLength: 1,
+      fill: "rgba(255, 255, 255, 1)"
+    }
+  };
+
+  if(authAtom.isAuthenticated) {
+    return <Link to={`/u/${user.id}`} />;
+  }
 
   return (
     <div className="bg-white flex flex-col h-[calc(100vh-3.5rem)]">

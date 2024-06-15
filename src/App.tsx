@@ -49,6 +49,10 @@ const App = () => {
           <Route path='/add-problems' element={<AddProblems />} />
           <Route path='/all-problems' element={<AllProblems />} />
           <Route  path='/test' element={<Test></Test>}/>
+
+          <Route element={<LayoutWithNavbar/>}>
+            <Route path='*' element={<Profile />} />
+          </Route>
         </Routes>
       </Router>
     </div>

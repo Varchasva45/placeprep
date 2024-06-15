@@ -124,7 +124,7 @@ export const googleLogin = async (req: Request, res: Response) => {
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
             res.cookie('token', token);
             res.cookie('user', JSON.stringify(userDetails));
-            res.redirect('http://localhost:5173/');
+            res.redirect(`http://localhost:5173/u/${userExists._id}`);
 
         } else {
             const newUser = await User.create({
@@ -146,7 +146,7 @@ export const googleLogin = async (req: Request, res: Response) => {
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
             res.cookie('token', token);
             res.cookie('user', JSON.stringify(userDetails));
-            res.redirect('http://localhost:5173/');
+            res.redirect(`http://localhost:5173/u/${newUser._id}`);
         }        
     } catch (error) {
         res.status(500).redirect('http://localhost:5173/login');
@@ -181,8 +181,7 @@ export const githubLogin = async (req: Request, res: Response) => {
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
             res.cookie('token', token);
             res.cookie('user', JSON.stringify(userDetails));
-            res.redirect('http://localhost:5173/');
-
+            res.redirect(`http://localhost:5173/u/${userExists._id}`);
         } else {
             const newUser = await User.create({
                 githubAccount,
@@ -203,7 +202,7 @@ export const githubLogin = async (req: Request, res: Response) => {
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
             res.cookie('token', token);
             res.cookie('user', JSON.stringify(userDetails));
-            res.redirect('http://localhost:5173/');
+            res.redirect(`http://localhost:5173/u/${newUser._id}`);
         }
     } catch (error) {
         res.redirect('http://localhost:5173/login');
