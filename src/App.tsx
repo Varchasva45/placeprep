@@ -29,7 +29,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/pricing" element={<Pricing />} />
-            <Route path="/u/:userid" element={<Profile />} />
+            <Route path="/u/:username" element={<Profile />} />
             <Route path="/explore" element={<AIDocsLanding />} />
           </Route>
 

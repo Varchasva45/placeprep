@@ -1,18 +1,23 @@
-import express from 'express';
+import express from "express";
 import { spawn } from "child_process";
-import mongoose from 'mongoose';
-import InterviewModel from '../models/interview/interview.model';
-import questionModel from '../models/interview/question.model';
+import mongoose from "mongoose";
+import InterviewModel from "../models/interview/interview.model";
+import questionModel from "../models/interview/question.model";
 
 const router = express.Router();
 
-router.post('/take-interview', async (req, res) => {
+router.post("/take-interview", async (req, res) => {
+  const { position, topic, intervieweeName } = req.body;
+  const questionsDocument = await questionModel
+    .find({ position: position, topic: topic })
+    .limit(5);
+  const questions = questionsDocument[0]?.questions.map(
+    (question: any) => question.statement,
+  );
 
-  const { position, topic, intervieweeName} = req.body;
-  const questionsDocument = await questionModel.find({position: position, topic: topic}).limit(5);
-  const questions = questionsDocument[0]?.questions.map((question: any) => question.statement);
-
-  const pythonProcess = spawn("python", ["../server/src/interview_llm/listen_and_evaluate.py"]);
+  const pythonProcess = spawn("python", [
+    "../server/src/interview_llm/listen_and_evaluate.py",
+  ]);
 
   pythonProcess.stdin.write(JSON.stringify(questions));
   pythonProcess.stdin.end();
@@ -42,18 +47,16 @@ router.post('/take-interview', async (req, res) => {
         date: new Date(),
         questions: questions,
         evaluation: evaluationData,
-        feedback: "Great candidate!"
+        feedback: "Great candidate!",
       };
-  
+
       await InterviewModel(interviewData.intervieweeId).create(interviewData);
-      res.status(200).json({ message: "Interview saved successfully!"});
-  
+      res.status(200).json({ message: "Interview saved successfully!" });
     } catch (error) {
       console.error("Error saving interview:", error);
       res.status(500).json({ message: "Failed to save interview." });
     }
   });
-
 });
 
 export { router as interviewRouter };

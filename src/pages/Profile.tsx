@@ -5,53 +5,164 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaBuilding, FaGithub, FaLinkedin } from "react-icons/fa";
 import { LuClipboardList } from "react-icons/lu";
 import { GoChecklist } from "react-icons/go";
-import { ChevronRight, Eye, Ghost, MailIcon, Medal } from "lucide-react";
+import { ChevronRight, Eye, Ghost, MailIcon, Medal, User } from "lucide-react";
 import ProblemHeatMap from "../components/HeatMap";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import SubmissionsFullScreen from "../components/SubmissionsFullScreen";
 import PersonalInformationPage from "../components/PersonalnformationPage";
 import AccountInformationPage from "../components/AccountInformationPage";
+import axios from "axios";
+import toast from "react-hot-toast";
+import authState from "../recoil/atoms/auth";
+import mongoose from "mongoose";
 
 const Profile = () => {
-  const user = useRecoilValue(userState);
+  interface IuserDetails {
+    _id: mongoose.Types.ObjectId;
+    name?: string;
+    username: string;
+    email?: string;
+    password: string;
+    imageUrl: string;
+    githubAccount?: string;
+    linkedInAccount?: string;
+    personalInformation: {
+      summary: string;
+      location: string;
+      education: string;
+      linkedInLink: string;
+      githubLink: string;
+      _id: mongoose.Types.ObjectId;
+    };
+    profileStats: {
+      views: number;
+      respect: number;
+      activeDays: { count: number; year: number }[];
+      submissionCount: { count: number; year: number }[];
+      programmingLanguages: { language: string; problemCount: number }[];
+      _id: mongoose.Types.ObjectId;
+    };
+    isSubscribed: boolean;
+    role: string;
+  }
+
+  interface IRecentACSubmission {
+    title: string;
+    time: string;
+  }
+
   const [selectedTab, setSelectedTab] = useState<string>("Recent AC");
   const [isEditProfilePageVisible, setIsEditProfilePageVisible] =
-    useState<boolean>(true);
+    useState<boolean>(false);
+  const [userDetails, setUserDetails] = useState<IuserDetails | null>(null);
+  const [recentACSubmissions, setRecentACSubmissions] = useState<
+    IRecentACSubmission[]
+  >([]);
+  const user = useRecoilValue(userState);
+  const auth = useRecoilValue(authState);
+  const submissionCount = userDetails?.profileStats.submissionCount.find(
+    (submission) => submission.year === new Date().getFullYear(),
+  )?.count;
+  const activeDaysCount = userDetails?.profileStats.activeDays.find(
+    (active) => active.year === new Date().getFullYear(),
+  )?.count;
 
-  useEffect(() => {}, []);
+  const getUserDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/users/${user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`,
+          },
+        },
+      );
+
+      if (response.data.success) {
+        setUserDetails(response.data.userDetails);
+      } else {
+        toast.error(response.data.message || "Failed to fetch user details");
+      }
+    } catch (error: any) {
+      console.log("error while fetching user details", error);
+      toast.error(
+        error.response.data.message
+          ? error.response.data.message
+          : "An error occurred, please try again",
+      );
+    }
+  };
+
+  const getRecentACSubmissions = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/users/submissions/${user.id}?result=Accepted`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`,
+          },
+        },
+      );
+
+      if (response.data.success) {
+        setRecentACSubmissions(response.data.submissions);
+      } else {
+        toast.error(
+          response.data.message || "Failed to fetch recent AC submissions",
+        );
+      }
+    } catch (error: any) {
+      console.log("error while fetching user details", error);
+      toast.error(
+        error.response.data.message
+          ? error.response.data.message
+          : "An error occurred, please try again",
+      );
+    }
+  };
+
+  if (!auth.isAuthenticated || !user.id) {
+    return <Link to="/login" />;
+  }
+
+  useEffect(() => {
+    getUserDetails();
+    getRecentACSubmissions();
+  }, []);
 
   var commitsPerDate: any = [];
 
-  function generateFakeCommitData() {
-    for (let month = 0; month < 12; month++) {
-      const numberOfDays = new Date(2023, month + 1, 0).getDate();
+  // function generateFakeCommitData() {
+  //   for (let month = 0; month < 12; month++) {
+  //     const numberOfDays = new Date(2023, month + 1, 0).getDate();
 
-      for (let day = 1; day <= numberOfDays; day++) {
-        const currentDate = new Date(2023, month, day, 5);
-        commitsPerDate.push({
-          date: currentDate.toJSON().substring(0, 10),
-          count: Math.floor(Math.random() * 100),
-        });
-      }
-    }
-  }
+  //     for (let day = 1; day <= numberOfDays; day++) {
+  //       const currentDate = new Date(2023, month, day, 5);
+  //       commitsPerDate.push({
+  //         date: currentDate.toJSON().substring(0, 10),
+  //         count: Math.floor(Math.random() * 100),
+  //       });
+  //     }
+  //   }
+  // }
 
-  generateFakeCommitData();
+  // generateFakeCommitData();
 
-  const items = [
-    { title: "Determine the Maximum Path Sum", time: "2 hours ago" },
-    { title: "Find the Longest Increasing Subsequence", time: "3 hours ago" },
-    { title: "Evaluate the Binary Tree Paths", time: "4 hours ago" },
-    { title: "Optimize Network Latency", time: "5 hours ago" },
-    { title: "Calculate the Shortest Path", time: "6 hours ago" },
-    { title: "Analyze the Stock Market Trends", time: "7 hours ago" },
-    { title: "Design a File System", time: "8 hours ago" },
-    { title: "Implement a Cache Mechanism", time: "9 hours ago" },
-    { title: "Determine the Maximum Path Sum", time: "2 hours ago" },
-    { title: "Find the Longest Increasing Subsequence", time: "3 hours ago" },
-    { title: "Evaluate the Binary Tree Paths", time: "4 hours ago" },
-  ];
+  // Sample data for recent AC submissions
+  // const items = [
+  //   { title: "Determine the Maximum Path Sum", time: "2 hours ago" },
+  //   { title: "Find the Longest Increasing Subsequence", time: "3 hours ago" },
+  //   { title: "Evaluate the Binary Tree Paths", time: "4 hours ago" },
+  //   { title: "Optimize Network Latency", time: "5 hours ago" },
+  //   { title: "Calculate the Shortest Path", time: "6 hours ago" },
+  //   { title: "Analyze the Stock Market Trends", time: "7 hours ago" },
+  //   { title: "Design a File System", time: "8 hours ago" },
+  //   { title: "Implement a Cache Mechanism", time: "9 hours ago" },
+  //   { title: "Determine the Maximum Path Sum", time: "2 hours ago" },
+  //   { title: "Find the Longest Increasing Subsequence", time: "3 hours ago" },
+  //   { title: "Evaluate the Binary Tree Paths", time: "4 hours ago" },
+  // ];
 
   return (
     <div className="mx-auto w-10/12 mt-6 mb-6 bg-gray">
@@ -60,20 +171,31 @@ const Profile = () => {
         <div className="flex-[0.4] h-full">
           <div className="bg-white p-4 rounded-lg shadow-lg">
             <div className="flex">
-              <img
-                src={user?.imageUrl}
-                alt="profile"
-                className="rounded-md"
-                loading="lazy"
-              />
+              <div>
+                {userDetails?.imageUrl ? (
+                  <img
+                    src={userDetails.imageUrl}
+                    alt="profile"
+                    className="rounded-md h-24 w-24"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="border border-gray-400 rounded-lg">
+                    <User className="h-24 w-24 text-gray-400 bg-gray-100 rounded-lg" />
+                  </div>
+                )}
+              </div>
+
               <div className="px-4 flex flex-col justify-between">
                 <div>
-                  <h1 className="font-semibold text-xl">{user?.name}</h1>
-                  <p className="text-gray-600 text-sm">{user?.email}</p>
+                  <h1 className="font-semibold text-xl">{userDetails?.name}</h1>
+                  <p className="text-gray-600 text-sm">
+                    {userDetails?.username}
+                  </p>
                 </div>
                 <Link
                   to={"/pricing"}
-                  className="text-md text-yellow-500 flex items-center cursor-pointer hover:text-yellow-600"
+                  className="text-md text-yellow-600 flex items-center cursor-pointer hover:text-yellow-600"
                 >
                   {user.isSubscribed ? "Premium Plan" : "Regular Plan"}
                   <span className="flex pt-[0.2rem]">
@@ -83,95 +205,113 @@ const Profile = () => {
               </div>
             </div>
 
-            <p className="text-gray-600 font-semibold my-5 text-md">
-              Pre-final Year Engineering Student
+            <p className="text-gray-600 my-5 text-md">
+              {userDetails?.personalInformation.summary}
             </p>
 
             <Button
               onClick={() => setIsEditProfilePageVisible((prev) => !prev)}
               className="w-full bg-green-100 text-green-400 hover:bg-green-200"
             >
-              Edit Profile
+              {isEditProfilePageVisible ? "Submissions" : "Edit Profile"}
             </Button>
 
             <div className="text-gray-600 my-5 text-md space-y-5">
-              <h3 className="flex items-center">
-                <FaLocationDot className="mr-3 h-4 w-4" />
-                Noida
-              </h3>
-              <p className="flex items-center truncate">
-                <FaBuilding className="mr-3 h-4 w-4" />
-                Jaypee Institute of Information Technology
-              </p>
-              <h3 className="flex items-center cursor-pointer hover:text-black">
-                <MailIcon className="mr-3 h-4 w-4" />
-                varchasv45@gmail.com
-              </h3>
-              <h3 className="flex items-center cursor-pointer hover:text-black">
-                <FaLinkedin className="mr-3 h-4 w-4" />
-                varchasvaarora
-              </h3>
-              <h3 className="flex items-center cursor-pointer hover:text-black">
-                <FaGithub className="mr-3 h-4 w-4" />
-                Varchasva45
-              </h3>
-            </div>
-
-            <div className="h-[0.05rem] bg-gray-300"></div>
-
-            <div className="my-5">
-              <h3 className="font-semibold text-lg">Profile Stats</h3>
-              <div className="mt-3 space-y-5 text-gray-600 text-md">
-                <h3 className="flex items-center cursor-pointer hover:text-black">
-                  <Eye className="mr-3 text-blue-500 h-4 w-4" />
-                  Views <span className="pl-2 text-black">1.4K</span>
+              {userDetails && userDetails?.personalInformation.location && (
+                <h3 className="flex items-center">
+                  <FaLocationDot className="mr-3 h-4 w-4" />
+                  {userDetails?.personalInformation.location}
                 </h3>
+              )}
+
+              {userDetails && userDetails?.personalInformation.education && (
+                <p className="flex items-center truncate">
+                  <FaBuilding className="mr-3 h-4 w-4" />
+                  {userDetails?.personalInformation.education}
+                </p>
+              )}
+
+              {userDetails && userDetails?.email && (
                 <h3 className="flex items-center cursor-pointer hover:text-black">
-                  <Medal className="mr-3 h-4 w-4" />
-                  Respect <span className="pl-2 text-black">8</span>
+                  <MailIcon className="mr-3 h-4 w-4" />
+                  {userDetails?.email}
                 </h3>
-              </div>
+              )}
+
+              {userDetails && userDetails?.personalInformation.linkedInLink && (
+                <Link
+                  to={userDetails.personalInformation.linkedInLink}
+                  target="_blank"
+                  className="flex items-center cursor-pointer hover:text-black"
+                >
+                  <FaLinkedin className="mr-3 h-4 w-4" />
+                  {userDetails.personalInformation.linkedInLink.split("/")[4]}
+                </Link>
+              )}
+
+              {userDetails && userDetails?.personalInformation.githubLink && (
+                <Link
+                  to={userDetails.personalInformation.githubLink}
+                  target="_blank"
+                  className="flex items-center cursor-pointer hover:text-black"
+                >
+                  <FaGithub className="mr-3 h-4 w-4" />
+                  {userDetails.personalInformation.githubLink.split("/")[3]}
+                </Link>
+              )}
             </div>
 
             <div className="h-[0.05rem] bg-gray-300"></div>
 
             <div className="mt-5">
-              <h3 className="font-semibold text-lg">Languages</h3>
-              <div className="mt-5 mb-3 space-y-5 text-gray-600 text-md">
-                <h3 className="flex items-center cursor-pointer hover:text-black justify-between">
-                  <span className="mr-3 flex items-center bg-gray-200 px-2 rounded-2xl">
-                    C++
-                  </span>
-                  <span className="mx-2 text-black">
-                    264 <span className="text-gray-600">problems solved</span>
-                  </span>
-                </h3>
-                <h3 className="flex items-center cursor-pointer hover:text-black justify-between">
-                  <span className="mr-3 flex items-center bg-gray-200 px-2 rounded-2xl">
-                    Java
-                  </span>
-                  <span className="mx-2 text-black">
-                    119 <span className="text-gray-600">problems solved</span>
+              <h3 className="font-semibold text-lg">Profile Stats</h3>
+              <div className="mt-3 space-y-4 text-gray-600 text-md">
+                <h3 className="flex items-center cursor-pointer hover:text-black">
+                  <Eye className="mr-3 h-4 w-4" />
+                  Views{" "}
+                  <span className="pl-2 text-black font-semibold">
+                    {userDetails?.profileStats.views}
                   </span>
                 </h3>
-                <h3 className="flex items-center cursor-pointer hover:text-black justify-between">
-                  <span className="mr-3 flex items-center bg-gray-200 px-2 rounded-2xl">
-                    My SQL
-                  </span>
-                  <span className="mx-2 text-black">
-                    310 <span className="text-gray-600">problems solved</span>
-                  </span>
-                </h3>
-                <h3 className="flex items-center cursor-pointer hover:text-black justify-between">
-                  <span className="mr-3 flex items-center bg-gray-200 px-2 rounded-2xl">
-                    Pyhton
-                  </span>
-                  <span className="mx-2 text-black">
-                    110 <span className="text-gray-600">problems solved</span>
+                <h3 className="flex items-center cursor-pointer hover:text-black">
+                  <Medal className="mr-3 h-4 w-4" />
+                  Respect{" "}
+                  <span className="pl-2 text-black font-semibold">
+                    {userDetails?.profileStats.respect}
                   </span>
                 </h3>
               </div>
             </div>
+
+            {userDetails &&
+              userDetails?.profileStats.programmingLanguages.length > 0 && (
+                <>
+                  <div className="h-[0.05rem] mt-5 bg-gray-300"></div>
+                  <div className="mt-5">
+                    <h3 className="font-semibold text-lg">Languages</h3>
+                    <div className="mt-5 mb-3 space-y-5 text-gray-600 text-md">
+                      {userDetails?.profileStats?.programmingLanguages?.map(
+                        (lang, ind) => (
+                          <h3
+                            key={ind}
+                            className="flex items-center cursor-pointer hover:text-black justify-between"
+                          >
+                            <span className="mr-3 flex items-center bg-gray-200 px-2 rounded-2xl">
+                              {lang.language}
+                            </span>
+                            <span className="mx-2 text-gray-600">
+                              <span className="text-black font-semibold">
+                                {lang.problemCount}
+                              </span>{" "}
+                              problems solved
+                            </span>
+                          </h3>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
           </div>
         </div>
 
@@ -182,11 +322,16 @@ const Profile = () => {
               <div className="shadow-lg rounded-lg bg-white">
                 <PersonalInformationPage
                   setIsEditProfilePageVisible={setIsEditProfilePageVisible}
+                  userDetails={userDetails}
+                  setUserDetails={setUserDetails}
+                  userId={user.id!}
                 />
               </div>
               <div className="shadow-lg rounded-lg bg-white">
                 <AccountInformationPage
                   setIsEditProfilePageVisible={setIsEditProfilePageVisible}
+                  userDetails={userDetails}
+                  setUserDetails={setUserDetails}
                 />
               </div>
             </>
@@ -196,17 +341,19 @@ const Profile = () => {
             <>
               {/* HeatMap */}
               <div className="p-4 shadow-lg rounded-lg bg-white">
-                <div className="flex items-center justify-between text-sm text-gray-600">
+                <div className="px-2 mb-1 flex items-center justify-between text-sm text-gray-600">
                   <h1>
                     <span className="text-lg font-semibold text-black">
-                      1,348{" "}
+                      {submissionCount}{" "}
                     </span>{" "}
-                    Submissions in 2024
+                    Submissions in {new Date().getFullYear()}
                   </h1>
                   <h1>
                     {" "}
                     Total Active Days:{" "}
-                    <span className="font-semibold text-black">29</span>
+                    <span className="font-semibold text-black">
+                      {activeDaysCount}
+                    </span>
                   </h1>
                 </div>
                 <div className="w-full flex items-center justify-center">
@@ -239,16 +386,16 @@ const Profile = () => {
 
                 <div>
                   {selectedTab === "Recent AC" ? (
-                    items.length > 0 ? (
+                    recentACSubmissions && recentACSubmissions.length > 0 ? (
                       <div className="pt-4">
-                        {items.map((item, ind) => (
+                        {recentACSubmissions.map((submission, ind) => (
                           <div
                             key={ind}
                             className={`flex items-center justify-between rounded-md ${ind % 2 === 0 ? "bg-gray-100" : ""} p-5`}
                           >
-                            <p className="font-semibold">{item.title}</p>
+                            <p className="font-semibold">{submission.title}</p>
                             <p className="text-gray-600 hidden md:flex">
-                              {item.time}
+                              {submission.time}
                             </p>
                           </div>
                         ))}

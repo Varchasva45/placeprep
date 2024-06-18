@@ -1,25 +1,36 @@
 import { atom } from "recoil";
 import Cookies from "js-cookie";
 
-const userDataFromCookies = Cookies.get("user");
-const user = userDataFromCookies ? JSON.parse(userDataFromCookies) : null;
+interface User {
+  name: string | null;
+  username: string | null;
+  id: string | null;
+  email: string | null;
+  isSubscribed: boolean | null;
+  imageUrl: string | null;
+}
 
-const userState = atom({
+const getUserFromCookies = (): User | null => {
+  try {
+    const userDataFromCookies = Cookies.get("user");
+    return userDataFromCookies ? JSON.parse(userDataFromCookies) : null;
+  } catch (error) {
+    console.error("Error parsing user data from cookies", error);
+    return null;
+  }
+};
+
+const user = getUserFromCookies();
+
+const userState = atom<User>({
   key: "userState",
   default: {
-    name: user?.name || "Varchasva Arora",
+    name: user?.name ?? null,
+    username: user?.username ?? null,
     id: user?.id || null,
-    email: user?.email || null,
-    isSubscribed: user?.isSubscribed || false,
-    imageUrl:
-      user?.imageUrl ||
-      "https://lh3.googleusercontent.com/a/ACg8ocJwFZuFZgRFSmjJLNuL1SyHjAJEZKOKDlUDuGw6MGZDnJ3nOMzP=s96-c",
-  } || {
-    name: "Varchasva Arora",
-    id: null,
-    email: null,
-    isSubscribed: false,
-    imageUrl: null,
+    email: user?.email ?? null,
+    isSubscribed: user?.isSubscribed ?? false,
+    imageUrl: user?.imageUrl ?? null,
   },
 });
 

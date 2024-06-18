@@ -131,7 +131,7 @@ const NavBar = () => {
             ) : (
               <>
                 <Link
-                  to={`/u/${user.id}`}
+                  to={`/u/${user.username}`}
                   className={buttonVariants({
                     variant: "ghost",
                     size: "sm",

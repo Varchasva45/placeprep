@@ -1,9 +1,9 @@
-import express from 'express';
-import Problem from '../models/Problem';
+import express from "express";
+import Problem from "../models/Problem";
 
 const router = express.Router();
 
-router.post('/api/problems', async (req, res) => {
+router.post("/api/problems", async (req, res) => {
   try {
     console.log("reached", req.body);
     const problem = new Problem(req.body);
@@ -14,13 +14,15 @@ router.post('/api/problems', async (req, res) => {
   }
 });
 
-router.get('/api/problems', async (req, res) => {
+router.get("/api/problems", async (req, res) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const pageSize = parseInt(req.query.pageSize as string) || 10;
     const skip = (page - 1) * pageSize;
 
-    const filterQuery = req.query.filter ? JSON.parse(req.query.filter as string) : {};
+    const filterQuery = req.query.filter
+      ? JSON.parse(req.query.filter as string)
+      : {};
 
     const problems = await Problem.find(filterQuery)
       .sort({ question_id: 1 })
@@ -32,12 +34,11 @@ router.get('/api/problems', async (req, res) => {
       problems,
       totalProblems,
       totalPages: Math.ceil(totalProblems / pageSize),
-      currentPage: page
+      currentPage: page,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch problems' });
+    res.status(500).json({ message: "Failed to fetch problems" });
   }
 });
-
 
 export { router as problemRouter };

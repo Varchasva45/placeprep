@@ -53,7 +53,6 @@ const AIDocsDashboard = () => {
 
       if (response.data.success) {
         toast.dismiss(toastId);
-        toast.success("Files fetched successfully");
         setFiles(response.data.files);
       } else {
         toast.error(

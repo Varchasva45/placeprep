@@ -30,7 +30,7 @@ const UserAccountNav = ({ email, imageUrl, name }: UserAccountNavProps) => {
     Cookies.remove("user");
     setAuthState({ isAuthenticated: false, token: null });
     setUserState({
-      name: "",
+      name: null,
       id: null,
       email: null,
       isSubscribed: false,

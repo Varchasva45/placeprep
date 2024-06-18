@@ -15,24 +15,24 @@ const getRandomStatus = () => {
   return statuses[randomIndex];
 };
 
-const items = [
-  { title: "Determine the Maximum Path Sum", time: "2 hours ago" },
-  { title: "Find the Longest Increasing Subsequence", time: "3 hours ago" },
-  { title: "Evaluate the Binary Tree Paths", time: "4 hours ago" },
-  { title: "Optimize Network Latency", time: "5 hours ago" },
-  { title: "Calculate the Shortest Path", time: "6 hours ago" },
-  { title: "Analyze the Stock Market Trends", time: "7 hours ago" },
-  { title: "Design a File System", time: "8 hours ago" },
-  { title: "Implement a Cache Mechanism", time: "9 hours ago" },
-  { title: "Design a File System", time: "8 hours ago" },
-  { title: "Find the Longest Increasing Subsequence", time: "3 hours ago" },
-  { title: "Evaluate the Binary Tree Paths", time: "4 hours ago" },
-  { title: "Optimize Network Latency", time: "5 hours ago" },
-  { title: "Calculate the Shortest Path", time: "6 hours ago" },
-  { title: "Analyze the Stock Market Trends", time: "7 hours ago" },
-  { title: "Design a File System", time: "8 hours ago" },
-  { title: "Implement a Cache Mechanism", time: "9 hours ago" },
-  { title: "Design a File System", time: "8 hours ago" },
+const items: any = [
+  // { title: "Determine the Maximum Path Sum", time: "2 hours ago" },
+  // { title: "Find the Longest Increasing Subsequence", time: "3 hours ago" },
+  // { title: "Evaluate the Binary Tree Paths", time: "4 hours ago" },
+  // { title: "Optimize Network Latency", time: "5 hours ago" },
+  // { title: "Calculate the Shortest Path", time: "6 hours ago" },
+  // { title: "Analyze the Stock Market Trends", time: "7 hours ago" },
+  // { title: "Design a File System", time: "8 hours ago" },
+  // { title: "Implement a Cache Mechanism", time: "9 hours ago" },
+  // { title: "Design a File System", time: "8 hours ago" },
+  // { title: "Find the Longest Increasing Subsequence", time: "3 hours ago" },
+  // { title: "Evaluate the Binary Tree Paths", time: "4 hours ago" },
+  // { title: "Optimize Network Latency", time: "5 hours ago" },
+  // { title: "Calculate the Shortest Path", time: "6 hours ago" },
+  // { title: "Analyze the Stock Market Trends", time: "7 hours ago" },
+  // { title: "Design a File System", time: "8 hours ago" },
+  // { title: "Implement a Cache Mechanism", time: "9 hours ago" },
+  // { title: "Design a File System", time: "8 hours ago" },
 ];
 
 const SubmissionsFullScreen = () => {
@@ -66,7 +66,7 @@ const SubmissionsFullScreen = () => {
           </div>
           {items && items.length > 0 ? (
             <div>
-              {items.map((item, index) => {
+              {items.map((item: any, index: number) => {
                 const isGray = index % 2 === 0;
                 const { status, color } = getRandomStatus();
                 return (

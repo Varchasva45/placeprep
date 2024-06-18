@@ -5,7 +5,7 @@ const ProblemHeatMap = (commitsData: any) => {
     <HeatMap
       className="w-full -mb-4"
       value={commitsData.commitsData}
-      startDate={new Date(commitsData.commitsData[0].date)}
+      // startDate={new Date(commitsData.commitsData[0].date)}
       width={600}
       legendRender={(props: any) => <rect {...props} y={props.y + 10} rx={5} />}
       panelColors={{

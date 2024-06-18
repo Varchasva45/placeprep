@@ -1,9 +1,9 @@
 import { S3 } from "@aws-sdk/client-s3";
 
-const accessKeyId = "";
-const secretAccessKey = "";
-const region = "";
-const bucketName = "";
+const accessKeyId = "AKIAW3MEFTOVP3YWAFQ4";
+const secretAccessKey = "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";
+const region = "ap-south-1";
+const bucketName = "placeprep";
 
 const s3 = new S3({
   region: region,

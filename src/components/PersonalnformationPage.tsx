@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Dispatch, SetStateAction } from "react";
 import { Button } from "./ui/button";
 import {
   AlertDialog,
@@ -11,9 +11,55 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useRecoilValue } from "recoil";
+import authState from "../recoil/atoms/auth";
+import mongoose from "mongoose";
+
+interface IuserDetails {
+  _id: mongoose.Types.ObjectId;
+  name?: string;
+  username?: string;
+  email?: string;
+  password: string;
+  imageUrl: string;
+  githubAccount?: string;
+  linkedInAccount?: string;
+  personalInformation: {
+    summary: string;
+    location: string;
+    education: string;
+    linkedInLink: string;
+    githubLink: string;
+    _id: mongoose.Types.ObjectId;
+  };
+  profileStats: {
+    views: number;
+    respect: number;
+    activeDays: { count: number; year: number }[];
+    submissionCount: { count: number; year: number }[];
+    programmingLanguages: { language: string; problemCount: number }[];
+    _id: mongoose.Types.ObjectId;
+  };
+  isSubscribed: boolean;
+  role: string;
+}
 
 type EditProfilePageProps = {
   setIsEditProfilePageVisible: (visible: boolean) => void;
+  userDetails: IuserDetails | null;
+  userId: string;
+  setUserDetails: any;
+};
+
+type FormData = {
+  Name: string;
+  College: string;
+  Summary: string;
+  Location: string;
+  LinkedIn: string;
+  GitHub: string;
 };
 
 const personalInfoLabels = [
@@ -27,19 +73,20 @@ const personalInfoLabels = [
 
 const PersonalInformationPage = ({
   setIsEditProfilePageVisible,
+  userDetails,
+  userId,
+  setUserDetails,
 }: EditProfilePageProps) => {
+  const auth = useRecoilValue(authState);
   const [editMode, setEditMode] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [formData, setFormData] = useState<object>({
-    Name: "",
-    College: "",
-    Summary: "",
-    Location: "",
-    LinkedIn: "",
-    GitHub: "",
-    Email: "",
-    Password: "",
-    Username: "",
+  const [formData, setFormData] = useState<FormData>({
+    Name: userDetails?.name || "",
+    College: userDetails?.personalInformation.education || "",
+    Summary: userDetails?.personalInformation.summary || "",
+    Location: userDetails?.personalInformation.location || "",
+    LinkedIn: userDetails?.personalInformation.linkedInLink || "",
+    GitHub: userDetails?.personalInformation.githubLink || "",
   });
 
   useEffect(() => {
@@ -60,6 +107,52 @@ const PersonalInformationPage = ({
     setFormData({ ...formData, [field]: e.target.value });
   };
 
+  const handleSaveChanges = async () => {
+    try {
+      const updateBody = {
+        updatedData: {
+          name: formData.Name,
+          personalInformation: {
+            summary: formData.Summary,
+            location: formData.Location,
+            education: formData.College,
+            linkedInLink: formData.LinkedIn,
+            githubLink: formData.GitHub,
+          },
+        },
+      };
+
+      const response = await axios.put(
+        `http://localhost:3000/users/${userId}`,
+        updateBody,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
+          },
+        },
+      );
+
+      if (response.data.success) {
+        toast.success("User details updated successfully");
+        setUserDetails(response.data.userDetails);
+      } else {
+        toast.error(
+          response.data.message
+            ? response.data.message
+            : "Error while updating user details, please try again!",
+        );
+      }
+    } catch (error: any) {
+      console.log(error);
+      toast.error(
+        error.response.data.message
+          ? error.response.data.message
+          : "Error while updating user details, please try again!",
+      );
+    }
+  };
+
   return (
     <div className="p-6 w-full select-none">
       <div>
@@ -74,7 +167,7 @@ const PersonalInformationPage = ({
               className="flex items-center justify-between border-b py-4 px-3 border-gray-200"
             >
               <div className="flex w-full items-center">
-                <h1 className="w-[20%] text-gray-800 mr-12">{field}</h1>
+                <h1 className="w-[20%] text-gray-600 mr-12">{field}</h1>
                 {editMode === field ? (
                   <input
                     type="text"
@@ -96,7 +189,7 @@ const PersonalInformationPage = ({
 
                 {editMode === field ? (
                   <h1
-                    className="text-red-600 hover:cursor-pointer hover:shadow-red-500 ml-12"
+                    className="text-red-600 font-semibold hover:cursor-pointer hover:shadow-red-500 ml-12"
                     onClick={() => setEditMode(null)}
                   >
                     Close
@@ -132,8 +225,7 @@ const PersonalInformationPage = ({
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction>
-                {/* Logic to update the information on Accept Also dont forget to add the loading state */}
+              <AlertDialogAction onClick={handleSaveChanges}>
                 Continue
               </AlertDialogAction>
             </AlertDialogFooter>
