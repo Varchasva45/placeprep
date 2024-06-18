@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, Dispatch, SetStateAction } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import {
   AlertDialog,
@@ -47,7 +47,6 @@ interface IuserDetails {
 }
 
 type EditProfilePageProps = {
-  setIsEditProfilePageVisible: (visible: boolean) => void;
   userDetails: IuserDetails | null;
   userId: string;
   setUserDetails: any;
@@ -72,7 +71,6 @@ const personalInfoLabels = [
 ];
 
 const PersonalInformationPage = ({
-  setIsEditProfilePageVisible,
   userDetails,
   userId,
   setUserDetails,

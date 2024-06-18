@@ -50,20 +50,17 @@ interface IuserDetails {
 }
 
 type EditProfilePageProps = {
-  setIsEditProfilePageVisible: (visible: boolean) => void;
   userDetails: IuserDetails | null;
   setUserDetails: any;
 };
 
 const AccountInformationPage = ({
-  setIsEditProfilePageVisible,
   userDetails,
   setUserDetails,
 }: EditProfilePageProps) => {
   const auth = useRecoilValue(authState);
   const [editMode, setEditMode] = useState<string | null>("Password");
   const inputRef = useRef<HTMLInputElement>(null);
-  const [newEmail, setNewEmail] = useState<string>("");
   const [otp, setOtp] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState({
@@ -267,7 +264,7 @@ const AccountInformationPage = ({
             <IoMdArrowRoundBack
               className="h-5 w-5 mr-2 font-bold hover:cursor-pointer"
               onClick={() => {
-                setNewEmail("");
+                formData.Email = "";
                 setOtp("");
                 setEditMode(null);
               }}
@@ -482,7 +479,7 @@ const AccountInformationPage = ({
             <IoMdArrowRoundBack
               className="h-5 w-5 mr-2 font-bold hover:cursor-pointer"
               onClick={() => {
-                setNewEmail("");
+                formData.Email = "";
                 setOtp("");
                 setEditMode(null);
               }}

@@ -321,7 +321,6 @@ const Profile = () => {
             <>
               <div className="shadow-lg rounded-lg bg-white">
                 <PersonalInformationPage
-                  setIsEditProfilePageVisible={setIsEditProfilePageVisible}
                   userDetails={userDetails}
                   setUserDetails={setUserDetails}
                   userId={user.id!}
@@ -329,7 +328,6 @@ const Profile = () => {
               </div>
               <div className="shadow-lg rounded-lg bg-white">
                 <AccountInformationPage
-                  setIsEditProfilePageVisible={setIsEditProfilePageVisible}
                   userDetails={userDetails}
                   setUserDetails={setUserDetails}
                 />
