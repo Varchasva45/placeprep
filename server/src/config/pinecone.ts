@@ -3,5 +3,5 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const pinecone = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY!,
+  apiKey: "d99df904-f8d7-4825-bc82-2db1726bcff6",
 });

@@ -3,7 +3,7 @@ import userState from "../recoil/atoms/user";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import PdfRenderer from "../components/PdfRenderer";
+import PdfRenderer from "../components/PDFRenderer";
 import ChatWrapper from "../components/ChatWrapper";
 import authState from "../recoil/atoms/auth";
 

@@ -41,4 +41,16 @@ router.get("/api/problems", async (req, res) => {
   }
 });
 
+router.get("/api/problems/:id", async (req, res) => {
+  try {
+    const problem = await Problem.findById(req.params.id);
+    if (!problem) {
+      return res.status(404).send();
+    }
+    res.send(problem);
+  } catch (error) {
+    res.status(500).send();
+  }
+});
+
 export { router as problemRouter };
