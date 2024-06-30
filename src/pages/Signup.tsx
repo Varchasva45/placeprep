@@ -20,12 +20,6 @@ const Signup = () => {
   const user = useRecoilValue(userState);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (authAtom.isAuthenticated) {
-      navigate(`/u/${user.id}`);
-    }
-  }, [authAtom, setAuthAtom]);
-
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const toastId = toast.loading("Signing up...");
@@ -57,7 +51,7 @@ const Signup = () => {
         setUserAtom(user);
         setAuthAtom({ isAuthenticated: true, token });
         toast.success(response.data.message);
-        navigate(`/u/${user.id}`);
+        navigate(`/u/${user.username}`);
       } else {
         toast.error(response.data.message);
       }
@@ -110,7 +104,7 @@ const Signup = () => {
   };
 
   if (authAtom.isAuthenticated) {
-    return <Link to={`/u/${user.id}`} />;
+    return <Link to={`/u/${user.username}`} />;
   }
 
   return (

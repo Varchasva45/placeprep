@@ -9,6 +9,7 @@ import {
   signup,
   handleSendOtp,
   handleUpdateEmail,
+  handleUpdatePassword,
 } from "../controllers/auth";
 import { isAuthenticated } from "../middlewares/isAuthenticated";
 
@@ -18,6 +19,7 @@ router.post("/signup", validateData(signupSchema), signup);
 router.post("/login", validateData(loginSchema), login);
 router.post("/sendOtp/:userId", isAuthenticated, handleSendOtp);
 router.post("/updateEmail/:userId", isAuthenticated, handleUpdateEmail);
+router.post("/updatePassword/:username", isAuthenticated, handleUpdatePassword);
 
 router.get(
   "/google",

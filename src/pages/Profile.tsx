@@ -53,8 +53,7 @@ const Profile = () => {
   }
 
   const [selectedTab, setSelectedTab] = useState<string>("Recent AC");
-  const [isEditProfilePageVisible, setIsEditProfilePageVisible] =
-    useState<boolean>(false);
+  const [isEditProfilePageVisible, setIsEditProfilePageVisible] = useState<boolean>(false);
   const [userDetails, setUserDetails] = useState<IuserDetails | null>(null);
   const [recentACSubmissions, setRecentACSubmissions] = useState<
     IRecentACSubmission[]
@@ -165,7 +164,7 @@ const Profile = () => {
   // ];
 
   return (
-    <div className="mx-auto w-10/12 mt-6 mb-6 bg-gray">
+    <div className="mx-auto w-10/12 my-[1.4rem] bg-gray">
       <div className="lg:flex">
         {/* Left Card */}
         <div className="flex-[0.4] h-full">

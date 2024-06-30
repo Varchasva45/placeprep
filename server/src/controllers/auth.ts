@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -299,7 +299,7 @@ export const handleUpdateEmail = async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, message: "OTP expired" });
     }
 
-    const updatedUser = await User.updateOne(
+    await User.updateOne(
       { _id: user },
       { $set: { email } },
     );
@@ -313,3 +313,31 @@ export const handleUpdateEmail = async (req: Request, res: Response) => {
       .json({ success: false, message: "Error while updating email" });
   }
 };
+
+export const handleUpdatePassword = async (req: Request, res: Response) => {
+  try {
+    const username = req.params.username;
+    const { currentPassword, newPassword } = req.body;
+
+    const user:any = await User.findOne({username});
+
+    if(!user) {
+      return res.status(404).json({ success: false, message: "User not found" })
+    } 
+
+    if(user.password) {
+      const isValid = bcrypt.compareSync(currentPassword, user.password);
+      if(!isValid) {
+        return res.status(400).json({ success: false, message: "Invalid password" })
+      }
+    }
+    
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(newPassword, salt);
+    await User.updateOne({ _id: user._id }, { $set: { password: hashedPassword } });
+    return res.status(200).json({ success: true, message: "Password updated successfully" })
+  } catch (error) {
+    console.log("Error while updating password", error);
+    res.status(500).json({ success: false, message: "Error while updating password" })
+  }
+}

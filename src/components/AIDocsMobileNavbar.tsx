@@ -1,15 +1,12 @@
 import { ArrowRight, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Cookies from "js-cookie";
-import { useSetRecoilState } from "recoil";
-import authState from "../recoil/atoms/auth";
-import userState from "../recoil/atoms/user";
 
 const AIDocsMobileNavbar = ({ isAuth }: { isAuth: boolean }) => {
+
+  const navigate = useNavigate();
   const [isOpen, setOpen] = useState<boolean>(false);
-  const setAuthState = useSetRecoilState(authState);
-  const setUserState = useSetRecoilState(userState);
   const pathname = useParams();
   const toggleOpen = () => setOpen((prev) => !prev);
 
@@ -23,14 +20,7 @@ const AIDocsMobileNavbar = ({ isAuth }: { isAuth: boolean }) => {
   const handleLogout = () => {
     Cookies.remove("token");
     Cookies.remove("user");
-    setAuthState({ isAuthenticated: false, token: null });
-    setUserState({
-      name: "",
-      id: null,
-      email: null,
-      isSubscribed: false,
-      imageUrl: null,
-    });
+    navigate("/");
   };
 
   useEffect(() => {

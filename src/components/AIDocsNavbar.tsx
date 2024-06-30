@@ -75,7 +75,7 @@ const AIDocsNavbar = () => {
                 </Link>
 
                 <UserAccountNav
-                  name={user.name}
+                  name={user.name ?? ""}
                   email={user.email ?? ""}
                   imageUrl={user.imageUrl ?? ""}
                 />
