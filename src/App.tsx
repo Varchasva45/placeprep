@@ -17,7 +17,6 @@ import LayoutWithNavbar from "./components/LayoutWithNavbar";
 import Pricing from "./pages/Pricing";
 import Test from "./components/Test";
 import Profile from "./pages/Profile";
-import ChangePassword from "./components/ChangePassword";
 
 const App = () => {
   return (
@@ -32,10 +31,9 @@ const App = () => {
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/u/:username" element={<Profile />} />
             <Route path="/explore" element={<AIDocsLanding />} />
-            <Route path="/account/password/:username" element={<ChangePassword />} />
           </Route>
 
-          <Route path="/problems" element={<Landing />} />
+          
           <Route path="/sheets" element={<Landing />} />
           <Route path="/interview" element={<Landing />} />
           <Route path="/playground" element={<Playground />} />
