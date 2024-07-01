@@ -3,7 +3,7 @@ import userState from "../recoil/atoms/user";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import PdfRenderer from "../components/PDFRenderer";
+import PdfRenderer from "../components/PdfRenderer";
 import ChatWrapper from "../components/ChatWrapper";
 import authState from "../recoil/atoms/auth";
 
@@ -58,7 +58,7 @@ const PdfChatPage = () => {
           </div>
 
           <div className="bg-white shrink-0 flex-[0.75] border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0">
-            <ChatWrapper isSubscribed={user.isSubscribed} fileId={fileId} />
+            <ChatWrapper isSubscribed={user.isSubscribed!} fileId={fileId} />
           </div>
         </div>
       </div>

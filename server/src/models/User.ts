@@ -2,11 +2,11 @@ import mongoose, { Document, Schema } from "mongoose";
 
 interface IUser extends Document {
   name?: string;
-  username?: string;
-  email?: string;
+  username: string;
+  email: string;
   password: string;
   imageUrl: string;
-  githubAccount?: string;
+  githubAccount: string;
   linkedInAccount?: string;
   personalInformation: {
     summary: string;
@@ -39,8 +39,11 @@ const userSchema = new Schema<IUser>({
   },
   email: {
     type: String,
+    unique: true,
     trim: true,
-    default: null,
+    required: function () {
+      return !this.githubAccount;
+    }
   },
   password: {
     type: String,
@@ -53,8 +56,11 @@ const userSchema = new Schema<IUser>({
   },
   githubAccount: {
     type: String,
+    unique: true,
     trim: true,
-    default: null,
+    required: function () {
+      return !this.email;
+    }
   },
   personalInformation: {
     type: {
