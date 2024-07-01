@@ -10,9 +10,10 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Gem } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Icons } from "./Icons";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import userState from "../recoil/atoms/user";
 import Cookies from "js-cookie";
+import authState from "../recoil/atoms/auth";
 interface UserAccountNavProps {
   email: string | undefined;
   name: string;
@@ -21,11 +22,16 @@ interface UserAccountNavProps {
 
 const UserAccountNav = ({ email, imageUrl, name }: UserAccountNavProps) => {
 
-  const user = useRecoilValue(userState);
+  const [user, setUser] = useRecoilState(userState);
+  const setAuth = useSetRecoilState(authState);
   const navigate = useNavigate();
-  const handleLogout = () => {
+
+  const handleLogout = (e: any) => {
+    e.preventDefault();
     Cookies.remove("token");
     Cookies.remove("user");
+    setAuth({ token: null, isAuthenticated: false });
+    setUser({ id: null, name: null, username: null, email: null, isSubscribed: false, imageUrl: null });
     navigate("/");
   };
 

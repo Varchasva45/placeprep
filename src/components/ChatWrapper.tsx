@@ -1,9 +1,8 @@
 import axios from "axios";
 import { ChevronLeft, Loader2, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import ChatInput from "./ChatInput";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { buttonVariants } from "./ui/button";
 import { plans } from "../constants/plans";
 import { useQuery } from "react-query";
@@ -11,6 +10,7 @@ import { useRecoilValue } from "recoil";
 import authState from "../recoil/atoms/auth";
 import ChatContextProvider from "./ChatContext";
 import Messages from "./Messages";
+import { askPDFEndpoints } from "../services/apis";
 
 type ChatWrapperProps = {
   isSubscribed: boolean;
@@ -20,10 +20,12 @@ type ChatWrapperProps = {
 const ChatWrapper = ({ isSubscribed, fileId }: ChatWrapperProps) => {
   const auth = useRecoilValue(authState);
   const [isLoading, setIsLoading] = useState(true);
-
+  const { fetchFileStatus_API } = askPDFEndpoints;
+ 
   const fetchData = async () => {
+    const apiUrl = `${fetchFileStatus_API}/${fileId}`;
     const response = await axios.get(
-      `http://localhost:3000/askPdf/files/fileStatus/${fileId}`,
+      apiUrl,
       {
         headers: {
           Authorization: `Bearer ${auth.token}`,

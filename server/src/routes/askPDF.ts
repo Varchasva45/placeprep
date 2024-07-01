@@ -13,14 +13,13 @@ import {
 
 const router = express.Router();
 
-// add validations
-router.post("/createFile", isAuthenticated, createFile);
-router.delete("/deleteFile/:fileId", isAuthenticated, deleteFile);
+router.post("/create", isAuthenticated, createFile);
 router.get("/fetchFiles", isAuthenticated, fetchFiles);
-router.get("/files/:fileId", isAuthenticated, fetchFileDetails);
-router.get("/files/fileStatus/:fileId", isAuthenticated, fetchFileStatus);
-router.post("/message", isAuthenticated, sendMessage);
-router.get("/getFileMessages", getFileMessages);
-router.post("/vectorize-pdf", isAuthenticated, vectorizePDF);
+router.delete("/:fileId", isAuthenticated, deleteFile);
+router.get("/:fileId", isAuthenticated, fetchFileDetails);
+router.get("/status/:fileId", isAuthenticated, fetchFileStatus);
+router.get("/messages/:fileId", getFileMessages);
+router.post("/messages/:fileId", isAuthenticated, sendMessage);
+router.post("/vectorize", isAuthenticated, vectorizePDF);
 
 export { router as askPDFRouter };

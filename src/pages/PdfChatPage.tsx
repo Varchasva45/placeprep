@@ -6,6 +6,7 @@ import axios from "axios";
 import PdfRenderer from "../components/PdfRenderer";
 import ChatWrapper from "../components/ChatWrapper";
 import authState from "../recoil/atoms/auth";
+import { askPDFEndpoints } from "../services/apis";
 
 const PdfChatPage = () => {
   const fileId = location.pathname.split("/").pop();
@@ -14,11 +15,13 @@ const PdfChatPage = () => {
   const navigate = useNavigate();
   const [fileUrl, setFileUrl] = useState<string>("");
   const [fileName, setFileName] = useState<string>("");
+  const { fetchFileDetails_API } = askPDFEndpoints;
 
   const fetchFileDetails = async () => {
     try {
+      const apiUrl = `${fetchFileDetails_API}/${fileId}`;
       const response = await axios.get(
-        `http://localhost:3000/askPdf/files/${fileId}`,
+        apiUrl,
         {
           headers: {
             authorization: `Bearer ${auth.token}`,

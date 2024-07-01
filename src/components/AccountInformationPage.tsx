@@ -3,7 +3,6 @@ import { Button } from "./ui/button";
 import { useRecoilValue } from "recoil";
 import toast from "react-hot-toast";
 import { IoMdArrowRoundBack } from "react-icons/io";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,6 +19,7 @@ import axios from "axios";
 import authState from "../recoil/atoms/auth";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { authEndpoints, userEndpoints } from "../services/apis";
 
 interface IuserDetails {
   _id: mongoose.Types.ObjectId;
@@ -71,6 +71,8 @@ const AccountInformationPage = ({
     Password: userDetails?.password || "",
     Username: "",
   });
+  const { sendOtp_API } = authEndpoints;
+  const { updateEmail_API, updateUsername_API } = userEndpoints;
 
   useEffect(() => {
     if (editMode) {
@@ -118,8 +120,11 @@ const AccountInformationPage = ({
     };
 
     try {
+
+      const apiUrl = `${sendOtp_API}/${userDetails?._id}`;
+
       const response = await axios.post(
-        `http://localhost:3000/auth/sendOtp/${userDetails?._id}`,
+        apiUrl,
         body,
         config,
       );
@@ -157,13 +162,14 @@ const AccountInformationPage = ({
       return;
     }
     try {
+      const apiUrl = `${updateEmail_API}/${userDetails?._id}`;
       const body = {
         email: formData.Email,
         otp,
       };
 
       const response = await axios.post(
-        `http://localhost:3000/auth/updateEmail/${userDetails?._id}`,
+        apiUrl,
         body,
         {
           headers: {
@@ -216,12 +222,13 @@ const AccountInformationPage = ({
         return;
       }
 
+      const apiUrl = `${updateUsername_API}/${userDetails?._id}`;
       const updateBody = {
         username: formData.Username,
       };
 
       const response = await axios.put(
-        `http://localhost:3000/users/username/${userDetails?._id}`,
+        apiUrl,
         updateBody,
         {
           headers: {
@@ -232,7 +239,6 @@ const AccountInformationPage = ({
       );
 
       if (response.data.success) {
-        console.log(response.data);
         setUserDetails({
           ...userDetails,
           username: response.data.username,
@@ -498,12 +504,22 @@ const AccountInformationPage = ({
                 )}
               </p>
             
-              <h1
-                className="text-blue-600 hover:cursor-pointer hover:shadow-blue-500 ml-12"
-                onClick={() => navigate(`/account/password/${userDetails?.username}`)}
-              >
-                {formData.Password === "" ? "Create Password" : "Change Password"}
-              </h1>
+
+              {formData.Password === "" ? (
+                <h1
+                  className="text-blue-600 hover:cursor-pointer hover:shadow-blue-500 ml-12"
+                  onClick={() => navigate(`/account/password/create`)}
+                >
+                  Create Password
+                </h1>
+              ) : (
+                <h1
+                  className="text-blue-600 hover:cursor-pointer hover:shadow-blue-500 ml-12"
+                  onClick={() => navigate(`/account/password/change`)}
+                >
+                  Change Password
+                </h1>
+              )} 
 
             </div>
           </div>

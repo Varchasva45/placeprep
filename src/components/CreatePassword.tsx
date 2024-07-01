@@ -24,27 +24,22 @@ import toast from "react-hot-toast";
 import userState from "../recoil/atoms/user";
 import { authEndpoints } from "../services/apis";
 
-export default function ChangePassword() {
-    const [currentPassword, setCurrentPassword] = useState<string>("");
+export default function CreatePassword() {
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmPassword, setConfirmPassword] = useState<string>("");
-    const [showCurrentPassword, setShowCurrentPassword] = useState<boolean>(false);
     const [showNewPassword, setShowNewPassword] = useState<boolean>(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const auth = useRecoilValue(authState);
     const user = useRecoilValue(userState);
 
-    const { updatePassword_API } = authEndpoints;
     const navigate = useNavigate();
-    const handleCurrentPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setCurrentPassword(e.target.value);
     const handleNewPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setNewPassword(e.target.value);
     const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value);
 
-    const toggleCurrentPasswordVisibility = () => setShowCurrentPassword(!showCurrentPassword);
     const toggleNewPasswordVisibility = () => setShowNewPassword(!showNewPassword);
     const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
-    
+    const { updatePassword_API } = authEndpoints;
 
     const validatePasswords = () => {
         const errors = [];
@@ -66,9 +61,8 @@ export default function ChangePassword() {
         setIsLoading(true);
         const toastId = toast.loading("Changing password...");
         try {
-            const apiUrl = `${updatePassword_API}/${user.id}`
+            const apiUrl = `${updatePassword_API}/${user.id}`;
             const reqBody = {
-                currentPassword,
                 newPassword
             }
     
@@ -99,15 +93,13 @@ export default function ChangePassword() {
     };  
 
     return (    
-        <Card className="w-full max-w-md mx-auto transform translate-y-[13%]">
+        <Card className="w-full max-w-md mx-auto transform translate-y-[26%]">
             <h1 className="flex justify-center items-center space-x-2 p-5">
                 <IoArrowBackOutline
                     className="h-6 w-6 cursor-pointer"
                     onClick={() => {
-                        setCurrentPassword("");
                         setNewPassword("");
                         setConfirmPassword("");
-                        setShowCurrentPassword(false);
                         setShowNewPassword(false);
                         setShowConfirmPassword(false);
                         navigate(`/u/${user.username}`)
@@ -116,21 +108,6 @@ export default function ChangePassword() {
                 <CardTitle className="text-2xl font-bold">Change Password</CardTitle>
             </h1>
             <CardContent className="space-y-4 mt-4">
-                <div className="relative space-y-3">
-                    <Label htmlFor="currentPassword">Current Password</Label>
-                    <Input
-                        id="currentPassword"
-                        type={showCurrentPassword ? "text" : "password"}
-                        value={currentPassword}
-                        onChange={handleCurrentPasswordChange}
-                        required
-                        className="text-gray-600"
-                    />
-                    <Button variant="ghost" size="icon" className="absolute bottom-2.5 right-1 h-7 w-7" onClick={toggleCurrentPasswordVisibility}>
-                        {showCurrentPassword ? <AiOutlineEyeInvisible className='h-4 w-4'/> : <AiOutlineEye className='h-4 w-4'/>}
-                        <span className="sr-only">Toggle password visibility</span>
-                    </Button>
-                </div>
                 <div className="relative space-y-3">
                     <Label htmlFor="newPassword">New Password</Label>
                     <Input
@@ -169,8 +146,8 @@ export default function ChangePassword() {
             </CardContent>
             <CardFooter>
                 <AlertDialog>
-                    <AlertDialogTrigger disabled={errors.length > 0 || !currentPassword || isLoading} className="w-full">
-                        <Button className="w-full mt-4" disabled={errors.length > 0 || !currentPassword || isLoading}>Change Password</Button>
+                    <AlertDialogTrigger disabled={errors.length > 0 || isLoading} className="w-full">
+                        <Button className="w-full mt-4" disabled={errors.length > 0 || isLoading}>Change Password</Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>

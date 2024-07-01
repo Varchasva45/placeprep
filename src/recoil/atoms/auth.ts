@@ -1,7 +1,8 @@
-import { atom } from "recoil";
+import { atom, useRecoilState } from "recoil";
 import Cookies from "js-cookie";
 
 const token = Cookies.get("token") || null;
+console.log(token);
 
 const authState = atom({
   key: "authState",

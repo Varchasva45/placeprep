@@ -4,7 +4,6 @@ import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 import UploadDropzone from "./UploadDropzone";
 import { useRecoilValue } from "recoil";
 import userState from "../recoil/atoms/user";
-import axios from "axios";
 
 const UploadButton = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -24,7 +23,7 @@ const UploadButton = () => {
       </DialogTrigger>
 
       <DialogContent>
-        <UploadDropzone isSubscribed={user.isSubscribed} />
+        <UploadDropzone isSubscribed={user.isSubscribed!} />
       </DialogContent>
     </Dialog>
   );

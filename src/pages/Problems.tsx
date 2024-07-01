@@ -1,9 +1,8 @@
-import React from 'react';
 import { Calendar } from '../components/ui/calendar';
 import AllProblems from './AllProblems';
 import GaugeCircle from '../components/ui/circle';
 
-const Problems: React.FC = () => {
+const Problems = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-white p-4  w-fit h-fit">
      <div className="flex flex-row justify-between">    

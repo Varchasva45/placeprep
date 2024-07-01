@@ -8,16 +8,19 @@ import { ChatContext } from "./ChatContext";
 import Skeleton from "react-loading-skeleton";
 import Message from "./Message";
 import { useIntersection } from "@mantine/hooks";
+import { askPDFEndpoints } from "../services/apis";
 
 const Messages = ({ fileId }: { fileId: string }) => {
   const user = useRecoilValue(userState);
   const { isLoading: isAiThinking } = useContext(ChatContext);
+  const { fetchFileMessages_API } = askPDFEndpoints;
 
   const { data, fetchNextPage, isLoading } = useInfiniteQuery(
     "messages",
     async ({ pageParam }) => {
+      const apiUrl = `${fetchFileMessages_API}/${fileId}?userId=${user.id}&cursor=${pageParam}`;
       const response = await axios.get(
-        `http://localhost:3000/askPDF/getFileMessages?fileId=${fileId}&userId=${user.id}&cursor=${pageParam}`,
+        apiUrl,
       );
       return response.data;
     },
