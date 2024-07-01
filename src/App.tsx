@@ -37,8 +37,14 @@ const App = () => {
             <Route path="/explore" element={<AIDocsLanding />} />
             <Route path="/problems" element={<Problems />} />
             <Route path="/problems/:id" element={<Solve />} />
-            <Route path="/account/password/change" element={<ChangePassword />} />
-            <Route path="/account/password/create" element={<CreatePassword />} />
+            <Route
+              path="/account/password/change"
+              element={<ChangePassword />}
+            />
+            <Route
+              path="/account/password/create"
+              element={<CreatePassword />}
+            />
           </Route>
 
           <Route path="/sheets" element={<Landing />} />

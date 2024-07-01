@@ -109,7 +109,6 @@ const PersonalInformationPage = ({
 
   const handleSaveChanges = async () => {
     try {
-
       const apiUrl = `${updateUserDetails_API}/${userId}`;
       const updateBody = {
         updatedData: {
@@ -124,16 +123,12 @@ const PersonalInformationPage = ({
         },
       };
 
-      const response = await axios.put(
-        apiUrl,
-        updateBody,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const response = await axios.put(apiUrl, updateBody, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         toast.success("User details updated successfully");

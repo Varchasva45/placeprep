@@ -5,7 +5,15 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaBuilding, FaGithub, FaLinkedin } from "react-icons/fa";
 import { LuClipboardList } from "react-icons/lu";
 import { RiDiscussFill } from "react-icons/ri";
-import { ChevronRight, Eye, Ghost, MailIcon, Medal, ClipboardCheck, User } from "lucide-react";
+import {
+  ChevronRight,
+  Eye,
+  Ghost,
+  MailIcon,
+  Medal,
+  ClipboardCheck,
+  User,
+} from "lucide-react";
 import ProblemHeatMap from "../components/HeatMap";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -55,7 +63,8 @@ const Profile = () => {
 
   const { fetchUserDetails_API, fetchSubmissions_API } = userEndpoints;
   const [selectedTab, setSelectedTab] = useState<string>("Recent AC");
-  const [isEditProfilePageVisible, setIsEditProfilePageVisible] = useState<boolean>(false);
+  const [isEditProfilePageVisible, setIsEditProfilePageVisible] =
+    useState<boolean>(false);
   const [userDetails, setUserDetails] = useState<IuserDetails | null>(null);
   const [recentACSubmissions, setRecentACSubmissions] = useState<
     IRecentACSubmission[]
@@ -72,14 +81,11 @@ const Profile = () => {
   const getUserDetails = async () => {
     try {
       const apiUrl = `${fetchUserDetails_API}/${user.id}`;
-      const response = await axios.get(
-        apiUrl,
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         setUserDetails(response.data.userDetails);
@@ -99,14 +105,11 @@ const Profile = () => {
   const getRecentACSubmissions = async () => {
     try {
       const apiUrl = `${fetchSubmissions_API}/${user.id}?result=Accepted`;
-      const response = await axios.get(
-        apiUrl,
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         setRecentACSubmissions(response.data.submissions);

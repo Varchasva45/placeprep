@@ -81,14 +81,11 @@ const AIDocsDashboard = () => {
 
     try {
       const apiUrl = `${deleteFile_API}/${fileId}`;
-      const response = await axios.delete(
-        apiUrl,
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const response = await axios.delete(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         toast.dismiss(toastId);

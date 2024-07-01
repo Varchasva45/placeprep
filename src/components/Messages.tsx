@@ -19,9 +19,7 @@ const Messages = ({ fileId }: { fileId: string }) => {
     "messages",
     async ({ pageParam }) => {
       const apiUrl = `${fetchFileMessages_API}/${fileId}?userId=${user.id}&cursor=${pageParam}`;
-      const response = await axios.get(
-        apiUrl,
-      );
+      const response = await axios.get(apiUrl);
       return response.data;
     },
     {

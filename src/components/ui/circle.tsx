@@ -35,8 +35,8 @@ export default function GaugeCircle({
           "--transition-step": "200ms",
           "--delay": "0s",
           "--percent-to-deg": "3.6deg",
-          "margin": "auto",
-          "padding": "20px",
+          margin: "auto",
+          padding: "20px",
           transform: "translateZ(0)",
         } as React.CSSProperties
       }

@@ -20,14 +20,11 @@ const PdfChatPage = () => {
   const fetchFileDetails = async () => {
     try {
       const apiUrl = `${fetchFileDetails_API}/${fileId}`;
-      const response = await axios.get(
-        apiUrl,
-        {
-          headers: {
-            authorization: `Bearer ${auth.token}`,
-          },
+      const response = await axios.get(apiUrl, {
+        headers: {
+          authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       const file = response.data.file;
 

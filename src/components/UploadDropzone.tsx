@@ -89,15 +89,11 @@ const UploadDropzone = ({ isSubscribed }: UploadDropzoneProps) => {
         },
       );
 
-      const response = await axios.post(
-        createFile_API,
-        newFile,
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const response = await axios.post(createFile_API, newFile, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         window.location.href = `/dashboard/${response.data.fileId}`;

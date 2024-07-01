@@ -69,7 +69,7 @@ const Login = () => {
     } finally {
       toast.dismiss(toastId);
       setIsLoading(false);
-    }     
+    }
   };
 
   const handleSignupWithGoogle = async () => {

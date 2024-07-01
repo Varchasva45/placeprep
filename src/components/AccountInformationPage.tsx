@@ -59,7 +59,6 @@ const AccountInformationPage = ({
   userDetails,
   setUserDetails,
 }: EditProfilePageProps) => {
-
   const navigate = useNavigate();
   const auth = useRecoilValue(authState);
   const [editMode, setEditMode] = useState<string | null>(null);
@@ -120,14 +119,9 @@ const AccountInformationPage = ({
     };
 
     try {
-
       const apiUrl = `${sendOtp_API}/${userDetails?._id}`;
 
-      const response = await axios.post(
-        apiUrl,
-        body,
-        config,
-      );
+      const response = await axios.post(apiUrl, body, config);
 
       toast.dismiss(toastId);
 
@@ -168,16 +162,12 @@ const AccountInformationPage = ({
         otp,
       };
 
-      const response = await axios.post(
-        apiUrl,
-        body,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const response = await axios.post(apiUrl, body, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         toast.dismiss(toastId);
@@ -227,16 +217,12 @@ const AccountInformationPage = ({
         username: formData.Username,
       };
 
-      const response = await axios.put(
-        apiUrl,
-        updateBody,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const response = await axios.put(apiUrl, updateBody, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         setUserDetails({
@@ -493,17 +479,15 @@ const AccountInformationPage = ({
           {/*Password div*/}
           <div className="flex items-center justify-between border-b py-4 px-3 border-gray-200">
             <div className="flex w-full items-center">
-
               <h1 className="w-[20%] text-gray-800 mr-12">Password</h1>
 
               <p className="flex-1 text-gray-600">
                 {formData.Password === "" ? (
                   <span className="text-gray-400">Create a New Password</span>
                 ) : (
-                  '***********'
+                  "***********"
                 )}
               </p>
-            
 
               {formData.Password === "" ? (
                 <h1
@@ -519,8 +503,7 @@ const AccountInformationPage = ({
                 >
                   Change Password
                 </h1>
-              )} 
-
+              )}
             </div>
           </div>
         </div>

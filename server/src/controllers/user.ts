@@ -31,12 +31,10 @@ export const getSubmissionDetails = async (req: Request, res: Response) => {
     res.status(200).json({ success: true, submissions });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error while fetching submission details",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error while fetching submission details",
+    });
   }
 };
 
@@ -103,12 +101,10 @@ export const handleUpdateEmail = async (req: Request, res: Response) => {
     const userWithSameEmail = await User.findOne({ email });
 
     if (userWithSameEmail) {
-      return res
-        .status(409)
-        .json({
-          success: false,
-          message: "User with this email already exists",
-        });
+      return res.status(409).json({
+        success: false,
+        message: "User with this email already exists",
+      });
     }
 
     const otpData = await Otp.findOne({ userId })
@@ -127,10 +123,7 @@ export const handleUpdateEmail = async (req: Request, res: Response) => {
       return res.status(400).json({ success: false, message: "OTP expired" });
     }
 
-    await User.updateOne(
-      { _id: user },
-      { $set: { email } },
-    );
+    await User.updateOne({ _id: user }, { $set: { email } });
     res
       .status(200)
       .json({ success: true, message: "Email updated successfully", email });
@@ -141,4 +134,3 @@ export const handleUpdateEmail = async (req: Request, res: Response) => {
       .json({ success: false, message: "Error while updating email" });
   }
 };
-

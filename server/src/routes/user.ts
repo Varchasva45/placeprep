@@ -5,7 +5,7 @@ import {
   getUserDetails,
   updateUserDetails,
   updateUsername,
-  handleUpdateEmail
+  handleUpdateEmail,
 } from "../controllers/user";
 
 const router = express.Router();

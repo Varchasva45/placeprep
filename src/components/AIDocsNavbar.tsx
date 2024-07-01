@@ -9,7 +9,6 @@ import UserAccountNav from "./UserAccountNavbar";
 import userState from "../recoil/atoms/user";
 
 const AIDocsNavbar = () => {
-  
   const user = useRecoilValue(userState);
   const auth = useRecoilValue(authState);
 

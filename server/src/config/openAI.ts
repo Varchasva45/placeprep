@@ -6,9 +6,9 @@ dotenv.config();
 const apiKey = process.env.OPENAI_APIKEY;
 
 export const openai = new OpenAI({
-  apiKey
+  apiKey,
 });
 
 export const embeddings = new OpenAIEmbeddings({
-  apiKey
+  apiKey,
 });

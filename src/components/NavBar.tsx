@@ -9,10 +9,9 @@ import userState from "../recoil/atoms/user";
 import MaxWidthWrapper2 from "./MaxWidthWrapper2";
 
 const NavBar = () => {
-  
   const user = useRecoilValue(userState);
   const auth = useRecoilValue(authState);
-  
+
   return (
     <nav className="sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 opacity-95 bg-white/75 backdrop-blur-xl transition-all">
       <MaxWidthWrapper2>

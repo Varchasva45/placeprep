@@ -51,7 +51,7 @@ export const signup = async (req: Request, res: Response) => {
         username,
         email: newUser.email,
         isSubscribed: newUser.isSubscribed,
-        imageUrl: newUser.imageUrl
+        imageUrl: newUser.imageUrl,
       },
     });
   } catch (error) {
@@ -95,7 +95,7 @@ export const login = async (req: Request, res: Response) => {
         username: user.username,
         email: user.email,
         isSubscribed: user.isSubscribed,
-        imageUrl: user.imageUrl
+        imageUrl: user.imageUrl,
       },
     });
   } catch (error) {
@@ -265,25 +265,36 @@ export const handleUpdatePassword = async (req: Request, res: Response) => {
     const userId = req.params.userId;
     const { currentPassword, newPassword } = req.body;
 
-    const user:any = await User.findOne({_id: userId});
+    const user: any = await User.findOne({ _id: userId });
 
-    if(!user) {
-      return res.status(404).json({ success: false, message: "User not found" })
-    } 
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
 
-    if(user.password) {
+    if (user.password) {
       const isValid = bcrypt.compareSync(currentPassword, user.password);
-      if(!isValid) {
-        return res.status(400).json({ success: false, message: "Invalid password" })
+      if (!isValid) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid password" });
       }
     }
-    
+
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(newPassword, salt);
-    await User.updateOne({ _id: user._id }, { $set: { password: hashedPassword } });
-    return res.status(200).json({ success: true, message: "Password updated successfully" })
+    await User.updateOne(
+      { _id: user._id },
+      { $set: { password: hashedPassword } },
+    );
+    return res
+      .status(200)
+      .json({ success: true, message: "Password updated successfully" });
   } catch (error) {
     console.log("Error while updating password", error);
-    res.status(500).json({ success: false, message: "Error while updating password" })
+    res
+      .status(500)
+      .json({ success: false, message: "Error while updating password" });
   }
-}
+};

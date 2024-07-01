@@ -21,7 +21,6 @@ interface UserAccountNavProps {
 }
 
 const UserAccountNav = ({ email, imageUrl, name }: UserAccountNavProps) => {
-
   const [user, setUser] = useRecoilState(userState);
   const setAuth = useSetRecoilState(authState);
   const navigate = useNavigate();
@@ -31,7 +30,14 @@ const UserAccountNav = ({ email, imageUrl, name }: UserAccountNavProps) => {
     Cookies.remove("token");
     Cookies.remove("user");
     setAuth({ token: null, isAuthenticated: false });
-    setUser({ id: null, name: null, username: null, email: null, isSubscribed: false, imageUrl: null });
+    setUser({
+      id: null,
+      name: null,
+      username: null,
+      email: null,
+      isSubscribed: false,
+      imageUrl: null,
+    });
     navigate("/");
   };
 

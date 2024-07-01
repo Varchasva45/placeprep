@@ -21,17 +21,14 @@ const ChatWrapper = ({ isSubscribed, fileId }: ChatWrapperProps) => {
   const auth = useRecoilValue(authState);
   const [isLoading, setIsLoading] = useState(true);
   const { fetchFileStatus_API } = askPDFEndpoints;
- 
+
   const fetchData = async () => {
     const apiUrl = `${fetchFileStatus_API}/${fileId}`;
-    const response = await axios.get(
-      apiUrl,
-      {
-        headers: {
-          Authorization: `Bearer ${auth.token}`,
-        },
+    const response = await axios.get(apiUrl, {
+      headers: {
+        Authorization: `Bearer ${auth.token}`,
       },
-    );
+    });
 
     return response.data.status;
   };

@@ -43,7 +43,7 @@ const userSchema = new Schema<IUser>({
     trim: true,
     required: function () {
       return !this.githubAccount;
-    }
+    },
   },
   password: {
     type: String,
@@ -60,7 +60,7 @@ const userSchema = new Schema<IUser>({
     trim: true,
     required: function () {
       return !this.email;
-    }
+    },
   },
   personalInformation: {
     type: {

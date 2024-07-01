@@ -4,7 +4,7 @@ export const authEndpoints = {
   signUp_API: baseUrl + "/api/auth/signup",
   login_API: baseUrl + "/api/auth/login",
   sendOtp_API: baseUrl + "/api/auth/send-otp",
-  updatePassword_API: baseUrl + "/api/auth/password"
+  updatePassword_API: baseUrl + "/api/auth/password",
 };
 
 export const userEndpoints = {
@@ -12,8 +12,8 @@ export const userEndpoints = {
   fetchSubmissions_API: baseUrl + "/api/users/submissions",
   updateUserDetails_API: baseUrl + "/api/users",
   updateUsername_API: baseUrl + "/api/users/username",
-  updateEmail_API: baseUrl + "/api/users/email"
-}
+  updateEmail_API: baseUrl + "/api/users/email",
+};
 
 export const askPDFEndpoints = {
   createFile_API: baseUrl + "/api/askPDF/files/create",
@@ -25,7 +25,3 @@ export const askPDFEndpoints = {
   createFileMessage_API: baseUrl + "/api/askPDF/files/messages",
   vectorizeFile_API: baseUrl + "/api/askPDF/files/vectorize",
 };
-
-
-
-

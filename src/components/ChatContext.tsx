@@ -66,7 +66,7 @@ const ChatContextProvider = ({
         const response = await axios.post(
           apiUrl,
           {
-            message
+            message,
           },
           {
             headers: {

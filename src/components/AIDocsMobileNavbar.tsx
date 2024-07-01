@@ -7,7 +7,6 @@ import userState from "../recoil/atoms/user";
 import authState from "../recoil/atoms/auth";
 
 const AIDocsMobileNavbar = ({ isAuth }: { isAuth: boolean }) => {
-
   const navigate = useNavigate();
   const [isOpen, setOpen] = useState<boolean>(false);
   const pathname = useParams();
@@ -24,11 +23,18 @@ const AIDocsMobileNavbar = ({ isAuth }: { isAuth: boolean }) => {
 
   const handleLogout = (e: any) => {
     e.preventDefault();
-    console.log('Logging out');
+    console.log("Logging out");
     Cookies.remove("token");
     Cookies.remove("user");
     setAuth({ token: null, isAuthenticated: false });
-    setUser({ id: null, name: null, username: null, email: null, isSubscribed: false, imageUrl: null });
+    setUser({
+      id: null,
+      name: null,
+      username: null,
+      email: null,
+      isSubscribed: false,
+      imageUrl: null,
+    });
     navigate("/");
   };
 
