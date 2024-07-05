@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -32,6 +32,7 @@ export const signup = async (req: Request, res: Response) => {
       email,
       password: hash,
       username,
+      imageUrl: null,
     });
 
     const payload = {
@@ -50,6 +51,7 @@ export const signup = async (req: Request, res: Response) => {
         username,
         email: newUser.email,
         isSubscribed: newUser.isSubscribed,
+        imageUrl: newUser.imageUrl,
       },
     });
   } catch (error) {
@@ -93,6 +95,7 @@ export const login = async (req: Request, res: Response) => {
         username: user.username,
         email: user.email,
         isSubscribed: user.isSubscribed,
+        imageUrl: user.imageUrl,
       },
     });
   } catch (error) {
@@ -257,14 +260,12 @@ export const handleSendOtp = async (req: Request, res: Response) => {
   }
 };
 
-export const handleUpdateEmail = async (req: Request, res: Response) => {
+export const handleUpdatePassword = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
-    const { email, otp } = req.body;
+    const { currentPassword, newPassword } = req.body;
 
-    console.log(email, otp, typeof otp);
-
-    const user = await User.findById({ _id: userId });
+    const user: any = await User.findOne({ _id: userId });
 
     if (!user) {
       return res
@@ -272,44 +273,28 @@ export const handleUpdateEmail = async (req: Request, res: Response) => {
         .json({ success: false, message: "User not found" });
     }
 
-    const userWithSameEmail = await User.findOne({ email });
-
-    if (userWithSameEmail) {
-      return res
-        .status(409)
-        .json({
-          success: false,
-          message: "User with this email already exists",
-        });
+    if (user.password) {
+      const isValid = bcrypt.compareSync(currentPassword, user.password);
+      if (!isValid) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid password" });
+      }
     }
 
-    const otpData = await Otp.findOne({ userId })
-      .limit(1)
-      .sort({ createdAt: -1 });
-
-    console.log("otpData", otpData, typeof otpData!.otp);
-
-    if (!otpData || otpData.otp != otp) {
-      return res.status(400).json({ success: false, message: "Invalid OTP" });
-    }
-
-    const otpExpiry = new Date(otpData.createdAt).getTime() + 60000;
-
-    if (otpExpiry < new Date().getTime()) {
-      return res.status(400).json({ success: false, message: "OTP expired" });
-    }
-
-    const updatedUser = await User.updateOne(
-      { _id: user },
-      { $set: { email } },
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(newPassword, salt);
+    await User.updateOne(
+      { _id: user._id },
+      { $set: { password: hashedPassword } },
     );
-    res
+    return res
       .status(200)
-      .json({ success: true, message: "Email updated successfully", email });
+      .json({ success: true, message: "Password updated successfully" });
   } catch (error) {
-    console.log("Error while updating email", error);
+    console.log("Error while updating password", error);
     res
       .status(500)
-      .json({ success: false, message: "Error while updating email" });
+      .json({ success: false, message: "Error while updating password" });
   }
 };

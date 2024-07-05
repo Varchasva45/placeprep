@@ -3,9 +3,10 @@ import userState from "../recoil/atoms/user";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import PdfRenderer from "../components/PDFRenderer";
+import PdfRenderer from "../components/PdfRenderer";
 import ChatWrapper from "../components/ChatWrapper";
 import authState from "../recoil/atoms/auth";
+import { askPDFEndpoints } from "../services/apis";
 
 const PdfChatPage = () => {
   const fileId = location.pathname.split("/").pop();
@@ -14,17 +15,16 @@ const PdfChatPage = () => {
   const navigate = useNavigate();
   const [fileUrl, setFileUrl] = useState<string>("");
   const [fileName, setFileName] = useState<string>("");
+  const { fetchFileDetails_API } = askPDFEndpoints;
 
   const fetchFileDetails = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3000/askPdf/files/${fileId}`,
-        {
-          headers: {
-            authorization: `Bearer ${auth.token}`,
-          },
+      const apiUrl = `${fetchFileDetails_API}/${fileId}`;
+      const response = await axios.get(apiUrl, {
+        headers: {
+          authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       const file = response.data.file;
 
@@ -58,7 +58,7 @@ const PdfChatPage = () => {
           </div>
 
           <div className="bg-white shrink-0 flex-[0.75] border-t border-gray-200 lg:w-96 lg:border-l lg:border-t-0">
-            <ChatWrapper isSubscribed={user.isSubscribed} fileId={fileId} />
+            <ChatWrapper isSubscribed={user.isSubscribed!} fileId={fileId} />
           </div>
         </div>
       </div>

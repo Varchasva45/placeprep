@@ -3,10 +3,12 @@ import { OpenAIEmbeddings } from "@langchain/openai";
 import dotenv from "dotenv";
 dotenv.config();
 
+const apiKey = process.env.OPENAI_APIKEY;
+
 export const openai = new OpenAI({
-  apiKey: "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",
+  apiKey,
 });
 
 export const embeddings = new OpenAIEmbeddings({
-  apiKey: "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",
+  apiKey,
 });

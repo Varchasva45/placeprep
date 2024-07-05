@@ -4,6 +4,7 @@ import { useRecoilValue } from "recoil";
 import authState from "../recoil/atoms/auth";
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "react-query";
+import { askPDFEndpoints } from "../services/apis";
 
 type StreamResponse = {
   addMessage: () => void;
@@ -43,6 +44,7 @@ const ChatContextProvider = ({
     pageParams: string | null;
   }
 
+  const { createFileMessage_API } = askPDFEndpoints;
   const queryClient = useQueryClient();
   const auth = useRecoilValue(authState);
   const [message, setMessage] = useState<string>("");
@@ -60,10 +62,10 @@ const ChatContextProvider = ({
     mutationFn: async (message: string) => {
       setMessage("");
       try {
+        const apiUrl = `${createFileMessage_API}/${fileId}`;
         const response = await axios.post(
-          "http://localhost:3000/askPDF/message",
+          apiUrl,
           {
-            fileId,
             message,
           },
           {

@@ -8,7 +8,7 @@ import { useRecoilValue } from "recoil";
 import userState from "../recoil/atoms/user";
 import axios from "axios";
 import authState from "../recoil/atoms/auth";
-// import { vectorizePDF } from '../lib/vectorizePDF';
+import { askPDFEndpoints } from "../services/apis";
 
 type UploadDropzoneProps = {
   isSubscribed: boolean;
@@ -19,6 +19,7 @@ const UploadDropzone = ({ isSubscribed }: UploadDropzoneProps) => {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const user = useRecoilValue(userState);
   const auth = useRecoilValue(authState);
+  const { createFile_API, vectorizeFile_API } = askPDFEndpoints;
 
   const startSimulateProgress = () => {
     setUploadProgress(0);
@@ -79,7 +80,7 @@ const UploadDropzone = ({ isSubscribed }: UploadDropzoneProps) => {
 
       // dont wait for the response, create the file and redirect to the dashboard
       axios.post(
-        "http://localhost:3000/askPdf/vectorize-pdf",
+        vectorizeFile_API,
         { fileUrl: url, fileKey: data.file_key },
         {
           headers: {
@@ -88,15 +89,11 @@ const UploadDropzone = ({ isSubscribed }: UploadDropzoneProps) => {
         },
       );
 
-      const response = await axios.post(
-        "http://localhost:3000/askPdf/createFile",
-        newFile,
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const response = await axios.post(createFile_API, newFile, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         window.location.href = `/dashboard/${response.data.fileId}`;

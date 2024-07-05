@@ -19,7 +19,8 @@ import Test from "./components/Test";
 import Profile from "./pages/Profile";
 import Problems from "./pages/Problems";
 import Solve from "./pages/Solve";
-import Community from "./pages/Community";
+import ChangePassword from "./components/ChangePassword";
+import CreatePassword from "./components/CreatePassword";import Community from "./pages/Community";
 import Post from "./pages/Post";
 import EditPost from "./pages/EditPost";
 
@@ -38,10 +39,17 @@ const App = () => {
             <Route path="/explore" element={<AIDocsLanding />} />
             <Route path="/problems" element={<Problems />} />
             <Route path="/problems/:id" element={<Solve />} />
+            <Route
+              path="/account/password/change"
+              element={<ChangePassword />}
+            />
+            <Route
+              path="/account/password/create"
+              element={<CreatePassword />}
+            />
           </Route>
           <Route path="/edit-post/:id" element={<EditPost />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/post/:id" element={<Post />} />
+          <Route path="/community" element={<Community />} /><Route path="/post/:id" element={<Post />} />
           <Route path="/sheets" element={<Landing />} />
           <Route path="/interview" element={<Landing />} />
           <Route path="/playground" element={<Playground />} />

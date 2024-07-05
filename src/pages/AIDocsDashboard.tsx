@@ -39,7 +39,7 @@ const AIDocsDashboard = () => {
   const auth = useRecoilValue(authState);
   const [files, setFiles] = useState<file[]>();
   const [loading, setLoading] = useState<boolean>(false);
-  const { fetchFiles_API } = askPDFEndpoints;
+  const { fetchFiles_API, deleteFile_API } = askPDFEndpoints;
 
   const fetchFiles = async () => {
     setLoading(true);
@@ -80,14 +80,12 @@ const AIDocsDashboard = () => {
     const toastId = toast.loading("Deleting file...");
 
     try {
-      const response = await axios.delete(
-        `http://localhost:3000/askPDF/deleteFile/${fileId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const apiUrl = `${deleteFile_API}/${fileId}`;
+      const response = await axios.delete(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         toast.dismiss(toastId);

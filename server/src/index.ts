@@ -34,12 +34,12 @@ app.use(passport.session());
 app.use(express.json());
 app.use(cors());
 
-app.use("/interview", interviewRouter);
-app.use("/question", questionRouter);
-app.use("/auth", authRouter);
-app.use("/askPDF", askPDFRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
+app.use("/api/askPDF/files", askPDFRouter);
+app.use("/api/interview", interviewRouter);
+app.use("/api/question", questionRouter);
 app.use("/problem", problemRouter);
-app.use("/users", userRouter);
 
 async function startServer() {
   try {

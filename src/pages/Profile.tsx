@@ -4,8 +4,16 @@ import { Button } from "../components/ui/button";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaBuilding, FaGithub, FaLinkedin } from "react-icons/fa";
 import { LuClipboardList } from "react-icons/lu";
-import { GoChecklist } from "react-icons/go";
-import { ChevronRight, Eye, Ghost, MailIcon, Medal, User } from "lucide-react";
+import { RiDiscussFill } from "react-icons/ri";
+import {
+  ChevronRight,
+  Eye,
+  Ghost,
+  MailIcon,
+  Medal,
+  ClipboardCheck,
+  User,
+} from "lucide-react";
 import ProblemHeatMap from "../components/HeatMap";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -16,6 +24,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import authState from "../recoil/atoms/auth";
 import mongoose from "mongoose";
+import { userEndpoints } from "../services/apis";
 
 const Profile = () => {
   interface IuserDetails {
@@ -52,6 +61,7 @@ const Profile = () => {
     time: string;
   }
 
+  const { fetchUserDetails_API, fetchSubmissions_API } = userEndpoints;
   const [selectedTab, setSelectedTab] = useState<string>("Recent AC");
   const [isEditProfilePageVisible, setIsEditProfilePageVisible] =
     useState<boolean>(false);
@@ -70,14 +80,12 @@ const Profile = () => {
 
   const getUserDetails = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3000/users/${user.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const apiUrl = `${fetchUserDetails_API}/${user.id}`;
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         setUserDetails(response.data.userDetails);
@@ -96,14 +104,12 @@ const Profile = () => {
 
   const getRecentACSubmissions = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:3000/users/submissions/${user.id}?result=Accepted`,
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const apiUrl = `${fetchSubmissions_API}/${user.id}?result=Accepted`;
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         setRecentACSubmissions(response.data.submissions);
@@ -165,7 +171,7 @@ const Profile = () => {
   // ];
 
   return (
-    <div className="mx-auto w-10/12 mt-6 mb-6 bg-gray">
+    <div className="mx-auto w-10/12 my-[1.4rem] bg-gray">
       <div className="lg:flex">
         {/* Left Card */}
         <div className="flex-[0.4] h-full">
@@ -263,7 +269,7 @@ const Profile = () => {
 
             <div className="h-[0.05rem] bg-gray-300"></div>
 
-            <div className="mt-5">
+            <div className="mt-4">
               <h3 className="font-semibold text-lg">Profile Stats</h3>
               <div className="mt-3 space-y-4 text-gray-600 text-md">
                 <h3 className="flex items-center cursor-pointer hover:text-black">
@@ -276,6 +282,13 @@ const Profile = () => {
                 <h3 className="flex items-center cursor-pointer hover:text-black">
                   <Medal className="mr-3 h-4 w-4" />
                   Respect{" "}
+                  <span className="pl-2 text-black font-semibold">
+                    {userDetails?.profileStats.respect}
+                  </span>
+                </h3>
+                <h3 className="flex items-center cursor-pointer hover:text-black">
+                  <RiDiscussFill className="mr-3 h-4 w-4" />
+                  Discussion{" "}
                   <span className="pl-2 text-black font-semibold">
                     {userDetails?.profileStats.respect}
                   </span>
@@ -368,7 +381,7 @@ const Profile = () => {
                       className={`flex items-center justify-center cursor-pointer hover:text-black gap-2 py-2 px-4 ${selectedTab === "Recent AC" ? "bg-gray-100 rounded-md text-black" : ""}`}
                       onClick={() => setSelectedTab("Recent AC")}
                     >
-                      <GoChecklist className="w-7 h-6" />
+                      <ClipboardCheck className="w-7 h-6" />
                       Recent AC
                     </h3>
                     <h3
@@ -399,7 +412,7 @@ const Profile = () => {
                         ))}
                       </div>
                     ) : (
-                      <div className="h-72 my-6 flex flex-col justify-center items-center gap-2 select-none">
+                      <div className="h-[17.9rem] my-6 flex flex-col justify-center items-center gap-2 select-none">
                         <Ghost className="h-8 w-8 text-zinc-800" />
                         <h3 className="font-semibold text-xl">
                           Pretty empty around here
@@ -411,7 +424,7 @@ const Profile = () => {
                       </div>
                     )
                   ) : (
-                    <div className="h-72 my-6 flex flex-col justify-center items-center gap-2 select-none">
+                    <div className="h-[17.9rem] my-6 flex flex-col justify-center items-center gap-2 select-none">
                       <Ghost className="h-8 w-8 text-zinc-800" />
                       <h3 className="font-semibold text-xl">
                         Pretty empty around here

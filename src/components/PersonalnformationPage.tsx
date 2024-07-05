@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { useRecoilValue } from "recoil";
 import authState from "../recoil/atoms/auth";
 import mongoose from "mongoose";
+import { userEndpoints } from "../services/apis";
 
 interface IuserDetails {
   _id: mongoose.Types.ObjectId;
@@ -75,6 +76,7 @@ const PersonalInformationPage = ({
   userId,
   setUserDetails,
 }: EditProfilePageProps) => {
+  const { updateUserDetails_API } = userEndpoints;
   const auth = useRecoilValue(authState);
   const [editMode, setEditMode] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -107,6 +109,7 @@ const PersonalInformationPage = ({
 
   const handleSaveChanges = async () => {
     try {
+      const apiUrl = `${updateUserDetails_API}/${userId}`;
       const updateBody = {
         updatedData: {
           name: formData.Name,
@@ -120,16 +123,12 @@ const PersonalInformationPage = ({
         },
       };
 
-      const response = await axios.put(
-        `http://localhost:3000/users/${userId}`,
-        updateBody,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const response = await axios.put(apiUrl, updateBody, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         toast.success("User details updated successfully");

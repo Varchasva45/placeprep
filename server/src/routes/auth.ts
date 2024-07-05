@@ -8,7 +8,7 @@ import {
   login,
   signup,
   handleSendOtp,
-  handleUpdateEmail,
+  handleUpdatePassword,
 } from "../controllers/auth";
 import { isAuthenticated } from "../middlewares/isAuthenticated";
 
@@ -16,8 +16,8 @@ const router = express.Router();
 
 router.post("/signup", validateData(signupSchema), signup);
 router.post("/login", validateData(loginSchema), login);
-router.post("/sendOtp/:userId", isAuthenticated, handleSendOtp);
-router.post("/updateEmail/:userId", isAuthenticated, handleUpdateEmail);
+router.post("send-otp/:userId", isAuthenticated, handleSendOtp);
+router.put("/password/:userId", isAuthenticated, handleUpdatePassword);
 
 router.get(
   "/google",

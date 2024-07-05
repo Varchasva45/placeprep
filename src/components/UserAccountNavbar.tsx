@@ -8,13 +8,12 @@ import {
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Gem } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Icons } from "./Icons";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import userState from "../recoil/atoms/user";
 import Cookies from "js-cookie";
 import authState from "../recoil/atoms/auth";
-
 interface UserAccountNavProps {
   email: string | undefined;
   name: string;
@@ -22,20 +21,24 @@ interface UserAccountNavProps {
 }
 
 const UserAccountNav = ({ email, imageUrl, name }: UserAccountNavProps) => {
-  const setAuthState = useSetRecoilState(authState);
-  const setUserState = useSetRecoilState(userState);
-  const user = useRecoilValue(userState);
-  const handleLogout = () => {
+  const [user, setUser] = useRecoilState(userState);
+  const setAuth = useSetRecoilState(authState);
+  const navigate = useNavigate();
+
+  const handleLogout = (e: any) => {
+    e.preventDefault();
     Cookies.remove("token");
     Cookies.remove("user");
-    setAuthState({ isAuthenticated: false, token: null });
-    setUserState({
-      name: null,
+    setAuth({ token: null, isAuthenticated: false });
+    setUser({
       id: null,
+      name: null,
+      username: null,
       email: null,
       isSubscribed: false,
       imageUrl: null,
     });
+    navigate("/");
   };
 
   return (

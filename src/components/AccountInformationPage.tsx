@@ -3,7 +3,6 @@ import { Button } from "./ui/button";
 import { useRecoilValue } from "recoil";
 import toast from "react-hot-toast";
 import { IoMdArrowRoundBack } from "react-icons/io";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,6 +18,8 @@ import mongoose from "mongoose";
 import axios from "axios";
 import authState from "../recoil/atoms/auth";
 import { Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { authEndpoints, userEndpoints } from "../services/apis";
 
 interface IuserDetails {
   _id: mongoose.Types.ObjectId;
@@ -58,8 +59,9 @@ const AccountInformationPage = ({
   userDetails,
   setUserDetails,
 }: EditProfilePageProps) => {
+  const navigate = useNavigate();
   const auth = useRecoilValue(authState);
-  const [editMode, setEditMode] = useState<string | null>("Password");
+  const [editMode, setEditMode] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [otp, setOtp] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -68,6 +70,8 @@ const AccountInformationPage = ({
     Password: userDetails?.password || "",
     Username: "",
   });
+  const { sendOtp_API } = authEndpoints;
+  const { updateEmail_API, updateUsername_API } = userEndpoints;
 
   useEffect(() => {
     if (editMode) {
@@ -115,11 +119,9 @@ const AccountInformationPage = ({
     };
 
     try {
-      const response = await axios.post(
-        `http://localhost:3000/auth/sendOtp/${userDetails?._id}`,
-        body,
-        config,
-      );
+      const apiUrl = `${sendOtp_API}/${userDetails?._id}`;
+
+      const response = await axios.post(apiUrl, body, config);
 
       toast.dismiss(toastId);
 
@@ -154,21 +156,18 @@ const AccountInformationPage = ({
       return;
     }
     try {
+      const apiUrl = `${updateEmail_API}/${userDetails?._id}`;
       const body = {
         email: formData.Email,
         otp,
       };
 
-      const response = await axios.post(
-        `http://localhost:3000/auth/updateEmail/${userDetails?._id}`,
-        body,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const response = await axios.post(apiUrl, body, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
         toast.dismiss(toastId);
@@ -213,23 +212,19 @@ const AccountInformationPage = ({
         return;
       }
 
+      const apiUrl = `${updateUsername_API}/${userDetails?._id}`;
       const updateBody = {
         username: formData.Username,
       };
 
-      const response = await axios.put(
-        `http://localhost:3000/users/username/${userDetails?._id}`,
-        updateBody,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.token}`,
-          },
+      const response = await axios.put(apiUrl, updateBody, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.token}`,
         },
-      );
+      });
 
       if (response.data.success) {
-        console.log(response.data);
         setUserDetails({
           ...userDetails,
           username: response.data.username,
@@ -350,126 +345,6 @@ const AccountInformationPage = ({
       </div>
     );
   }
-
-  // if(editMode === 'Password') {
-  //   return (
-  //     <div className="p-6 w-full select-none">
-  //     <div>
-  //       <h1 className="text-lg flex items-center font-semibold ml-3 mb-3">
-  //         <IoMdArrowRoundBack
-  //           className='h-5 w-5 mr-2 font-bold hover:cursor-pointer'
-  //           onClick={() => {
-  //             setNewEmail('');
-  //             setOtp('');
-  //             setEditMode(null);
-  //           }}
-  //         />
-  //         {formData.Password === "" ? 'Create Password' : 'Change Password'}
-  //       </h1>
-
-  //       <div>
-  //         <div className="flex py-4 px-3 w-full items-center">
-  //           <h1 className="w-[20%] font-semibold mr-12">Current Password</h1>
-  //           <div className="flex-1 relative">
-  //             <input
-  //               id="current-password"
-  //               type={showCurrentPassword ? "text" : "password"}
-  //               className="w-full p-2 focus:outline-none font-semibold text-black rounded-md border border-gray-300"
-  //               value={newEmail}
-  //               onChange={(e) => setNewEmail(e.target.value)}
-  //               placeholder="Enter Current Password"
-  //               ref={inputRef}
-  //             />
-  //             <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-  //               <button
-  //                 type="button"
-  //                 className="focus:outline-none"
-  //                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-  //               >
-  //                 {showCurrentPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-  //               </button>
-  //             </div>
-  //           </div>
-  //         </div>
-
-  //         <div className="flex py-4 px-3 w-full items-center">
-  //           <h1 className="w-[20%] font-semibold mr-12">New Password</h1>
-  //           <div className="flex-1 relative">
-  //             <input
-  //               id="new-password"
-  //               type={showNewPassword ? "text" : "password"}
-  //               className="w-full p-2 focus:outline-none font-semibold text-black rounded-md border border-gray-300"
-  //               value={newPassword}
-  //               onChange={(e) => setNewPassword(e.target.value)}
-  //               placeholder="Enter New Password"
-  //             />
-  //             <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-  //               <button
-  //                 type="button"
-  //                 className="focus:outline-none"
-  //                 onClick={() => setShowNewPassword(!showNewPassword)}
-  //               >
-  //                 {showNewPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-  //               </button>
-  //             </div>
-  //           </div>
-  //         </div>
-
-  //         <div className="flex py-4 px-3 w-full items-center">
-  //           <h1 className="w-[20%] font-semibold mr-12">Confirm Password</h1>
-  //           <div className="flex-1 relative">
-  //             <input
-  //               id="confirm-password"
-  //               type={showConfirmPassword ? "text" : "password"}
-  //               className="w-[40%] p-2 focus:outline-none font-semibold text-black rounded-md border border-gray-300"
-  //               value={confirmPassword}
-  //               onChange={handleConfirmPasswordChange}
-  //               placeholder="Confirm Password"
-  //             />
-  //             <div className="absolute inset-y-0 right-28 pr-3 flex items-center">
-  //               <button
-  //                 type="button"
-  //                 className="focus:outline-none"
-  //                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-  //               >
-  //                 {showConfirmPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-  //               </button>
-  //             </div>
-  //           </div>
-  //         </div>
-  //         {!passwordMatch && (
-  //           <div className="text-red-500 text-sm mt-1 ml-32">Passwords do not match</div>
-  //         )}
-  //       </div>
-  //     </div>
-
-  //     <div className="mt-6 w-full flex items-center justify-center">
-  //       <AlertDialog>
-  //         <AlertDialogTrigger>
-  //             <Button disabled={otp.length === 0}>{formData.Password === '' ? 'Create Password' : 'Update Password'}</Button>
-  //         </AlertDialogTrigger>
-  //         <AlertDialogContent>
-  //           <AlertDialogHeader>
-  //             <AlertDialogTitle>
-  //               Are you sure you want to change your password?
-  //             </AlertDialogTitle>
-  //             <AlertDialogDescription>
-  //               This action cannot be undone. This will permanently update your password.
-  //             </AlertDialogDescription>
-  //           </AlertDialogHeader>
-  //           <AlertDialogFooter>
-  //             <AlertDialogCancel>Cancel</AlertDialogCancel>
-  //             <AlertDialogAction>
-  //               {/* Logic to update the information on Accept. Don't forget to add the loading state */}
-  //               Continue
-  //             </AlertDialogAction>
-  //           </AlertDialogFooter>
-  //         </AlertDialogContent>
-  //       </AlertDialog>
-  //     </div>
-  //   </div>
-  //   );
-  // }
 
   if (editMode === "Username") {
     return (
@@ -601,29 +476,36 @@ const AccountInformationPage = ({
             </div>
           </div>
 
-          {/* Password div */}
-          {/* <div className="flex items-center justify-between border-b py-4 px-3 border-gray-200">
+          {/*Password div*/}
+          <div className="flex items-center justify-between border-b py-4 px-3 border-gray-200">
             <div className="flex w-full items-center">
-
               <h1 className="w-[20%] text-gray-800 mr-12">Password</h1>
 
               <p className="flex-1 text-gray-600">
                 {formData.Password === "" ? (
-                  <span className="text-gray-400">Your Password</span>
+                  <span className="text-gray-400">Create a New Password</span>
                 ) : (
-                  '***********'
+                  "***********"
                 )}
               </p>
-            
-              <h1
-                className="text-blue-600 hover:cursor-pointer hover:shadow-blue-500 ml-12"
-                onClick={() => handleEditClick("Password")}
-              >
-                {formData.Password === "" ? "Create Password" : "Change Password"}
-              </h1>
 
+              {formData.Password === "" ? (
+                <h1
+                  className="text-blue-600 hover:cursor-pointer hover:shadow-blue-500 ml-12"
+                  onClick={() => navigate(`/account/password/create`)}
+                >
+                  Create Password
+                </h1>
+              ) : (
+                <h1
+                  className="text-blue-600 hover:cursor-pointer hover:shadow-blue-500 ml-12"
+                  onClick={() => navigate(`/account/password/change`)}
+                >
+                  Change Password
+                </h1>
+              )}
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </div>

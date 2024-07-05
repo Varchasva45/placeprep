@@ -215,11 +215,11 @@ const AllProblems: React.FC = () => {
             Reset
           </button>
           <button
-          className="bg-slate-900 hover:bg-slate-800 py-2 px-4 rounded"
-          onClick={toggleTags}
-        >
-          {showTags ? "Hide Tags" : "Show Tags"}
-        </button>
+            className="bg-slate-900 hover:bg-slate-800 py-2 px-4 rounded"
+            onClick={toggleTags}
+          >
+            {showTags ? "Hide Tags" : "Show Tags"}
+          </button>
         </div>
       </div>
       <div className="flex flex-col">
@@ -227,22 +227,36 @@ const AllProblems: React.FC = () => {
           <table className="w-full ">
             <thead className="bg-slate-950 text-white">
               <tr>
-                <th className="py-2 px-4 max-w-1 text-left text-gray-400">Question ID</th>
-                <th className="py-2 px-4 max-w-1 text-left text-gray-400">Title</th>
-                <th className="py-2 px-4 max-w-1 text-left text-gray-400">Difficulty</th>
-                <th className="py-2 px-4 max-w-1 text-left text-gray-400">Acceptance</th>
-                <th className="py-2 px-4 max-w-1 text-left text-gray-400">Actions</th>
-                <th className="py-2 px-4 max-w-1 text-left text-gray-400">Actions</th>
-                {showTags && <th className="py-2 px-4 max-w-1 text-left text-gray-400">Tags</th>}
-                
-                
+                <th className="py-2 px-4 max-w-1 text-left text-gray-400">
+                  Question ID
+                </th>
+                <th className="py-2 px-4 max-w-1 text-left text-gray-400">
+                  Title
+                </th>
+                <th className="py-2 px-4 max-w-1 text-left text-gray-400">
+                  Difficulty
+                </th>
+                <th className="py-2 px-4 max-w-1 text-left text-gray-400">
+                  Acceptance
+                </th>
+                <th className="py-2 px-4 max-w-1 text-left text-gray-400">
+                  Actions
+                </th>
+                <th className="py-2 px-4 max-w-1 text-left text-gray-400">
+                  Actions
+                </th>
+                {showTags && (
+                  <th className="py-2 px-4 max-w-1 text-left text-gray-400">
+                    Tags
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="bg-gray-800 text-white">
               {problems.map((problem: any, index: number) => (
                 <tr
                   key={problem.question_id}
-                  className={` ${index % 2 === 0 ? 'bg-slate-900' : 'bg-slate-950'} h-16`}
+                  className={` ${index % 2 === 0 ? "bg-slate-900" : "bg-slate-950"} h-16`}
                 >
                   <td className="py-2 px-4 text-left max-w-1">
                     {problem.question_id}
@@ -254,59 +268,55 @@ const AllProblems: React.FC = () => {
                         problem.difficulty === "Easy"
                           ? "text-blue-300"
                           : problem.difficulty === "Medium"
-                          ? "text-yellow-400"
-                          : "text-red-400"
+                            ? "text-yellow-400"
+                            : "text-red-400"
                       }`}
                     >
                       {problem.difficulty}
                     </span>
                   </td>
                   <td className="py-2 px-4 text-left max-w-1">
-                    <div className="text-white">
-                      61.1%
-                    </div>
+                    <div className="text-white">61.1%</div>
                   </td>
                   {showTags && (
                     <td className="py-2 px-4 text-left max-w-1 w-1/4">
                       <div className="flex flex-row">
-                      {problem.tags.length > 2 ? (
-                        <>
-                          {problem.tags
-                            .slice(0, 2)
-                            .map((tag: any, index: number) => (
-                              <span
-                                key={index}
-                                className="bg-gray-600 text-white px-2 py-1 rounded-full inline-block mr-2 mb-1"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          <span className="bg-gray-600 text-white px-2 py-1 rounded-full inline-block mr-2 mb-1">
-                            +{problem.tags.length - 2}
-                          </span>
-                        </>
-                      ) : (
-                        problem.tags.map((tag: any, index: number) => (
-                          <span
-                            key={index}
-                            className="bg-gray-600 text-white px-2 py-1 rounded-full inline-block mr-2 mb-1"
-                          >
-                            {tag}
-                          </span>
-                        ))
-                      )}
+                        {problem.tags.length > 2 ? (
+                          <>
+                            {problem.tags
+                              .slice(0, 2)
+                              .map((tag: any, index: number) => (
+                                <span
+                                  key={index}
+                                  className="bg-gray-600 text-white px-2 py-1 rounded-full inline-block mr-2 mb-1"
+                                >
+                                  {tag}
+                                </span>
+                              ))}
+                            <span className="bg-gray-600 text-white px-2 py-1 rounded-full inline-block mr-2 mb-1">
+                              +{problem.tags.length - 2}
+                            </span>
+                          </>
+                        ) : (
+                          problem.tags.map((tag: any, index: number) => (
+                            <span
+                              key={index}
+                              className="bg-gray-600 text-white px-2 py-1 rounded-full inline-block mr-2 mb-1"
+                            >
+                              {tag}
+                            </span>
+                          ))
+                        )}
                       </div>
                     </td>
                   )}
                   <td className="py-2 px-4 text-left max-w-1">
-                  <Link to={`/problems/${problem._id}`}>
-                    <div className="text-green-400">
-                      Solve
-                    </div>
+                    <Link to={`/problems/${problem._id}`}>
+                      <div className="text-green-400">Solve</div>
                     </Link>
                   </td>
                   <td className="py-2 px-4 text-left max-w-1">
-                    <CgFileDocument size="23" color="magenta"/>
+                    <CgFileDocument size="23" color="magenta" />
                   </td>
                 </tr>
               ))}
@@ -346,4 +356,3 @@ const AllProblems: React.FC = () => {
 };
 
 export default AllProblems;
-

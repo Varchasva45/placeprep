@@ -5,6 +5,7 @@ import {
   getUserDetails,
   updateUserDetails,
   updateUsername,
+  handleUpdateEmail,
   postController,
   getPosts,
   getPost,
@@ -23,6 +24,7 @@ router.get("/:userId", isAuthenticated, getUserDetails);
 router.get("/submissions/:userId", isAuthenticated, getSubmissionDetails);
 router.put("/:userId", isAuthenticated, updateUserDetails);
 router.put("/username/:userId", isAuthenticated, updateUsername);
+router.put("/email/:userId", isAuthenticated, handleUpdateEmail);
 router.get("/postDiscussion/:id", getPost)
 router.post("/postDiscussion", postController);
 router.patch("/postDiscussion/:id", updatePostController);

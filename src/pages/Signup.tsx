@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FaGithub, FaGoogle } from "react-icons/fa";
@@ -16,18 +16,14 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const { signUp_API } = authEndpoints;
   const [authAtom, setAuthAtom] = useRecoilState(authState);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const setUserAtom = useSetRecoilState(userState);
   const user = useRecoilValue(userState);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (authAtom.isAuthenticated) {
-      navigate(`/u/${user.id}`);
-    }
-  }, [authAtom, setAuthAtom]);
-
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     const toastId = toast.loading("Signing up...");
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
@@ -35,6 +31,8 @@ const Signup = () => {
 
     if (!email || !password) {
       toast.error("Please fill in all fields");
+      toast.dismiss(toastId);
+      setIsLoading(false);
       return;
     }
 
@@ -57,7 +55,7 @@ const Signup = () => {
         setUserAtom(user);
         setAuthAtom({ isAuthenticated: true, token });
         toast.success(response.data.message);
-        navigate(`/u/${user.id}`);
+        navigate(`/u/${user.username}`);
       } else {
         toast.error(response.data.message);
       }
@@ -67,14 +65,15 @@ const Signup = () => {
           ? error.response.data.message
           : "An error occurred, please try again",
       );
+    } finally {
+      toast.dismiss(toastId);
+      setIsLoading(false);
     }
-
-    toast.dismiss(toastId);
   };
 
   const handleSignupWithGoogle = async () => {
     try {
-      window.open(`http://localhost:3000/auth/google`, "_self");
+      window.open(`http://localhost:3000/api/auth/google`, "_self");
       if (Cookies.get("token")) {
         toast.success("Logged in successfully");
         setAuthAtom({ isAuthenticated: true, token: Cookies.get("token")! });
@@ -86,7 +85,7 @@ const Signup = () => {
 
   const handleSignUpWithGithub = async () => {
     try {
-      window.open(`http://localhost:3000/auth/github`, "_self");
+      window.open(`http://localhost:3000/api/auth/github`, "_self");
       if (Cookies.get("token")) {
         setAuthAtom({ isAuthenticated: true, token: Cookies.get("token")! });
         toast.success("Logged in successfully");
@@ -110,7 +109,7 @@ const Signup = () => {
   };
 
   if (authAtom.isAuthenticated) {
-    return <Link to={`/u/${user.id}`} />;
+    return <Link to={`/u/${user.username}`} />;
   }
 
   return (
@@ -134,6 +133,7 @@ const Signup = () => {
           </p>
           <div className="flex gap-2">
             <Button
+              disabled={isLoading}
               onClick={handleSignupWithGoogle}
               className="text-white border-white border-2 px-4 py-2 rounded-lg hover:bg-white hover:text-gray-900 flex items-center mb-4"
             >
@@ -141,6 +141,7 @@ const Signup = () => {
               Signup with Google
             </Button>
             <Button
+              disabled={isLoading}
               onClick={handleSignUpWithGithub}
               className="text-white border-white border-2 px-4 py-2 rounded-lg hover:bg-white hover:text-gray-900 flex items-center mb-4"
             >
@@ -207,6 +208,7 @@ const Signup = () => {
                 </div>
               </div>
               <Button
+                disabled={isLoading}
                 type="submit"
                 className="w-full py-3 bg-black text-white rounded-lg font-semibold hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               >

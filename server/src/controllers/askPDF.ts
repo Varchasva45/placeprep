@@ -101,7 +101,8 @@ const vectorizePDF = async (req: Request, res: Response) => {
 };
 
 const getFileMessages = async (req: Request, res: Response) => {
-  const { userId, fileId, cursor } = req.query;
+  const fileId = req.params.fileId;
+  const { userId, cursor } = req.query;
   const file = await File.findById(fileId);
 
   if (!file) {
@@ -130,10 +131,9 @@ const getFileMessages = async (req: Request, res: Response) => {
 };
 
 const sendMessage = async (req: Request, res: Response) => {
-  console.log(process.env.OPENAI_API_KEY);
-  console.log(process.env.PINECONE_API_KEY);
   try {
-    const { fileId, message } = req.body;
+    const fileId = req.params.fileId;
+    const { message } = req.body;
     const file = await File.findById(fileId);
 
     if (!file) {
