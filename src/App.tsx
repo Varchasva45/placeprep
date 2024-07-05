@@ -19,7 +19,9 @@ import Test from "./components/Test";
 import Profile from "./pages/Profile";
 import Problems from "./pages/Problems";
 import Solve from "./pages/Solve";
-
+import Community from "./pages/Community";
+import Post from "./pages/Post";
+import EditPost from "./pages/EditPost";
 
 const App = () => {
   return (
@@ -37,8 +39,9 @@ const App = () => {
             <Route path="/problems" element={<Problems />} />
             <Route path="/problems/:id" element={<Solve />} />
           </Route>
-
-          
+          <Route path="/edit-post/:id" element={<EditPost />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/post/:id" element={<Post />} />
           <Route path="/sheets" element={<Landing />} />
           <Route path="/interview" element={<Landing />} />
           <Route path="/playground" element={<Playground />} />

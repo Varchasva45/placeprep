@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import Submission from "../models/Submission";
+import Post from "../models/Posts";
+import Comment from "../models/Comments";
+import mongoose from "mongoose";
 
 export const getUserDetails = async (req: Request, res: Response) => {
   try {
@@ -66,8 +69,6 @@ export const updateUsername = async (req: Request, res: Response) => {
 
     const user = await User.findOne({ username });
 
-    console.log(user);
-
     if (user) {
       res
         .status(400)
@@ -83,3 +84,228 @@ export const updateUsername = async (req: Request, res: Response) => {
       .json({ success: false, message: "Error while updating user details" });
   }
 };
+
+export const postController = async (req: Request, res: Response) => {
+  try {
+    const { title, content, tag, createdBy, updatedBy, username } = req.body;
+    const post = new Post({
+      title,
+      content,
+      tag,
+      createdBy,
+      updatedBy,
+      username
+    });
+    await post.save();
+    res.status(201).json({ success: true, post });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error while posting submission" });
+  }
+};
+
+export const getPosts = async (req: Request, res: Response) => {
+  try {
+    const page = parseInt(req.query.page as string) || 1;
+    const pageSize = parseInt(req.query.pageSize as string) || 10;
+    const sortedBy = req.query.sortedBy as string || "createdAt";
+    const skip = (page - 1) * pageSize;
+    const posts = await Post.find({isDeleted: false})
+    .sort({ [sortedBy]: -1 })
+    .skip(skip)
+    .limit(pageSize);
+
+    const totalPosts = await Post.countDocuments();
+    const totalPages = Math.ceil(totalPosts / pageSize);
+
+
+    res.status(200).json({ success: true, posts, totalPages, currentPage: page});
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error while fetching posts" });
+  }
+};
+
+export const getPost = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findById(postId)
+    .populate({
+      path: 'comments',
+      match: { isDeleted: false },
+      options: { sort: { createdAt: -1 } }
+    })
+    .exec();
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    res.status(200).json({ success: true, post });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error while fetching post" });
+  }
+};
+
+export const updatePostController = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const { updatedData, userId } = req.body;
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if(updatedData == 'like') {
+      const likedPosts = user.likedPosts;
+      if(likedPosts.includes(postId)) {
+        const index = likedPosts.indexOf(postId);
+        likedPosts.splice(index, 1);
+        await user.save();
+        post.likes -= 1;
+      }
+      else{
+        likedPosts.push(postId);
+        await user.save();
+        post.likes += 1;
+      }
+    } else if(updatedData == 'dislike') {
+      const dislikedPosts = user.dislikedPosts;
+      if(dislikedPosts.includes(postId)) {
+        const index = dislikedPosts.indexOf(postId);
+        dislikedPosts.splice(index, 1);
+        await user.save();
+        post.dislikes -= 1;
+      }
+      else{
+        dislikedPosts.push(postId);
+        await user.save();
+        post.dislikes += 1;
+      }
+    } else {
+      post.views += 1;
+    }
+    await post.save();
+    res.status(200).json({ success: true, post });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error while updating post" });
+  } 
+};
+
+export const postCommentController = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const { content, createdBy, updatedBy, username } = req.body;
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    const comment = new Comment({
+      content,
+      postId,
+      createdBy,
+      updatedBy,
+      username
+    });
+    await comment.save();
+    post.comments.push(comment._id as mongoose.Types.ObjectId);
+    await post.save();
+    res.status(200).json({ success: true, comment });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error while posting comment" });
+  }
+};
+
+export const deletePostController = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const post = await Post.findById(postId);
+    if (!post || post.isDeleted === true) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    post.isDeleted = true;
+    await post.save();
+    res.status(200).json({ success: true, post });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error while deleting post" });
+  }
+}
+
+export const deleteCommentController = async (req: Request, res: Response) => {
+  try {
+    const commentId = req.params.id;
+    const comment = await Comment.findById(commentId);
+    if (!comment || comment.isDeleted === true) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+    comment.isDeleted = true;
+    await comment.save();
+    res.status(200).json({ success: true, comment });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error while deleting comment" });
+  }
+}
+
+export const editPostController = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const { title, tag, content } = req.body;
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    post.title = title;
+    post.tag = tag;
+    post.content = content;
+    await post.save();
+    res.status(200).json({ success: true, post });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error while updating post" });
+  }
+}
+
+export const editCommentController = async (req: Request, res: Response) => {
+  try {
+    const commentId = req.params.id;
+    const { content } = req.body;
+    const comment = await Comment.findById(commentId)
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+    comment.content = content;
+    await comment.save();
+    res.status(200).json({ success: true, comment });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error while updating comment" });
+  }
+}
+    
