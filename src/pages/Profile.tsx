@@ -1,6 +1,12 @@
 import { useRecoilValue } from "recoil";
 import userState from "../recoil/atoms/user";
 import { Button } from "../components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../components/ui/tooltip"
 import { FaLocationDot } from "react-icons/fa6";
 import { FaBuilding, FaGithub, FaLinkedin } from "react-icons/fa";
 import { LuClipboardList } from "react-icons/lu";
@@ -231,10 +237,18 @@ const Profile = () => {
               )}
 
               {userDetails && userDetails?.personalInformation.education && (
-                <p className="flex items-center truncate">
-                  <FaBuilding className="mr-3 h-4 w-4" />
-                  {userDetails?.personalInformation.education}
-                </p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <h1 className="flex items-center truncate">
+                        <FaBuilding className="mr-3 h-4 w-4" />
+                        {userDetails?.personalInformation.education.substring(0,40)}...
+                      </h1></TooltipTrigger>
+                    <TooltipContent className="mb-3 bg-gray-800 text-white">
+                      {userDetails?.personalInformation.education}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
 
               {userDetails && userDetails?.email && (
@@ -375,7 +389,7 @@ const Profile = () => {
               {/* Submissions */}
               <div className="shadow-lg rounded-lg bg-white p-4">
                 {/* Top Nav */}
-                <div className="flex justify-between select-none">
+                <div className="flex md:justify-between select-none">
                   <div className="flex text-md text-gray-600 font-semibold">
                     <h3
                       className={`flex items-center justify-center cursor-pointer hover:text-black gap-2 py-2 px-4 ${selectedTab === "Recent AC" ? "bg-gray-100 rounded-md text-black" : ""}`}
@@ -391,12 +405,28 @@ const Profile = () => {
                       <LuClipboardList className="w-7 h-6" />
                       Lists
                     </h3>
+                    <h3
+                      className={`hidden md:flex items-center justify-center cursor-pointer hover:text-black gap-2 py-2 px-4 ${selectedTab === "Discussion" ? "bg-gray-100 rounded-md text-black" : ""}`}
+                      onClick={() => setSelectedTab("Discussion")}
+                    >
+                      <RiDiscussFill className="w-7 h-6" />
+                      Discussion
+                    </h3>
+                    <h3
+                      className={`flex items-center justify-center cursor-pointer hover:text-black gap-2 py-2 px-4 ${selectedTab === "Invites" ? "bg-gray-100 rounded-md text-black" : ""}`}
+                      onClick={() => setSelectedTab("Invites")}
+                    >
+                      <MailIcon className="w-7 h-6" />
+                      Invites
+                    </h3>
                   </div>
-                  <SubmissionsFullScreen />
+                  <div className="md:flex hidden" >
+                    <SubmissionsFullScreen />
+                  </div>
                 </div>
 
                 <div>
-                  {selectedTab === "Recent AC" ? (
+                  {selectedTab === "Recent AC" && (
                     recentACSubmissions && recentACSubmissions.length > 0 ? (
                       <div className="pt-4">
                         {recentACSubmissions.map((submission, ind) => (
@@ -412,7 +442,7 @@ const Profile = () => {
                         ))}
                       </div>
                     ) : (
-                      <div className="h-[17.9rem] my-6 flex flex-col justify-center items-center gap-2 select-none">
+                      <div className="h-[18rem] my-6 flex flex-col justify-center items-center gap-2 select-none">
                         <Ghost className="h-8 w-8 text-zinc-800" />
                         <h3 className="font-semibold text-xl">
                           Pretty empty around here
@@ -423,16 +453,89 @@ const Profile = () => {
                         <Button className="mt-5">Solve Problems</Button>
                       </div>
                     )
-                  ) : (
-                    <div className="h-[17.9rem] my-6 flex flex-col justify-center items-center gap-2 select-none">
-                      <Ghost className="h-8 w-8 text-zinc-800" />
-                      <h3 className="font-semibold text-xl">
-                        Pretty empty around here
-                      </h3>
-                      <p className="text-gray-600">There are no lists yet!</p>
-                      <Button className="mt-5">Create List</Button>
-                    </div>
+                  )} 
+
+
+                  {selectedTab === "Lists" && (
+                    recentACSubmissions && recentACSubmissions.length > 0 ? (
+                      <div className="pt-4">
+                        {recentACSubmissions.map((submission, ind) => (
+                          <div
+                            key={ind}
+                            className={`flex items-center justify-between rounded-md ${ind % 2 === 0 ? "bg-gray-100" : ""} p-5`}
+                          >
+                            <p className="font-semibold">{submission.title}</p>
+                            <p className="text-gray-600 hidden md:flex">
+                              {submission.time}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="h-[18rem] my-6 flex flex-col justify-center items-center gap-2 select-none">
+                        <Ghost className="h-8 w-8 text-zinc-800" />
+                        <h3 className="font-semibold text-xl">
+                          Pretty empty around here
+                        </h3>
+                        <p className="text-gray-600">There are no lists yet!</p>
+                        <Button className="mt-5">Create List</Button>
+                      </div>
+                    )
                   )}
+
+                  {selectedTab === "Discussion" && (
+                    recentACSubmissions && recentACSubmissions.length > 0 ? (
+                      <div className="pt-4">
+                        {recentACSubmissions.map((submission, ind) => (
+                          <div
+                            key={ind}
+                            className={`flex items-center justify-between rounded-md ${ind % 2 === 0 ? "bg-gray-100" : ""} p-5`}
+                          >
+                            <p className="font-semibold">{submission.title}</p>
+                            <p className="text-gray-600 hidden md:flex">
+                              {submission.time}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="h-[18rem] my-6 flex flex-col justify-center items-center gap-2 select-none">
+                        <Ghost className="h-8 w-8 text-zinc-800" />
+                        <h3 className="font-semibold text-xl">
+                          Pretty empty around here
+                        </h3>
+                        <p className="text-gray-600">Post your first discussion here!</p>
+                        <Button className="mt-5">Post Discussion</Button>
+                      </div>
+                    )
+                  )}  
+
+                  {selectedTab === "Invites" && (
+                    recentACSubmissions && recentACSubmissions.length > 0 ? (
+                      <div className="pt-4">
+                        {recentACSubmissions.map((submission, ind) => (
+                          <div
+                            key={ind}
+                            className={`flex items-center justify-between rounded-md ${ind % 2 === 0 ? "bg-gray-100" : ""} p-5`}
+                          >
+                            <p className="font-semibold">{submission.title}</p>
+                            <p className="text-gray-600 hidden md:flex">
+                              {submission.time}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="h-[18rem] my-6 flex flex-col justify-center items-center gap-2 select-none">
+                        <Ghost className="h-8 w-8 text-zinc-800" />
+                        <h3 className="font-semibold text-xl">
+                          Pretty empty around here
+                        </h3>
+                        <p className="text-gray-600">Create your own interview room!</p>
+                        <Button className="mt-5">Create Room</Button>
+                      </div>
+                    )
+                  )}  
                 </div>
               </div>
             </>

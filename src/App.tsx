@@ -21,6 +21,7 @@ import Problems from "./pages/Problems";
 import Solve from "./pages/Solve";
 import ChangePassword from "./components/ChangePassword";
 import CreatePassword from "./components/CreatePassword";
+import InterviewLanding from "./pages/InterviewLanding";
 
 const App = () => {
   return (
@@ -37,18 +38,12 @@ const App = () => {
             <Route path="/explore" element={<AIDocsLanding />} />
             <Route path="/problems" element={<Problems />} />
             <Route path="/problems/:id" element={<Solve />} />
-            <Route
-              path="/account/password/change"
-              element={<ChangePassword />}
-            />
-            <Route
-              path="/account/password/create"
-              element={<CreatePassword />}
-            />
+            <Route path="/account/password/change" element={<ChangePassword />} />
+            <Route path="/account/password/create" element={<CreatePassword />} />
+            <Route path="/interview" element={<InterviewLanding />} />
           </Route>
 
           <Route path="/sheets" element={<Landing />} />
-          <Route path="/interview" element={<Landing />} />
           <Route path="/playground" element={<Playground />} />
 
           <Route element={<LayoutWithAIDocsNavbar />}>
