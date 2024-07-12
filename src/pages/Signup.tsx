@@ -11,6 +11,16 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import userState from "../recoil/atoms/user";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter
+} from "../components/ui/dialog"
+import OTPInput from "../components/OtpInput";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -20,14 +30,13 @@ const Signup = () => {
   const setUserAtom = useSetRecoilState(userState);
   const user = useRecoilValue(userState);
   const navigate = useNavigate();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     const toastId = toast.loading("Signing up...");
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
 
     if (!email || !password) {
       toast.error("Please fill in all fields");
@@ -178,6 +187,7 @@ const Signup = () => {
                   type="email"
                   placeholder="Enter your email"
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -192,6 +202,7 @@ const Signup = () => {
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                   <button
@@ -207,13 +218,32 @@ const Signup = () => {
                   </button>
                 </div>
               </div>
-              <Button
-                disabled={isLoading}
-                type="submit"
-                className="w-full py-3 bg-black text-white rounded-lg font-semibold hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-              >
-                Sign Up
-              </Button>
+
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                    disabled={isLoading || !email || !password}
+                    className="w-full py-3 bg-black text-white rounded-lg font-semibold hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                  >
+                    Sign Up
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="h-6/12 w-4/12 bg-gray-100 px-10 py-6">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl mb-2">Verify Your Email</DialogTitle>
+                    <DialogDescription className="text-gray-600 text-md">
+                      We have sent a 6-digit code to your email. Enter the code to confirm that it's you.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex justify-center">
+                    <OTPInput />
+                  </div>
+                  <div className="flex text-md mt-4">
+                    Didn't Recieve Code? <span className="text-blue-600 ml-2">Resend Code</span>
+                  </div>
+                  <Button onClick={() => {handleFormSubmit}}>Submit</Button>
+                </DialogContent>
+              </Dialog>        
             </form>
             <div className="mt-4 text-center text-sm">
               Already have an account?

@@ -1,0 +1,13 @@
+.code-block {
+    background-color: rgba(0, 0, 0, 0.038); /* Dark background color */
+    color: black; /* Text color */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-top: 2rem;
+  }
+  
+  .code-block code {
+    display: block;
+    white-space: pre;
+  }

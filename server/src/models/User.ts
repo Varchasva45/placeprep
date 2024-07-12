@@ -24,6 +24,8 @@ interface IUser extends Document {
   };
   isSubscribed: boolean;
   role: string;
+  likedPosts: string[];
+  dislikedPosts: string[];
 }
 
 const userSchema = new Schema<IUser>({
@@ -118,7 +120,16 @@ const userSchema = new Schema<IUser>({
     default: "user",
     trim: true,
   },
-});
+  likedPosts: {
+    type: [String],
+    default: [],
+  },
+  dislikedPosts: {
+    type: [String],
+    default: [],
+  },
+}
+);
 
 const User = mongoose.model<IUser>("User", userSchema);
 export default User;
