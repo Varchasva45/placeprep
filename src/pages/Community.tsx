@@ -39,7 +39,7 @@ const Community = ()=> {
 
   const fetchUserDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/users/${user.id}`,{
+      const response = await axios.get(`http://localhost:3000/api/users/${user.id}`,{
         headers: {
           Authorization: `Bearer ${auth.token}`
         }
@@ -57,7 +57,7 @@ const Community = ()=> {
 
   const fetchPosts = async (page: any) => {
     try {
-      const response = await axios.get(`http://localhost:3000/users/postDiscussion?page=${page}&pageSize=${pageSize}&sortedBy=${sortedBy}`);
+      const response = await axios.get(`http://localhost:3000/api/users/postDiscussion?page=${page}&pageSize=${pageSize}&sortedBy=${sortedBy}`);
       setPosts(response.data.posts);
       setTotalPages(response.data.totalPages);
       setCurrentPage(response.data.currentPage);
@@ -119,7 +119,7 @@ const Community = ()=> {
 
 const handleUpdate = async (id: number, type: string) => {
   try{
-    const response = await axios.patch(`http://localhost:3000/users/postDiscussion/${id}`, {
+    const response = await axios.patch(`http://localhost:3000/api/users/postDiscussion/${id}`, {
       updatedData: type,
       userId: user.id
     });

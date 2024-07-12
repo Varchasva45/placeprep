@@ -45,7 +45,7 @@ const NewDiscussion: React.FC<NewDiscussionProps> = ({ isOpen, onClose, setPosts
   
   const handleSubmit = async () => {
     try{
-      const response = await axios.post('http://localhost:3000/users/postDiscussion', {
+      const response = await axios.post('http://localhost:3000/api/users/postDiscussion', {
         title: topic,
         content: markdown,
         tag: tag,
@@ -53,6 +53,9 @@ const NewDiscussion: React.FC<NewDiscussionProps> = ({ isOpen, onClose, setPosts
         updatedBy: user.id,
         username: user.username
       });
+
+      console.log(response);
+
       if(response.status === 201){
         onClose();
         setPosts((prevPosts: any) => [response.data.post, ...prevPosts])
@@ -65,7 +68,7 @@ const NewDiscussion: React.FC<NewDiscussionProps> = ({ isOpen, onClose, setPosts
 
   const handleEdit = async () => {
     try{
-      const response = await axios.patch(`http://localhost:3000/users/updatePost/${postId}`, {
+      const response = await axios.patch(`http://localhost:3000/api/users/updatePost/${postId}`, {
         title: topic,
         content: markdown,
         tag: tag

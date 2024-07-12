@@ -28,7 +28,7 @@ const Post = () => {
 
   const fetchPost = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/users/postDiscussion/${id}`);
+      const response = await axios.get(`http://localhost:3000/api/users/postDiscussion/${id}`);
       setUserPost(response.data.post);
       setComments(response.data.post.comments);
     } catch (error) {
@@ -58,7 +58,7 @@ const Post = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`http://localhost:3000/users/comments/${id}`, {
+      const response = await axios.post(`http://localhost:3000/api/users/comments/${id}`, {
         content: newComment,
         createdBy: user.id,
         updatedBy: user.id,
@@ -77,7 +77,7 @@ const Post = () => {
 
   const handleDeletePost = async () => {
     try {
-      const response = await axios.patch(`http://localhost:3000/users/deletePost/${id}`);
+      const response = await axios.patch(`http://localhost:3000/api/users/deletePost/${id}`);
       if (response.status === 200) {
         console.log('Post deleted:', response.data);
         navigate('/community');
@@ -89,7 +89,7 @@ const Post = () => {
 
   const handleDeleteComment = async (id: string) => {
     try {
-      const response = await axios.patch(`http://localhost:3000/users/deleteComment/${id}`);
+      const response = await axios.patch(`http://localhost:3000/api/users/deleteComment/${id}`);
       if (response.status === 200) {
         console.log('Comment deleted:', response.data);
         setComments(comments.filter((comment) => comment._id !== id));
@@ -157,7 +157,7 @@ const handleEditChange = (e: any) => {
 
 const handleSaveEdit = async (commentId: string) => {
   try{
-    const response = await axios.patch(`http://localhost:3000/users/updateComment/${commentId}`, {
+    const response = await axios.patch(`http://localhost:3000/api/users/updateComment/${commentId}`, {
       content: editContent
     });
     if (response.status === 200) {

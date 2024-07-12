@@ -20,9 +20,11 @@ import Profile from "./pages/Profile";
 import Problems from "./pages/Problems";
 import Solve from "./pages/Solve";
 import ChangePassword from "./components/ChangePassword";
-import CreatePassword from "./components/CreatePassword";import Community from "./pages/Community";
-import Post from "./pages/Post";
+import CreatePassword from "./components/CreatePassword";
+import InterviewLanding from "./pages/InterviewLanding";
 import EditPost from "./pages/EditPost";
+import Community from "./pages/Community";
+import Post from "./pages/Post";
 
 const App = () => {
   return (
@@ -39,19 +41,14 @@ const App = () => {
             <Route path="/explore" element={<AIDocsLanding />} />
             <Route path="/problems" element={<Problems />} />
             <Route path="/problems/:id" element={<Solve />} />
-            <Route
-              path="/account/password/change"
-              element={<ChangePassword />}
-            />
-            <Route
-              path="/account/password/create"
-              element={<CreatePassword />}
-            />
+            <Route path="/account/password/change" element={<ChangePassword />} />
+            <Route path="/account/password/create" element={<CreatePassword />} />
+            <Route path="/interview" element={<InterviewLanding />} />
+            <Route path="/edit-post/:id" element={<EditPost />} />
+            <Route path="/community" element={<Community />} /><Route path="/post/:id" element={<Post />} />
+            <Route path="/sheets" element={<Landing />} />
           </Route>
-          <Route path="/edit-post/:id" element={<EditPost />} />
-          <Route path="/community" element={<Community />} /><Route path="/post/:id" element={<Post />} />
-          <Route path="/sheets" element={<Landing />} />
-          <Route path="/interview" element={<Landing />} />
+          
           <Route path="/playground" element={<Playground />} />
 
           <Route element={<LayoutWithAIDocsNavbar />}>
