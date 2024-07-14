@@ -2,10 +2,26 @@ import { Request, Response } from "express";
 import { openai2 } from "../config/openAI";
 import Message from "../models/chatBot/Message";
 
+export const fetchMessages = async (req: Request, res: Response) => {
+    try {
+      const chatId = req.params.chatId;
+      const messages = await Message.find({chatId, userId: req.user.id});
+      if(!messages) {
+        return res.status(404).json({message: "Messages not found", success: false});
+      }
+
+      res.status(200).json({messages, success: true});
+    } catch (error: any){
+      console.log(error);
+      res.status(500).json({message: "Internal server error", success: false});
+    }
+}
+
 export const sendMessage = async (req: Request, res: Response) => {
     try {
     //   const fileId = req.params.fileId;
-      const { message, chatId, userId } = req.body;
+      const { message, chatId } = req.body;
+      const userId = req.user.id;
     //   const file = await File.findById(fileId);
   
     //   if (!file) {
@@ -20,8 +36,6 @@ export const sendMessage = async (req: Request, res: Response) => {
         chatId,
         userId
       });
-  
-
   
       const prevMessages = await Message.find({ chatId, userId })
         .sort({ createdAt: -1 })
@@ -83,11 +97,26 @@ export const sendMessage = async (req: Request, res: Response) => {
         chatId,
         userId
       });
+
+      const AIMessage = {
+        text: responseMessage, 
+        isUserMessage: false,
+        chatId,
+        userId
+      }
+
+      const userMessage = {
+        text: message,
+        isUserMessage: true,
+        chatId,
+        userId
+      }
   
       res.status(200).json({
         message: "Message sent successfully",
         success: true,
-        responseMessage,
+        AIMessage,
+        userMessage
       });
     } catch (error) {
       console.log(error);

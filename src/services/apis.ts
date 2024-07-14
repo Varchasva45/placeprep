@@ -25,3 +25,8 @@ export const askPDFEndpoints = {
   createFileMessage_API: baseUrl + "/api/askPDF/files/messages",
   vectorizeFile_API: baseUrl + "/api/askPDF/files/vectorize",
 };
+
+export const chatBotEndpoints = {
+  fetchMessages_API: baseUrl + "/api/chatbot/messages",
+  sendMessage_API: baseUrl + "/api/chatbot/message"
+}

@@ -1,14 +1,89 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/LupBO7TzgMG
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
-import { Link } from "react-router-dom"
-import { Avatar, AvatarImage, AvatarFallback } from "../components/ui/avatar"
-import { Button } from "../components/ui/button"
-import { Textarea } from "../components/ui/textarea"
+import { Link } from "react-router-dom";
+import { Avatar, AvatarImage, AvatarFallback } from "../components/ui/avatar";
+import { Button } from "../components/ui/button";
+import { Textarea } from "../components/ui/textarea";
+import { useEffect, useState } from "react";
+import { LucideSendHorizonal, MessageSquare } from "lucide-react";
+import axios from "axios";
+import { chatBotEndpoints } from "../services/apis";
+import { useRecoilValue } from "recoil";
+import authState from "../recoil/atoms/auth";
+// import userState from "../recoil/atoms/user";
+import toast from "react-hot-toast";
 
 const ChatBot = () => {
+  interface Message {
+    text: string;
+    isUserMessage: boolean;
+    chatId: Number;
+    userId: string;
+  }
+
+  const [messages, setMessages] = useState<Message[] | null>([]);
+  const [message, setMessage] = useState<string>("");
+  console.log("message", message);
+  const auth = useRecoilValue(authState);
+  // const user = useRecoilValue(userState)
+  const { fetchMessages_API, sendMessage_API } = chatBotEndpoints;
+  const chatId = 1;
+
+  const fetchMessages = async () => {
+    try {
+      const response = await axios.get(fetchMessages_API + `/${chatId}`, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+
+      if (response.data.success) {
+        setMessages(response.data.messages);
+      } else {
+        toast.error("Failed to fetch messages");
+      }
+    } catch (error: any) {
+      toast.error("Failed to fetch messages");
+    }
+  };
+
+  const handleSendMessage = async (message: string) => {
+    try {
+      console.log("message", message);
+
+      const requestBody = {
+        message,
+        chatId: 1,
+      };
+
+      const response = await axios.post(sendMessage_API, requestBody, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+
+      if (response.data.success) {
+        setMessages((prevMessages) => {
+          if (!prevMessages) {
+            return [response.data.userMessage, response.data.AIMessage];
+          } else {
+            return [
+              ...prevMessages,
+              response.data.userMessage,
+              response.data.AIMessage,
+            ];
+          }
+        });
+      } else {
+        toast.error("Failed to send message");
+      }
+    } catch (error) {
+      toast.error("Failed to send message");
+    }
+  };
+
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
   return (
     <div className="flex h-[calc(100vh - 3.5rem)] w-full">
       <aside className="hidden h-full w-64 border-r bg-background md:block">
@@ -19,7 +94,6 @@ const ChatBot = () => {
               <Link
                 to="#"
                 className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted"
-                
               >
                 <Avatar className="h-6 w-6 border">
                   <AvatarImage src="/placeholder-user.jpg" />
@@ -30,7 +104,6 @@ const ChatBot = () => {
               <Link
                 to="#"
                 className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted"
-                
               >
                 <Avatar className="h-6 w-6 border">
                   <AvatarImage src="/placeholder-user.jpg" />
@@ -41,7 +114,6 @@ const ChatBot = () => {
               <Link
                 to="#"
                 className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted"
-                
               >
                 <Avatar className="h-6 w-6 border">
                   <AvatarImage src="/placeholder-user.jpg" />
@@ -54,76 +126,82 @@ const ChatBot = () => {
         </div>
       </aside>
       <div className="flex flex-1 flex-col">
-        <div className="flex-1 overflow-auto">
-          <div className="flex h-full flex-col">
-            <div className="flex h-16 items-center border-b bg-background px-4 md:px-6">
-              <div className="flex items-center gap-2">
-                <BotIcon className="h-6 w-6" />
-                <span className="text-lg font-semibold">Chatbot</span>
-              </div>
-            </div>
-            <div className="flex-1 overflow-auto p-4 mx-5">
-              <div className="grid gap-4">
-                <div className="flex items-start gap-4">
-                  <Avatar className="h-8 w-8 border">
-                    <AvatarImage src="/placeholder-user.jpg" />
-                    <AvatarFallback>AC</AvatarFallback>
-                  </Avatar>
-                  <div className="grid gap-1">
-                    <div className="font-medium">Chatbot</div>
-                    <div className="rounded-lg bg-muted p-3 text-sm">
-                      <p>Hello! I'm an AI assistant created by Acme Inc. How can I help you today?</p>
+        <div className="flex h-16 items-center border-b bg-background px-4 md:px-6">
+          <div className="flex items-center gap-2">
+            <BotIcon className="h-6 w-6" />
+            <span className="text-lg font-semibold">Placeprep's Copilot</span>
+          </div>
+        </div>
+        <div className="flex-1 overflow-auto p-4">
+          <div className="grid gap-4 h-full">
+            {messages && messages.length > 0 ? (
+              messages.map((message, index) =>
+                message.isUserMessage ? (
+                  <div
+                    key={index}
+                    className="flex items-start gap-4 justify-end ml-48"
+                  >
+                    <div className="grid gap-1">
+                      <div className="font-medium">You</div>
+                      <div className="rounded-lg bg-blue-600 p-3 text-sm text-primary-foreground">
+                        <p>{message.text}</p>
+                      </div>
+                    </div>
+                    <Avatar className="h-8 w-8 border">
+                      <AvatarImage src="/placeholder-user.jpg" />
+                      <AvatarFallback>YO</AvatarFallback>
+                    </Avatar>
+                  </div>
+                ) : (
+                  <div key={index} className="flex items-start gap-4 mr-48">
+                    <Avatar className="h-8 w-8 border">
+                      <AvatarImage src="/placeholder-user.jpg" />
+                      <AvatarFallback>AC</AvatarFallback>
+                    </Avatar>
+                    <div className="grid gap-1">
+                      <div className="font-medium">Chatbot</div>
+                      <div className="rounded-lg bg-muted p-3 text-sm">
+                        <p>{message.text}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="flex items-start gap-4 justify-end">
-                  <div className="grid gap-1">
-                    <div className="font-medium">You</div>
-                    <div className="rounded-lg bg-blue-600 p-3 text-sm text-primary-foreground">
-                      <p>Hi there! I'm looking for some information on your latest product updates.</p>
-                    </div>
-                  </div>
-                  <Avatar className="h-8 w-8 border">
-                    <AvatarImage src="/placeholder-user.jpg" />
-                    <AvatarFallback>YO</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div className="flex items-start gap-4">
-                  <Avatar className="h-8 w-8 border">
-                    <AvatarImage src="/placeholder-user.jpg" />
-                    <AvatarFallback>AC</AvatarFallback>
-                  </Avatar>
-                  <div className="grid gap-1">
-                    <div className="font-medium">Chatbot</div>
-                    <div className="rounded-lg bg-muted p-3 text-sm">
-                      <p>
-                        Sure, I'd be happy to provide an update on our latest product features. What would you like to
-                        know?
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                )
+              )
+            ) : (
+              <div className="flex-1 flex flex-col items-center justify-center gap-2">
+                <MessageSquare className="h-8 w-8 text-blue-500" />
+                <h3 className="font-semibold text-xl">You&apos;re all set!</h3>
+                <p className="text-zinc-500 text-sm">
+                  Ask your first question to Placeprep's Copilot.
+                </p>
               </div>
-            </div>
-            <div className="sticky bottom-0 bg-background px-4 py-3">
-              <div className="relative">
-                <Textarea
-                  placeholder="Type your message..."
-                  className="min-h-[48px] w-full rounded-lg border border-input bg-transparent p-3 pr-16 text-sm shadow-sm"
-                />
-                <Button type="submit" variant="ghost" size="icon" className="absolute right-3 top-3">
-                  <SendIcon className="h-5 w-5" />
-                  <span className="sr-only">Send</span>
-                </Button>
-              </div>
-            </div>
+            )}
+          </div>
+        </div>
+        <div className="sticky bottom-0 bg-background px-4 py-3">
+          <div className="relative">
+            <Textarea
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type your message..."
+              className="min-h-[48px] w-full rounded-lg border border-input bg-transparent p-3 pr-16 text-sm shadow-sm"
+            />
+            <Button
+                // disabled={isLoading || isDisabled}
+                className="absolute bottom-1.5 right-[8px]"
+                aria-label="send message"
+                type="submit"
+                onClick={() => {
+                  handleSendMessage(message)
+                }}
+              >
+                <LucideSendHorizonal className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </div>
     </div>
-  )
-}
-
+  );
+};
 function BotIcon(props: any) {
   return (
     <svg
@@ -148,49 +226,6 @@ function BotIcon(props: any) {
   )
 }
 
-
-function HomeIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-      <polyline points="9 22 9 12 15 12 15 22" />
-    </svg>
-  )
-}
-
-
-function InboxIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <polyline points="22 12 16 12 14 15 10 15 8 12 2 12" />
-      <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
-    </svg>
-  )
-}
-
-
 function SendIcon(props: any) {
   return (
     <svg
@@ -207,48 +242,6 @@ function SendIcon(props: any) {
     >
       <path d="m22 2-7 20-4-9-9-4Z" />
       <path d="M22 2 11 13" />
-    </svg>
-  )
-}
-
-
-function SettingsIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  )
-}
-
-
-function XIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M18 6 6 18" />
-      <path d="m6 6 12 12" />
     </svg>
   )
 }

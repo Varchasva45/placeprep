@@ -1,10 +1,11 @@
 import express from "express";
 import { isAuthenticated } from "../middlewares/isAuthenticated";
-import { sendMessage } from "../controllers/chatBot";
+import { fetchMessages, sendMessage } from "../controllers/chatBot";
 
 
 const router = express.Router();
-router.post("/message", sendMessage);
 
+router.get("/messages/:chatId", isAuthenticated, fetchMessages);
+router.post("/message", isAuthenticated, sendMessage);
 
 export { router as chatBotRouter };

@@ -4,7 +4,7 @@ interface Message extends Document {
   text: string;
   isUserMessage: boolean;
   chatId: Number;
-  userId: Number;
+  userId: ObjectId;
 }
 
 const messageSchema = new Schema<Message>(
@@ -24,8 +24,8 @@ const messageSchema = new Schema<Message>(
       required: true,
     },
     userId: {
-      type: Number,
-      // ref: "User",
+      type: Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },

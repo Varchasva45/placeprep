@@ -3,10 +3,10 @@ import userState from "../recoil/atoms/user";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import PdfRenderer from "../components/PDFRenderer";
 import ChatWrapper from "../components/ChatWrapper";
 import authState from "../recoil/atoms/auth";
 import { askPDFEndpoints } from "../services/apis";
+import PdfRenderer from "../components/PdfRenderer";
 
 const PdfChatPage = () => {
   const fileId = location.pathname.split("/").pop();
