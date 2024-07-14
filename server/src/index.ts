@@ -11,6 +11,7 @@ import "./passport";
 import session from "express-session";
 import passport from "passport";
 import { userRouter } from "./routes/user";
+import { chatBotRouter } from "./routes/chatBot";
 
 dotenv.config();
 const PORT = process.env.PORT || 3000;
@@ -40,6 +41,7 @@ app.use("/api/askPDF/files", askPDFRouter);
 app.use("/api/interview", interviewRouter);
 app.use("/api/question", questionRouter);
 app.use("/problem", problemRouter);
+app.use("/api/chatbot", chatBotRouter);
 
 async function startServer() {
   try {

@@ -75,13 +75,13 @@ const NavBar = () => {
               </Link>
 
               <Link
-                to="/assistance"
+                to="/copilot"
                 className={buttonVariants({
                   variant: "ghost",
                   size: "sm",
                 })}
               >
-                Assistance
+                Copilot
               </Link>
 
               <Link

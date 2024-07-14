@@ -25,6 +25,7 @@ import InterviewLanding from "./pages/InterviewLanding";
 import EditPost from "./pages/EditPost";
 import Community from "./pages/Community";
 import Post from "./pages/Post";
+import ChatBot from "./pages/ChatBot";
 
 const App = () => {
   return (
@@ -47,6 +48,7 @@ const App = () => {
             <Route path="/edit-post/:id" element={<EditPost />} />
             <Route path="/community" element={<Community />} /><Route path="/post/:id" element={<Post />} />
             <Route path="/sheets" element={<Landing />} />
+            <Route path="/copilot" element={<ChatBot />} />
           </Route>
           
           <Route path="/playground" element={<Playground />} />
@@ -70,7 +72,6 @@ const App = () => {
             />
           </Route>
 
-          <Route path="/assistance" element={<Landing />} />
           <Route path="/community" element={<Landing />} />
           <Route path="/add-problems" element={<AddProblems />} />
           <Route path="/all-problems" element={<AllProblems />} />
