@@ -78,7 +78,8 @@ const AIDocsLanding = () => {
                   Start chatting in minutes
                 </h2>
                 <p className="mt-4 text-lg text-gray-600">
-                  Chatting to your PDF files has never been easier than with PlacePrep.
+                  Chatting to your PDF files has never been easier than with
+                  PlacePrep.
                 </p>
               </div>
             </div>

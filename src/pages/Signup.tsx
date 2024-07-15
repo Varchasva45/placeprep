@@ -18,8 +18,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter
-} from "../components/ui/dialog"
+  DialogFooter,
+} from "../components/ui/dialog";
 import OTPInput from "../components/OtpInput";
 
 const Signup = () => {
@@ -230,20 +230,30 @@ const Signup = () => {
                 </DialogTrigger>
                 <DialogContent className="h-6/12 w-4/12 bg-gray-100 px-10 py-6">
                   <DialogHeader>
-                    <DialogTitle className="text-2xl mb-2">Verify Your Email</DialogTitle>
+                    <DialogTitle className="text-2xl mb-2">
+                      Verify Your Email
+                    </DialogTitle>
                     <DialogDescription className="text-gray-600 text-md">
-                      We have sent a 6-digit code to your email. Enter the code to confirm that it's you.
+                      We have sent a 6-digit code to your email. Enter the code
+                      to confirm that it's you.
                     </DialogDescription>
                   </DialogHeader>
                   <div className="flex justify-center">
                     <OTPInput />
                   </div>
                   <div className="flex text-md mt-4">
-                    Didn't Recieve Code? <span className="text-blue-600 ml-2">Resend Code</span>
+                    Didn't Recieve Code?{" "}
+                    <span className="text-blue-600 ml-2">Resend Code</span>
                   </div>
-                  <Button onClick={() => {handleFormSubmit}}>Submit</Button>
+                  <Button
+                    onClick={() => {
+                      handleFormSubmit;
+                    }}
+                  >
+                    Submit
+                  </Button>
                 </DialogContent>
-              </Dialog>        
+              </Dialog>
             </form>
             <div className="mt-4 text-center text-sm">
               Already have an account?

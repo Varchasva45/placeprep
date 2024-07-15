@@ -6,7 +6,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "../components/ui/tooltip"
+} from "../components/ui/tooltip";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaBuilding, FaGithub, FaLinkedin } from "react-icons/fa";
 import { LuClipboardList } from "react-icons/lu";
@@ -242,8 +242,13 @@ const Profile = () => {
                     <TooltipTrigger>
                       <h1 className="flex items-center truncate">
                         <FaBuilding className="mr-3 h-4 w-4" />
-                        {userDetails?.personalInformation.education.substring(0,40)}...
-                      </h1></TooltipTrigger>
+                        {userDetails?.personalInformation.education.substring(
+                          0,
+                          40,
+                        )}
+                        ...
+                      </h1>
+                    </TooltipTrigger>
                     <TooltipContent className="mb-3 bg-gray-800 text-white">
                       {userDetails?.personalInformation.education}
                     </TooltipContent>
@@ -420,14 +425,14 @@ const Profile = () => {
                       Invites
                     </h3>
                   </div>
-                  <div className="md:flex hidden" >
+                  <div className="md:flex hidden">
                     <SubmissionsFullScreen />
                   </div>
                 </div>
 
                 <div>
-                  {selectedTab === "Recent AC" && (
-                    recentACSubmissions && recentACSubmissions.length > 0 ? (
+                  {selectedTab === "Recent AC" &&
+                    (recentACSubmissions && recentACSubmissions.length > 0 ? (
                       <div className="pt-4">
                         {recentACSubmissions.map((submission, ind) => (
                           <div
@@ -452,12 +457,10 @@ const Profile = () => {
                         </p>
                         <Button className="mt-5">Solve Problems</Button>
                       </div>
-                    )
-                  )} 
+                    ))}
 
-
-                  {selectedTab === "Lists" && (
-                    recentACSubmissions && recentACSubmissions.length > 0 ? (
+                  {selectedTab === "Lists" &&
+                    (recentACSubmissions && recentACSubmissions.length > 0 ? (
                       <div className="pt-4">
                         {recentACSubmissions.map((submission, ind) => (
                           <div
@@ -480,11 +483,10 @@ const Profile = () => {
                         <p className="text-gray-600">There are no lists yet!</p>
                         <Button className="mt-5">Create List</Button>
                       </div>
-                    )
-                  )}
+                    ))}
 
-                  {selectedTab === "Discussion" && (
-                    recentACSubmissions && recentACSubmissions.length > 0 ? (
+                  {selectedTab === "Discussion" &&
+                    (recentACSubmissions && recentACSubmissions.length > 0 ? (
                       <div className="pt-4">
                         {recentACSubmissions.map((submission, ind) => (
                           <div
@@ -504,14 +506,15 @@ const Profile = () => {
                         <h3 className="font-semibold text-xl">
                           Pretty empty around here
                         </h3>
-                        <p className="text-gray-600">Post your first discussion here!</p>
+                        <p className="text-gray-600">
+                          Post your first discussion here!
+                        </p>
                         <Button className="mt-5">Post Discussion</Button>
                       </div>
-                    )
-                  )}  
+                    ))}
 
-                  {selectedTab === "Invites" && (
-                    recentACSubmissions && recentACSubmissions.length > 0 ? (
+                  {selectedTab === "Invites" &&
+                    (recentACSubmissions && recentACSubmissions.length > 0 ? (
                       <div className="pt-4">
                         {recentACSubmissions.map((submission, ind) => (
                           <div
@@ -531,11 +534,12 @@ const Profile = () => {
                         <h3 className="font-semibold text-xl">
                           Pretty empty around here
                         </h3>
-                        <p className="text-gray-600">Create your own interview room!</p>
+                        <p className="text-gray-600">
+                          Create your own interview room!
+                        </p>
                         <Button className="mt-5">Create Room</Button>
                       </div>
-                    )
-                  )}  
+                    ))}
                 </div>
               </div>
             </>

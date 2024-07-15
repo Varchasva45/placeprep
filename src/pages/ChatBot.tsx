@@ -165,7 +165,7 @@ const ChatBot = () => {
                       </div>
                     </div>
                   </div>
-                )
+                ),
               )
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center gap-2">
@@ -186,15 +186,15 @@ const ChatBot = () => {
               className="min-h-[48px] w-full rounded-lg border border-input bg-transparent p-3 pr-16 text-sm shadow-sm"
             />
             <Button
-                // disabled={isLoading || isDisabled}
-                className="absolute bottom-1.5 right-[8px]"
-                aria-label="send message"
-                type="submit"
-                onClick={() => {
-                  handleSendMessage(message)
-                }}
-              >
-                <LucideSendHorizonal className="h-4 w-4" />
+              // disabled={isLoading || isDisabled}
+              className="absolute bottom-1.5 right-[8px]"
+              aria-label="send message"
+              type="submit"
+              onClick={() => {
+                handleSendMessage(message);
+              }}
+            >
+              <LucideSendHorizonal className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -223,7 +223,7 @@ function BotIcon(props: any) {
       <path d="M15 13v2" />
       <path d="M9 13v2" />
     </svg>
-  )
+  );
 }
 
 function SendIcon(props: any) {
@@ -243,7 +243,7 @@ function SendIcon(props: any) {
       <path d="m22 2-7 20-4-9-9-4Z" />
       <path d="M22 2 11 13" />
     </svg>
-  )
+  );
 }
 
-export default ChatBot
+export default ChatBot;
