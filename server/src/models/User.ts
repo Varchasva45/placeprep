@@ -128,8 +128,7 @@ const userSchema = new Schema<IUser>({
     type: [String],
     default: [],
   },
-}
-);
+});
 
 const User = mongoose.model<IUser>("User", userSchema);
 export default User;

@@ -7,10 +7,12 @@ import authState from "../recoil/atoms/auth";
 import UserAccountNav from "./UserAccountNavbar";
 import userState from "../recoil/atoms/user";
 import MaxWidthWrapper2 from "./MaxWidthWrapper2";
+import { useState } from "react";
 
 const NavBar = () => {
   const user = useRecoilValue(userState);
   const auth = useRecoilValue(authState);
+  const [url, setUrl] = useState("/" + window.location.href.split("/")[3]);
 
   return (
     <nav className="sticky h-14 inset-x-0 top-0 z-30 w-full border-b border-gray-200 opacity-95 bg-white/75 backdrop-blur-xl transition-all">
@@ -26,8 +28,9 @@ const NavBar = () => {
             <div className="hidden lg:flex space-x-1">
               <Link
                 to="/problems"
+                onClick={() => setUrl("/problems")}
                 className={buttonVariants({
-                  variant: "ghost",
+                  variant: url === "/problems" ? "selected" : "ghost",
                   size: "sm",
                 })}
               >
@@ -36,8 +39,9 @@ const NavBar = () => {
 
               <Link
                 to="/sheets"
+                onClick={() => setUrl("/sheets")}
                 className={buttonVariants({
-                  variant: "ghost",
+                  variant: url === "/sheets" ? "selected" : "ghost",
                   size: "sm",
                 })}
               >
@@ -46,8 +50,9 @@ const NavBar = () => {
 
               <Link
                 to="/interview"
+                onClick={() => setUrl("/interview")}
                 className={buttonVariants({
-                  variant: "ghost",
+                  variant: url === "/interview" ? "selected" : "ghost",
                   size: "sm",
                 })}
               >
@@ -56,8 +61,9 @@ const NavBar = () => {
 
               <Link
                 to="/playground"
+                onClick={() => setUrl("/playground")}
                 className={buttonVariants({
-                  variant: "ghost",
+                  variant: url === "/playground" ? "selected" : "ghost",
                   size: "sm",
                 })}
               >
@@ -66,8 +72,9 @@ const NavBar = () => {
 
               <Link
                 to="/explore"
+                onClick={() => setUrl("/explore")}
                 className={buttonVariants({
-                  variant: "ghost",
+                  variant: url === "/explore" ? "selected" : "ghost",
                   size: "sm",
                 })}
               >
@@ -76,8 +83,9 @@ const NavBar = () => {
 
               <Link
                 to="/copilot"
+                onClick={() => setUrl("/copilot")}
                 className={buttonVariants({
-                  variant: "ghost",
+                  variant: url === "/copilot" ? "selected" : "ghost",
                   size: "sm",
                 })}
               >
@@ -86,8 +94,9 @@ const NavBar = () => {
 
               <Link
                 to="/community"
+                onClick={() => setUrl("/community")}
                 className={buttonVariants({
-                  variant: "ghost",
+                  variant: url === "/community" ? "selected" : "ghost",
                   size: "sm",
                 })}
               >
@@ -103,16 +112,18 @@ const NavBar = () => {
               <>
                 <Link
                   to="/pricing"
+                  onClick={() => setUrl("/pricing")}
                   className={buttonVariants({
-                    variant: "ghost",
+                    variant: url === "/pricing" ? "selected" : "ghost",
                     size: "sm",
                   })}
                 >
                   Pricing
                 </Link>
                 <Link
+                  onClick={() => setUrl("/login")}
                   className={buttonVariants({
-                    variant: "ghost",
+                    variant: url === "/login" ? "selected" : "ghost",
                     size: "sm",
                   })}
                   to={"/login"}
@@ -132,8 +143,9 @@ const NavBar = () => {
               <>
                 <Link
                   to={`/u/${user.username}`}
+                  onClick={() => setUrl(`/u`)}
                   className={buttonVariants({
-                    variant: "ghost",
+                    variant: url === `/u` ? "selected" : "ghost",
                     size: "sm",
                   })}
                 >

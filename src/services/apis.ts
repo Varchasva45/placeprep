@@ -28,5 +28,5 @@ export const askPDFEndpoints = {
 
 export const chatBotEndpoints = {
   fetchMessages_API: baseUrl + "/api/chatbot/messages",
-  sendMessage_API: baseUrl + "/api/chatbot/message"
-}
+  sendMessage_API: baseUrl + "/api/chatbot/message",
+};

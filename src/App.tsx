@@ -42,15 +42,22 @@ const App = () => {
             <Route path="/explore" element={<AIDocsLanding />} />
             <Route path="/problems" element={<Problems />} />
             <Route path="/problems/:id" element={<Solve />} />
-            <Route path="/account/password/change" element={<ChangePassword />} />
-            <Route path="/account/password/create" element={<CreatePassword />} />
+            <Route
+              path="/account/password/change"
+              element={<ChangePassword />}
+            />
+            <Route
+              path="/account/password/create"
+              element={<CreatePassword />}
+            />
             <Route path="/interview" element={<InterviewLanding />} />
             <Route path="/edit-post/:id" element={<EditPost />} />
-            <Route path="/community" element={<Community />} /><Route path="/post/:id" element={<Post />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/post/:id" element={<Post />} />
             <Route path="/sheets" element={<Landing />} />
             <Route path="/copilot" element={<ChatBot />} />
           </Route>
-          
+
           <Route path="/playground" element={<Playground />} />
 
           <Route element={<LayoutWithAIDocsNavbar />}>

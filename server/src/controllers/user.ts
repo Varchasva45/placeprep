@@ -145,7 +145,7 @@ export const postController = async (req: Request, res: Response) => {
       tag,
       createdBy,
       updatedBy,
-      username
+      username,
     });
     await post.save();
     res.status(201).json({ success: true, post });
@@ -161,18 +161,19 @@ export const getPosts = async (req: Request, res: Response) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const pageSize = parseInt(req.query.pageSize as string) || 10;
-    const sortedBy = req.query.sortedBy as string || "createdAt";
+    const sortedBy = (req.query.sortedBy as string) || "createdAt";
     const skip = (page - 1) * pageSize;
-    const posts = await Post.find({isDeleted: false})
-    .sort({ [sortedBy]: -1 })
-    .skip(skip)
-    .limit(pageSize);
+    const posts = await Post.find({ isDeleted: false })
+      .sort({ [sortedBy]: -1 })
+      .skip(skip)
+      .limit(pageSize);
 
     const totalPosts = await Post.countDocuments();
     const totalPages = Math.ceil(totalPosts / pageSize);
 
-
-    res.status(200).json({ success: true, posts, totalPages, currentPage: page});
+    res
+      .status(200)
+      .json({ success: true, posts, totalPages, currentPage: page });
   } catch (error) {
     console.log(error);
     res
@@ -185,12 +186,12 @@ export const getPost = async (req: Request, res: Response) => {
   try {
     const postId = req.params.id;
     const post = await Post.findById(postId)
-    .populate({
-      path: 'comments',
-      match: { isDeleted: false },
-      options: { sort: { createdAt: -1 } }
-    })
-    .exec();
+      .populate({
+        path: "comments",
+        match: { isDeleted: false },
+        options: { sort: { createdAt: -1 } },
+      })
+      .exec();
 
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
@@ -218,28 +219,26 @@ export const updatePostController = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if(updatedData == 'like') {
+    if (updatedData == "like") {
       const likedPosts = user.likedPosts;
-      if(likedPosts.includes(postId)) {
+      if (likedPosts.includes(postId)) {
         const index = likedPosts.indexOf(postId);
         likedPosts.splice(index, 1);
         await user.save();
         post.likes -= 1;
-      }
-      else{
+      } else {
         likedPosts.push(postId);
         await user.save();
         post.likes += 1;
       }
-    } else if(updatedData == 'dislike') {
+    } else if (updatedData == "dislike") {
       const dislikedPosts = user.dislikedPosts;
-      if(dislikedPosts.includes(postId)) {
+      if (dislikedPosts.includes(postId)) {
         const index = dislikedPosts.indexOf(postId);
         dislikedPosts.splice(index, 1);
         await user.save();
         post.dislikes -= 1;
-      }
-      else{
+      } else {
         dislikedPosts.push(postId);
         await user.save();
         post.dislikes += 1;
@@ -254,7 +253,7 @@ export const updatePostController = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ success: false, message: "Error while updating post" });
-  } 
+  }
 };
 
 export const postCommentController = async (req: Request, res: Response) => {
@@ -270,7 +269,7 @@ export const postCommentController = async (req: Request, res: Response) => {
       postId,
       createdBy,
       updatedBy,
-      username
+      username,
     });
     await comment.save();
     post.comments.push(comment._id as mongoose.Types.ObjectId);
@@ -300,7 +299,7 @@ export const deletePostController = async (req: Request, res: Response) => {
       .status(500)
       .json({ success: false, message: "Error while deleting post" });
   }
-}
+};
 
 export const deleteCommentController = async (req: Request, res: Response) => {
   try {
@@ -318,7 +317,7 @@ export const deleteCommentController = async (req: Request, res: Response) => {
       .status(500)
       .json({ success: false, message: "Error while deleting comment" });
   }
-}
+};
 
 export const editPostController = async (req: Request, res: Response) => {
   try {
@@ -339,13 +338,13 @@ export const editPostController = async (req: Request, res: Response) => {
       .status(500)
       .json({ success: false, message: "Error while updating post" });
   }
-}
+};
 
 export const editCommentController = async (req: Request, res: Response) => {
   try {
     const commentId = req.params.id;
     const { content } = req.body;
-    const comment = await Comment.findById(commentId)
+    const comment = await Comment.findById(commentId);
     if (!comment) {
       return res.status(404).json({ message: "Comment not found" });
     }
@@ -358,5 +357,4 @@ export const editCommentController = async (req: Request, res: Response) => {
       .status(500)
       .json({ success: false, message: "Error while updating comment" });
   }
-}
-    
+};

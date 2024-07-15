@@ -9,10 +9,10 @@ export const openai = new OpenAI({
   apiKey,
 });
 export const openai2 = new OpenAI({
-  baseURL: 'https://api.deepinfra.com/v1/openai',
-  apiKey: 'dxo7YtTnI3CltQC7sarQuni4yNNVUv84',
+  baseURL: "https://api.deepinfra.com/v1/openai",
+  apiKey: "dxo7YtTnI3CltQC7sarQuni4yNNVUv84",
 });
 
 export const embeddings = new OpenAIEmbeddings({
-  apiKey
+  apiKey,
 });

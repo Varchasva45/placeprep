@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Send } from 'react-feather'; 
-import MarkdownEditor from 'react-markdown-editor-lite';
-import Markdown from 'react-markdown';
-import 'react-markdown-editor-lite/lib/index.css';
-import { Button } from './ui/button';
-import { Textarea } from './ui/textarea';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
-import axios from 'axios';
-import userState from '../recoil/atoms/user';
-import { useRecoilValue } from 'recoil';
-
-
+import React, { useEffect, useState } from "react";
+import { Send } from "react-feather";
+import MarkdownEditor from "react-markdown-editor-lite";
+import Markdown from "react-markdown";
+import "react-markdown-editor-lite/lib/index.css";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "./ui/collapsible";
+import axios from "axios";
+import userState from "../recoil/atoms/user";
+import { useRecoilValue } from "recoil";
 
 interface EditorChangeEvent {
   text: string;
@@ -24,10 +26,19 @@ interface NewDiscussionProps {
   initialTag?: string;
   initialMarkdown?: string;
   postId?: string;
-  mode?: 'edit' | 'create';
+  mode?: "edit" | "create";
 }
 
-const NewDiscussion: React.FC<NewDiscussionProps> = ({ isOpen, onClose, setPosts, initialTopic = '', initialTag = '', initialMarkdown = '', postId, mode}) => {
+const NewDiscussion: React.FC<NewDiscussionProps> = ({
+  isOpen,
+  onClose,
+  setPosts,
+  initialTopic = "",
+  initialTag = "",
+  initialMarkdown = "",
+  postId,
+  mode,
+}) => {
   const user = useRecoilValue(userState);
   const [topic, setTopic] = useState(initialTopic);
   const [tag, setTag] = useState(initialTag);
@@ -42,63 +53,67 @@ const NewDiscussion: React.FC<NewDiscussionProps> = ({ isOpen, onClose, setPosts
   const handleEditorChange = ({ text }: EditorChangeEvent) => {
     setMarkdown(text);
   };
-  
+
   const handleSubmit = async () => {
-    try{
-      const response = await axios.post('http://localhost:3000/api/users/postDiscussion', {
-        title: topic,
-        content: markdown,
-        tag: tag,
-        createdBy: user.id,
-        updatedBy: user.id,
-        username: user.username
-      });
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/users/postDiscussion",
+        {
+          title: topic,
+          content: markdown,
+          tag: tag,
+          createdBy: user.id,
+          updatedBy: user.id,
+          username: user.username,
+        },
+      );
 
       console.log(response);
 
-      if(response.status === 201){
+      if (response.status === 201) {
         onClose();
-        setPosts((prevPosts: any) => [response.data.post, ...prevPosts])
+        setPosts((prevPosts: any) => [response.data.post, ...prevPosts]);
       }
-    }
-    catch(error){
+    } catch (error) {
       console.log(error);
     }
   };
 
   const handleEdit = async () => {
-    try{
-      const response = await axios.patch(`http://localhost:3000/api/users/updatePost/${postId}`, {
-        title: topic,
-        content: markdown,
-        tag: tag
-      });
-      if(response.status === 200){
+    try {
+      const response = await axios.patch(
+        `http://localhost:3000/api/users/updatePost/${postId}`,
+        {
+          title: topic,
+          content: markdown,
+          tag: tag,
+        },
+      );
+      if (response.status === 200) {
         onClose();
-        setPosts((prevPosts: any) => [response.data.post, ...prevPosts])
+        setPosts((prevPosts: any) => [response.data.post, ...prevPosts]);
       }
-    }
-    catch(error){
+    } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   return (
     <Collapsible open={isOpen}>
       <CollapsibleTrigger className="hidden" />
       <CollapsibleContent>
         <div className="relative p-4 border border-gray-300 rounded-md">
-          {mode === 'create' && 
-          <Button className="absolute top-2 right-5" onClick={handleSubmit}>
-            <Send size={24} />
-          </Button>}
-          {
-            mode === 'edit' && 
+          {mode === "create" && (
+            <Button className="absolute top-2 right-5" onClick={handleSubmit}>
+              <Send size={24} />
+            </Button>
+          )}
+          {mode === "edit" && (
             <Button className="absolute top-2 right-5" onClick={handleEdit}>
               Edit
             </Button>
-          }
-          
+          )}
+
           <h2 className="text-lg font-bold mb-2">Topic</h2>
           <Textarea
             placeholder="Enter the topic"
@@ -119,7 +134,7 @@ const NewDiscussion: React.FC<NewDiscussionProps> = ({ isOpen, onClose, setPosts
           <div className="flex flex-col md:flex-row">
             <div className="w-screen">
               <MarkdownEditor
-                style={{ height: '300px' }}
+                style={{ height: "300px" }}
                 value={markdown}
                 onChange={handleEditorChange}
                 renderHTML={(text) => <Markdown>{text}</Markdown>}

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 
 const OTPInput = () => {
   const [otp, setOtp] = useState(new Array(6).fill(""));
@@ -32,9 +32,9 @@ const OTPInput = () => {
             name="otp"
             key={index}
             value={data}
-            onChange={e => handleChange(e.target, index)}
-            onKeyDown={e => handleKeyDown(e, index)}
-            ref={el => inputs.current[index] = el}
+            onChange={(e) => handleChange(e.target, index)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
+            ref={(el) => (inputs.current[index] = el)}
           />
         );
       })}
