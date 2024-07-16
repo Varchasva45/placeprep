@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { openai2 } from "../config/openAI";
 import Message from "../models/chatBot/Message";
+import Chat from "../models/chatBot/Chat";
 
 export const fetchMessages = async (req: Request, res: Response) => {
   try {
@@ -125,3 +126,29 @@ export const sendMessage = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error", success: false });
   }
 };
+
+export const createChat = async (req: Request, res: Response) => {
+  try{
+    const { name } = req.body;
+    const userId = req.user.id;
+    const chat = await Chat.create({ name, userId });
+    res.status(200).json({ chat, success: true });
+
+  }catch(error){
+    console.log(error);
+    res.status(500).json({ message: "Internal server error", success: false });
+  }
+};
+
+export const getChats = async (req: Request, res: Response) => {
+  console.log("getChats");
+  try{
+    const userId = req.user.id;
+    const chats = await Chat.find({ userId }).sort({createdAt: -1});
+    res.status(200).json({ chats, success: true });
+
+  }catch(error){
+    console.log(error);
+    res.status(500).json({ message: "Internal server error", success: false });
+  }
+}

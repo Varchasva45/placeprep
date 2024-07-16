@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Label } from "../components/ui/label";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
-import "./style.css";
+import "./Poststyle.css";
 import userState from "../recoil/atoms/user";
 import { useRecoilValue } from "recoil";
 import { MdEdit } from "react-icons/md";

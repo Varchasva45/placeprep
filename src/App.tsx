@@ -55,7 +55,7 @@ const App = () => {
             <Route path="/community" element={<Community />} />
             <Route path="/post/:id" element={<Post />} />
             <Route path="/sheets" element={<Landing />} />
-            <Route path="/copilot" element={<ChatBot />} />
+            <Route path="/copilot/:id?" element={<ChatBot />} />
           </Route>
 
           <Route path="/playground" element={<Playground />} />

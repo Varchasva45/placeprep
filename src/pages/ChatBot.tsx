@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Avatar, AvatarImage, AvatarFallback } from "../components/ui/avatar";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 import { useEffect, useRef, useState } from "react";
-import { LucideSendHorizonal, MessageSquare } from "lucide-react";
+import { CopyIcon, LucideSendHorizonal, MessageSquare, PanelLeft, SquarePen } from "lucide-react";
 import axios from "axios";
 import { chatBotEndpoints } from "../services/apis";
 import { useRecoilValue } from "recoil";
@@ -12,26 +12,14 @@ import toast from "react-hot-toast";
 import { Icons } from "../components/Icons";
 import userState from "../recoil/atoms/user";
 import { format } from "date-fns";
+import ReactMarkdown from "react-markdown";
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import "./ChatBotstyle.css";
+import { BsThreeDots } from "react-icons/bs";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "../components/ui/dropdown-menu";
+
 
 const ChatBot = () => {
-  const pervChat = [
-    "Discussing Project Deadlines",
-    "Meeting Summary: Q1 Review",
-    "Brainstorming New Ideas",
-    "Customer Feedback Analysis",
-    "Team Building Activities",
-    "Product Launch Strategy",
-    "Weekly Sync-Up",
-    "Sales Performance Review",
-    "Budget Planning",
-    "Technical Issue Resolution",
-    "Market Research Findings",
-    "Onboarding New Employees",
-    "Client Meeting Recap",
-    "Marketing Campaign Planning",
-    "Software Development Updates",
-    "Year-End Review Preparation",
-  ];
   interface Message {
     text: string;
     isUserMessage: boolean;
@@ -39,18 +27,51 @@ const ChatBot = () => {
     userId: string;
     createdAt: string;
   }
-
+  
+  const {id} = useParams();
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<Message[] | null>([]);
   const [message, setMessage] = useState<string>("");
   const auth = useRecoilValue(authState);
   const user = useRecoilValue(userState);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { fetchMessages_API, sendMessage_API } = chatBotEndpoints;
-  const chatId = 1;
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [chats, setChats] = useState<any>([]);
+
+  const [showDotsIndex, setShowDotsIndex] = useState<number | null>(null);
+  const [dropdownOpenIndex, setDropdownOpenIndex] = useState<number | null>(null);
+
+  const fetchChats = async () => {
+    try {
+      const response = await axios.get("http://localhost:3000/api/chatbot/chats", {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+      if(response.data.success){
+        setChats(response.data.chats);
+      }
+    }
+    catch (error: any) {
+      toast.error("Failed to fetch chats");
+    }
+  }
+
+  useEffect(() => {
+    fetchChats();
+  }, []);
+
+
+  const handleCopy = (index: number) => {
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 2000); // Reset after 2 seconds
+  };
 
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(fetchMessages_API + `/${chatId}`, {
+      const response = await axios.get(fetchMessages_API +`/${id}`, {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
@@ -69,10 +90,14 @@ const ChatBot = () => {
   const handleSendMessage = async (message: string) => {
     try {
       console.log("message", message);
-
+      let chatId = id;
+      if(chatId == undefined){
+        chatId = await handleCreateChat();
+      }
+      console.log("chatId", chatId);  
       const requestBody = {
         message,
-        chatId: 1,
+        chatId
       };
 
       const response = await axios.post(sendMessage_API, requestBody, {
@@ -102,24 +127,62 @@ const ChatBot = () => {
   };
 
   useEffect(() => {
+    if(id != undefined){
     fetchMessages();
-  }, []);
+    }
+  }, [id]);
+
+  const handleCreateChat = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/api/chatbot/createChat", {
+        name: "New Chat",
+      }, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+      if(response.data.success){
+        setChats((prevChats: any) => {
+          return [response.data.chat, ...prevChats,];
+        });
+        navigate(`/copilot/${response.data.chat._id}`);
+        return response.data.chat._id;
+      }else{
+        toast.error("Failed to create chat");
+      }
+    }
+    catch (error: any) {
+      toast.error("Failed to create chat");
+    }
+  }
 
   return (
     <div className="flex max-h-[calc(100vh-3.5rem)] w-full">
-      <aside className="hidden h-full w-64 border-r bg-background md:block">
+      <div className="flex flex-col">
+      <div className="flex items-center justify-between p-3 border-b bg-background h-12 gap-4">
+        <button onClick={()=>setDrawerOpen(!drawerOpen)}>
+          <PanelLeft className="h-6 w-6"/>
+        </button>
+        <button onClick={handleCreateChat}>
+          <SquarePen className="h-6 w-6"/>
+        </button>
+      </div>
+      {drawerOpen && (
+      <aside className="md:block h-full w-64 border-r bg-background">
         <div className="h-[calc(100vh-4rem)] overflow-auto">
           <div className="border-t px-4 py-4">
             <h3 className="mb-2 text-sm font-medium">Previous Chats</h3>
             <div className="space-y-2 truncate">
-              {pervChat.map((chat, index) => (
-                <div>
+              {chats.map((chat, index) => (
+                <div key={index} onMouseEnter={() => setShowDotsIndex(index)} onMouseLeave={() => setShowDotsIndex(null)}>
                   <Link
-                    to="#"
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted"
-                    key={index}
+                    to={`/copilot/${chat._id}`}
+                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted justify-between"
                   >
-                    <span>{chat}</span>
+                    <span>{chat?.name}</span>
+                    {showDotsIndex == index &&
+                    <span><BsThreeDots className="hover:text-slate-200"/></span>
+                    }
                   </Link>
                 </div>
               ))}
@@ -127,6 +190,9 @@ const ChatBot = () => {
           </div>
         </div>
       </aside>
+    )}
+      </div>
+
       <div className="flex flex-1 flex-col">
         <div className="flex-1 flex flex-col overflow-auto">
           <div className="flex h-12 items-center border-b bg-background px-4 md:px-6">
@@ -147,13 +213,31 @@ const ChatBot = () => {
                       <div className="grid gap-1">
                         <div className="font-medium">You</div>
                         <div className=" rounded-lg rounded-br-none bg-blue-600 p-3 text-sm text-primary-foreground">
-                          <p>{message.text}</p>
+                        <ReactMarkdown
+                          components={{
+                            code({ node, inline, className, children, ...props }) {
+                              return !inline ? (
+                                <pre className="code-block">
+                                  <code className={className} {...props}>
+                                    {children}
+                                  </code>
+                                </pre>
+                              ) : (
+                                <code className={className} {...props}>
+                                  {children}
+                                </code>
+                              );
+                            },
+                          }}
+                        >
+                          {message.text}
+                        </ReactMarkdown>
                           <div
                             className={
                               "text-xs select-none mt-2 w-full text-right text-blue-300"
                             }
                           >
-                            {format(new Date(message.createdAt), "HH:mm")}
+                            {message.createdAt && format(new Date(message.createdAt), "HH:mm")}
                           </div>
                         </div>
                       </div>
@@ -175,13 +259,40 @@ const ChatBot = () => {
                       <div className="grid gap-1">
                         <div className="font-medium">Chatbot</div>
                         <div className="rounded-lg rounded-bl-none bg-muted p-3 text-sm">
-                          <p>{message.text}</p>
+                        <ReactMarkdown
+                        components={{
+                          code({ node, inline, className, children, ...props }) {
+                            const codeString = String(children).trim();
+                            const index = message.text.indexOf(codeString);
+                            return !inline ? (
+                              <div className="code-block-wrapper">
+                                <pre className="code-block">
+                                <CopyToClipboard text={codeString} onCopy={()=>handleCopy(index)}>
+                                  <button className="copy-button">
+                                    {copiedIndex == index ? 'Copied!' : <CopyIcon className="h-4 w-4" />}
+                                  </button>
+                                </CopyToClipboard>
+                                  <code className={className} {...props}>
+                                    {children}
+                                  </code>
+                                </pre>
+                              </div>
+                            ) : (
+                              <code className={className} {...props}>
+                                {children}
+                              </code>
+                            );
+                          },
+                        }}
+                      >
+                        {message.text}
+                      </ReactMarkdown>
                           <div
                             className={
                               "text-xs select-none mt-2 w-full text-right text-zinc-500"
                             }
                           >
-                            {format(new Date(message.createdAt), "HH:mm")}
+                            {message.createdAt && format(new Date(message.createdAt), "HH:mm")}
                           </div>
                         </div>
                       </div>

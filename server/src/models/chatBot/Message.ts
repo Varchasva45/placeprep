@@ -3,7 +3,7 @@ import mongoose, { Document, Model, ObjectId, Schema } from "mongoose";
 interface Message extends Document {
   text: string;
   isUserMessage: boolean;
-  chatId: Number;
+  chatId: ObjectId;
   userId: ObjectId;
 }
 
@@ -19,8 +19,8 @@ const messageSchema = new Schema<Message>(
       required: true,
     },
     chatId: {
-      type: Number,
-      // ref: "Chat",
+      type: Schema.Types.ObjectId,
+      ref: "Chat",
       required: true,
     },
     userId: {

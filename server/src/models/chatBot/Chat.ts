@@ -3,7 +3,6 @@ import mongoose, { Document, Model, ObjectId, Schema } from "mongoose";
 interface Chat extends Document {
   name: string;
   userId: ObjectId;
-  messages: ObjectId[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -20,12 +19,6 @@ const chatSchema = new Schema<Chat>(
       ref: "User",
       required: true,
     },
-    messages: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Message",
-      },
-    ],
   },
   {
     timestamps: true,
