@@ -1,6 +1,7 @@
 import mongoose, { Document, Model, ObjectId, Schema } from "mongoose";
 
 interface Chat extends Document {
+  isDeleted: boolean;
   name: string;
   userId: ObjectId;
   createdAt: Date;
@@ -9,6 +10,10 @@ interface Chat extends Document {
 
 const chatSchema = new Schema<Chat>(
   {
+    isDeleted: {
+      type: Boolean,
+      default: false
+    },
     name: {
       type: String,
       trim: true,
