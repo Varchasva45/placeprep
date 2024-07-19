@@ -6,14 +6,29 @@ import Chat from "../models/chatBot/Chat";
 export const fetchMessages = async (req: Request, res: Response) => {
   try {
     const chatId = req.params.chatId;
-    const messages = await Message.find({ chatId, userId: req.user.id });
+    const cursor = req.query.cursor;
+    let query;
+    if (cursor !== "undefined"){ 
+      query = {chatId, userId: req.user.id, _id: { $lt: cursor } }
+    } 
+    else{ 
+      query = {chatId, userId: req.user.id }
+    };
+    
+    const messages = await Message.find(query).limit(6).sort({createdAt: -1});
     if (!messages) {
       return res
         .status(404)
         .json({ message: "Messages not found", success: false });
     }
+    
+    let nextCursor: any = undefined;
+    if(messages.length > 5){
+      nextCursor = messages[5]?._id;
+      messages.pop();
+    }
 
-    res.status(200).json({ messages, success: true });
+    res.status(200).json({ messages, nextCursor, success: true });
   } catch (error: any) {
     console.log(error);
     res.status(500).json({ message: "Internal server error", success: false });
@@ -32,6 +47,15 @@ export const sendMessage = async (req: Request, res: Response) => {
     //       .status(404)
     //       .json({ message: "File not found", success: false });
     //   }
+    const chat = await Chat.findById(chatId);
+    if(!chat){
+      return res.status(404).json({ message: "Chat not found", success: false });
+    }
+    if(chat.name === 'New Chat'){
+      // generate a valid name from the first message
+      chat.name = message.substring(0, 20);
+      await chat.save();
+    }
 
     await Message.create({
       text: message,
@@ -120,6 +144,7 @@ export const sendMessage = async (req: Request, res: Response) => {
       success: true,
       AIMessage,
       userMessage,
+      chat
     });
   } catch (error) {
     console.log(error);
@@ -141,10 +166,10 @@ export const createChat = async (req: Request, res: Response) => {
 };
 
 export const getChats = async (req: Request, res: Response) => {
-  console.log("getChats");
   try{
     const userId = req.user.id;
-    const chats = await Chat.find({ userId }).sort({createdAt: -1});
+    const chats = await Chat.find({ userId, isDeleted: false }).sort({createdAt: -1});
+    console.log(chats);
     res.status(200).json({ chats, success: true });
 
   }catch(error){
@@ -152,3 +177,30 @@ export const getChats = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error", success: false });
   }
 }
+
+export const updateChat = async (req: Request, res: Response) => {
+  try{
+    const chatId = req.params.chatId;
+    const { name } = req.body;
+    const userId = req.user.id;
+    const chat = await Chat.findOneAndUpdate({ _id: chatId, userId }, { name });
+    res.status(200).json({ chat, success: true });
+  }
+  catch(error){
+    console.log(error);
+    res.status(500).json({ message: "Internal server error", success: false });
+  }
+};
+
+export const deleteChat = async (req: Request, res: Response) => {
+  try{
+    const chatId = req.params.chatId;
+    const userId = req.user.id;
+    const chat = await Chat.findOneAndUpdate({ _id: chatId, userId }, { isDeleted: true });
+    res.status(200).json({ chat, success: true });
+  }
+  catch(error){
+    console.log(error);
+    res.status(500).json({ message: "Internal server error", success: false });
+  }
+};
