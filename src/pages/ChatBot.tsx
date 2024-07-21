@@ -1,9 +1,10 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
-import { useEffect, useRef, useState } from "react";
+import { HTMLInputTypeAttribute, useEffect, useRef, useState } from "react";
 import {
   CopyIcon,
+  Loader2,
   LucideSendHorizonal,
   MessageSquare,
   PanelLeft,
@@ -23,16 +24,8 @@ import ReactMarkdown from "react-markdown";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import "./ChatBotstyle.css";
 import { BsThreeDots } from "react-icons/bs";
-import { useInfiniteQuery } from "react-query";
+import { useInfiniteQuery, useMutation, useQueryClient } from "react-query";
 import { useIntersection } from "@mantine/hooks";
-import {
-  Dialog,
-  DialogClose,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -41,31 +34,49 @@ import {
 } from "../components/ui/dropdown-menu";
 
 const ChatBot = () => {
-  interface Message {
+  interface IMessage {
     text: string;
     isUserMessage: boolean;
     chatId: Number;
     userId: string;
     createdAt: string;
   }
+  interface IChat {
+    _id: string;
+    isDeleted: boolean;
+    name: string;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+  }
 
   const { id } = useParams();
   const navigate = useNavigate();
-  const [messages, setMessages] = useState<Message[] | null>([]);
-  const [message, setMessage] = useState<string>("");
+  const [promptMessage, setPromptMessage] = useState<string>("");
   const auth = useRecoilValue(authState);
   const user = useRecoilValue(userState);
-  const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { fetchMessages_API, sendMessage_API } = chatBotEndpoints;
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(true);
-  const [chats, setChats] = useState<any>([]);
+  const [chats, setChats] = useState<IChat[] | []>([]);
   const [editModeIndex, setEditModeIndex] = useState<number | null>(null);
   const [newChatName, setNewChatName] = useState<string>("");
+  const queryClient = useQueryClient();
+  const [loading, setLoading] = useState<boolean>(false);
 
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  const backupMessageRef = useRef<string>("");
+  const lastMessageRef = useRef<HTMLDivElement>();
+
+  // Infinite Query
   const { data, fetchNextPage, isLoading } = useInfiniteQuery(
-    "messages",
+    "chatMessages",
     async ({ pageParam }) => {
+      if (id == undefined) {
+        return;
+      }
+
+      // console.log('Fetching next page with', pageParam);
       const response = await axios.get(
         fetchMessages_API + `/${id}?cursor=${pageParam}`,
         {
@@ -74,6 +85,7 @@ const ChatBot = () => {
           },
         },
       );
+      // console.log(response.data);
       return response.data;
     },
     {
@@ -82,26 +94,22 @@ const ChatBot = () => {
     },
   );
 
-  const tempMessages = data?.pages.flatMap((page) => page.messages) || [];
-  console.log("tempMessages", tempMessages.length);
+  const messages =
+    data && data.pages[0]
+      ? data.pages.flatMap((page) => page?.messages)
+      : undefined;
+  // console.log('message Length', messages?.length);
+  // console.log('nextCursor', data?.pages[data?.pages.length - 1]?.nextCursor);
 
-  const lastMessageRef = useRef<any>(null);
   const { ref, entry } = useIntersection({
     root: lastMessageRef.current,
     threshold: 1,
   });
 
   useEffect(() => {
-    const observer = new IntersectionObserver((entries)=>{
-      const entry = entries[0];
-      console.log("entry",entry);
-    })
-    observer.observe(lastMessageRef.current!);
-  }, []);
-
-  useEffect(() => {
+    // console.log('entry', entry);
     if (entry?.isIntersecting) {
-      console.log("fetching next page");
+      // console.log('isIntersecting')
       fetchNextPage();
     }
   }, [entry, fetchNextPage]);
@@ -124,90 +132,217 @@ const ChatBot = () => {
     }
   };
 
+  const restartChat = async () => {
+    if (id == undefined) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await queryClient.invalidateQueries("chatMessages");
+      queryClient.removeQueries("chatMessages");
+      queryClient.refetchQueries("chatMessages");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to fetch messages, please refresh the page");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchChats();
-    // inputRef.current?.focus();
-  }, []);
+    restartChat();
+  }, [id]);
 
   const handleCopy = (index: number) => {
     setCopiedIndex(index);
     setTimeout(() => setCopiedIndex(null), 2000); // Reset after 2 seconds
   };
 
-  const fetchMessages = async () => {
-    try {
-      const response = await axios.get(
-        fetchMessages_API + `/${id}?cursor=undefined`,
-        {
+  // old sending message function
+  // const handleSendMessage = async (promptMessage: string) => {
+  //   try {
+  //     let chatId = id;
+  //     if (chatId == undefined) {
+  //       chatId = await handleCreateChat();
+  //     }
+
+  //     const requestBody = {
+  //       message: promptMessage,
+  //       chatId,
+  //     };
+
+  //     const response = await axios.post(sendMessage_API, requestBody, {
+  //       headers: {
+  //         Authorization: `Bearer ${auth.token}`,
+  //       },
+  //     });
+
+  //     if (response.data.success) {
+  //       setChats((prevChats: IChat[]) => {
+  //         const newChats = [...prevChats];
+  //         const chatIndex = newChats.findIndex(
+  //           (chat: IChat) => chat._id === chatId,
+  //         );
+  //         newChats[chatIndex].name = response.data.chat.name;
+  //         return newChats;
+  //       });
+  //       setPromptMessage("");
+  //     } else {
+  //       console.log(response.data.message);
+  //       toast.error("Failed to send message");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error("Failed to send message");
+  //   }
+  // };
+
+  // New sending message function using useMutation
+  const { mutate: sendMessageMutation } = useMutation({
+    mutationFn: async (chatId: string) => {
+      try {
+        console.log("Reached here mutationFn");
+        // Input message khaali karo
+        setPromptMessage("");
+
+        // Message khaali hai to return kar jao
+        if (promptMessage.length == 0) {
+          return;
+        }
+
+        // Message ko api bhejo
+        const requestBody = {
+          message: promptMessage, // Using the function parameter instead of promptMessage
+          chatId,
+        };
+
+        const response = await axios.post(sendMessage_API, requestBody, {
           headers: {
             Authorization: `Bearer ${auth.token}`,
           },
-        },
-      );
+        });
 
-      if (response.data.success) {
-        setMessages(response.data.messages);
-      } else {
-        toast.error("Failed to fetch messages");
+        if (!response.data.success) {
+          throw new Error(response.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        throw new Error("Failed to send message");
       }
-    } catch (error: any) {
-      toast.error("Failed to fetch messages");
-    }
-  };
+    },
+    onMutate: async (chatId: string) => {
+      console.log("Here reach onMutate");
+      // Mutation karte hue jo kaam hoga woh yaha pe hoga
 
-  const handleSendMessage = async (message: string) => {
-    try {
-      console.log("message", message);
-      let chatId = id;
-      if (chatId == undefined) {
-        chatId = await handleCreateChat();
-      }
-      console.log("chatId", chatId);
-      const requestBody = {
-        message,
-        chatId,
-      };
+      // Backup message ko store kar lo
+      backupMessageRef.current = promptMessage;
 
-      const response = await axios.post(sendMessage_API, requestBody, {
-        headers: {
-          Authorization: `Bearer ${auth.token}`,
-        },
+      // Ongoing queries ko cancel karo
+      await queryClient.cancelQueries("chatMessages");
+
+      // Previous messages ko get karo -> isko get kyu kara abhi baad me dekhenge
+      const previousMessages: any = queryClient.getQueryData("chatMessages");
+
+      // Temporary data ko update karo for optimistic updates
+      queryClient.setQueryData("chatMessages", (old: any) => {
+        if (!old || old.pages[0] == undefined) {
+          if (old.pages[0] == undefined) {
+            return {
+              pages: [
+                {
+                  messages: [
+                    {
+                      id: crypto.randomUUID(),
+                      text: promptMessage,
+                      isUserMessage: true,
+                      createdAt: new Date().toISOString(),
+                    },
+                  ],
+                  success: true,
+                },
+              ],
+              pageParams: [],
+            };
+          }
+
+          return {
+            pages: [],
+            pageParams: [],
+          };
+        }
+
+        // Old data me hamne apna user message ko add kiya
+        let newPages = [...old.pages];
+
+        newPages[0].messages = [
+          {
+            id: crypto.randomUUID(),
+            text: promptMessage,
+            isUserMessage: true,
+            createdAt: new Date().toISOString(),
+          },
+          ...newPages[0].messages,
+        ];
+
+        // Return karo new data
+        return {
+          ...old,
+          pages: newPages,
+        };
       });
 
-      if (response.data.success) {
-        setMessages((prevMessages) => {
-          if (!prevMessages) {
-            return [response.data.AIMessage, response.data.userMessage];
-          } else {
-            return [
-              response.data.AIMessage,
-              response.data.userMessage,
-              ...prevMessages,
-            ];
-          }
+      return {
+        previousMessages:
+          previousMessages?.pages.flatMap((page: any) => page?.messages) ?? [],
+      };
+    },
+    onSuccess: () => {
+      // try {
+      //   // Response se actual message ko extract karo
+      //   console.log('Message:', message);
+      //   // const message = response.data.message;
+      //   // Yaha pe woh kaam karna hai jo hoga success hone pe hoga
+      //   queryClient.setQueryData('chatMessages', (old: any) => {
+      //     let newPages = [...old.pages];
+      //     newPages[0].messages = [
+      //       {
+      //         id: crypto.randomUUID(),
+      //         text: message,
+      //         isUserMessage: false, // Check this as it might need to be `true`
+      //         createdAt: new Date().toISOString(),
+      //       },
+      //       ...newPages[0].messages,
+      //     ];
+      //     return {
+      //       ...old,
+      //       pages: newPages,
+      //     };
+      //   });
+      // } catch (error) {
+      //   console.log(error);
+      // }
+    },
+    onError: () => {
+      try {
+        setPromptMessage(backupMessageRef.current);
+        queryClient.setQueryData("chatMessages", (old: any) => {
+          let newPages = [...old.pages];
+          newPages[0].messages = newPages[0].messages.slice(1);
+          return {
+            ...old,
+            pages: newPages,
+          };
         });
-        setChats((prevChats: any) => {
-          const newChats = [...prevChats];
-          const chatIndex = newChats.findIndex(
-            (chat: any) => chat._id === chatId,
-          );
-          newChats[chatIndex].name = response.data.chat.name;
-          return newChats;
-        });
-        setMessage("");
-      } else {
-        toast.error("Failed to send message");
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      toast.error("Failed to send message");
-    }
-  };
-
-  useEffect(() => {
-    if (id != undefined) {
-      fetchMessages();
-    }
-  }, [id]);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("chatMessages");
+    },
+  });
 
   const handleCreateChat = async () => {
     try {
@@ -223,7 +358,7 @@ const ChatBot = () => {
         },
       );
       if (response.data.success) {
-        setChats((prevChats: any) => {
+        setChats((prevChats: IChat[]) => {
           return [response.data.chat, ...prevChats];
         });
         navigate(`/copilot/${response.data.chat._id}`);
@@ -236,7 +371,7 @@ const ChatBot = () => {
     }
   };
 
-  const handleKeyDown = async (e: any) => {
+  const handleKeyDown = async (e: KeyboardEvent) => {
     if (e.key === "Enter") {
       try {
         const chatId = chats[editModeIndex!]._id;
@@ -252,7 +387,7 @@ const ChatBot = () => {
           },
         );
         if (response.data.success) {
-          setChats((prevChats: any) => {
+          setChats((prevChats: IChat[]) => {
             const newChats = [...prevChats];
             newChats[editModeIndex!].name = newChatName;
             return newChats;
@@ -284,8 +419,8 @@ const ChatBot = () => {
         },
       );
       if (response.data.success) {
-        setChats((prevChats: any) => {
-          return prevChats.filter((chat: any) => chat._id !== chatId);
+        setChats((prevChats: IChat[]) => {
+          return prevChats.filter((chat: IChat) => chat._id !== chatId);
         });
       }
     } catch (error: any) {
@@ -296,12 +431,12 @@ const ChatBot = () => {
   return (
     <div className="flex max-h-[calc(100vh-3.5rem)] w-full overflow-hidden">
       <div className="flex flex-col">
-        <div className="flex items-center justify-between p-3 border-b bg-background h-12 gap-4">
-          <button onClick={() => setDrawerOpen(!drawerOpen)}>
-            <PanelLeft className="h-6 w-6" />
-          </button>
+        <div className="flex items-center justify-between p-3 border-b border-r bg-background h-12 gap-4">
           <button onClick={handleCreateChat}>
             <SquarePen className="h-6 w-6" />
+          </button>
+          <button onClick={() => setDrawerOpen(!drawerOpen)}>
+            <PanelLeft className="h-6 w-6" />
           </button>
         </div>
         {drawerOpen && (
@@ -310,7 +445,7 @@ const ChatBot = () => {
               <div className="border-t px-4 py-4">
                 <h3 className="mb-2 text-sm font-medium">Previous Chats</h3>
                 <div className="space-y-2 truncate">
-                  {chats.map((chat, index: number) => (
+                  {chats.map((chat: IChat, index: number) => (
                     <div key={index}>
                       <Link
                         to={`/copilot/${chat._id}`}
@@ -322,7 +457,7 @@ const ChatBot = () => {
                             onChange={(e) => {
                               setNewChatName(e.target.value);
                             }}
-                            onKeyDown={handleKeyDown}
+                            onKeyDown={() => handleKeyDown}
                             className=" outline-none focus:border-blue-500"
                           />
                         ) : (
@@ -368,24 +503,36 @@ const ChatBot = () => {
 
       <div className="flex flex-1 flex-col">
         <div className="flex-1 flex flex-col overflow-auto">
-          <div className="flex h-12 items-center border-b bg-background px-4 md:px-6">
+          <div className="flex h-12 items-center justify-center border-b bg-background px-4 md:px-6">
             <div className="flex items-center gap-2">
               <BotIcon className="h-6 w-6" />
               <span className="text-lg font-semibold">Placeprep's Copilot</span>
             </div>
           </div>
-          <div className="flex-1 overflow-auto">
-            <div className="gap-4 h-full flex flex-col-reverse overflow-auto p-4">
-              {tempMessages && tempMessages.length > 0 ? (
-                tempMessages.map((message, index) =>
-                  
+          <div className="flex-1 h-full overflow-auto">
+            <div className="gap-4 h-full w-full flex flex-col-reverse overflow-auto p-4">
+              {isLoading || loading ? (
+                <>
+                  <div className="flex-1 flex flex-col items-center justify-center gap-2">
+                    <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
+                    <h3 className="font-semibold text-xl">
+                      Loading Conversation...
+                    </h3>
+                    <p className="text-zinc-500 text-sm">Please wait</p>
+                  </div>
+                </>
+              ) : messages && messages.length > 0 ? (
+                messages.map((message, index) =>
                   message.isUserMessage ? (
                     <div
-                      ref={index === tempMessages.length - 1 ? lastMessageRef : null}
+                      // ref={index === messages.length - 1 ? lastMessageRef : null}
                       key={index}
                       className="flex items-end gap-2 justify-end lg:ml-48"
                     >
-                      <div className="grid gap-1">
+                      <div
+                        className="grid gap-1"
+                        ref={index === messages.length - 1 ? ref : null}
+                      >
                         <div className="font-medium">You</div>
                         <div className=" rounded-lg rounded-br-none bg-blue-600 p-3 text-sm text-primary-foreground">
                           <ReactMarkdown
@@ -436,13 +583,16 @@ const ChatBot = () => {
                   ) : (
                     <div
                       key={index}
-                      ref={index === tempMessages.length - 1 ? lastMessageRef : null}
+                      // ref={index === messages.length - 1 ? lastMessageRef : null}
                       className="flex items-end gap-2 lg:mr-48"
                     >
                       <div className="h-6 w-6">
                         <Icons.logo className="bg-zinc-300 rounded-sm text-zinc-200 p-1 h-6 w-6" />
                       </div>
-                      <div className="grid gap-1">
+                      <div
+                        className="grid gap-1"
+                        ref={index === messages.length - 1 ? ref : null}
+                      >
                         <div className="font-medium">Chatbot</div>
                         <div className="rounded-lg rounded-bl-none bg-muted p-3 text-sm">
                           <ReactMarkdown
@@ -500,7 +650,7 @@ const ChatBot = () => {
                   ),
                 )
               ) : (
-                <div className="flex-1 flex flex-col items-center justify-center gap-2">
+                <div className="flex-1 flex h-full flex-col items-center justify-center gap-2">
                   <MessageSquare className="h-8 w-8 text-blue-500" />
                   <h3 className="font-semibold text-xl">
                     You&apos;re all set!
@@ -517,9 +667,9 @@ const ChatBot = () => {
               <Textarea
                 rows={1}
                 ref={textAreaRef}
-                value={message}
+                value={promptMessage}
                 autoFocus
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) => setPromptMessage(e.target.value)}
                 placeholder="Type your message..."
                 className="pt-3 resize-none pr-12 text-base scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
               />
@@ -529,8 +679,14 @@ const ChatBot = () => {
                 className="absolute bottom-1.5 right-[8px]"
                 aria-label="send message"
                 type="submit"
-                onClick={() => {
-                  handleSendMessage(message);
+                onClick={async () => {
+                  // handleSendMessage(promptMessage);
+                  if (id == undefined) {
+                    let chatId = await handleCreateChat();
+                    sendMessageMutation(chatId);
+                  } else {
+                    sendMessageMutation(id);
+                  }
                   textAreaRef.current?.focus();
                 }}
               >

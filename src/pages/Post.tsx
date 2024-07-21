@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -192,7 +191,7 @@ const Post = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div className="w-full max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <article className="prose prose-gray dark:prose-invert">
         <div className="space-y-6 not-prose">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl">
@@ -273,15 +272,17 @@ const Post = () => {
               <Textarea
                 id="comment"
                 placeholder="Write your comment..."
-                className="min-h-[120px]"
+                className="min-h-[120px] resize-none"
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
               />
             </div>
           </div>
-          <Button type="submit" onClick={handleSubmit}>
-            Submit Comment
-          </Button>
+          <div className="flex justify-start">
+            <Button type="submit" onClick={handleSubmit}>
+              Post Comment
+            </Button>
+          </div>
         </form>
         <div className="space-y-4 w-full">
           {comments?.map((comment: any) => (

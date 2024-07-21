@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
@@ -165,8 +165,8 @@ const Community = () => {
 
   return (
     <>
-      <div className="flex min-h-screen w-full flex-col bg-background">
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background px-4 sm:px-6">
+      <div className="flex w-full bg-background min-h-[calc(100vh-3.5rem)]">
+        {/* <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <Link to={"/problems"} className="flex items-center gap-2">
               <DiscIcon className="h-6 w-6" />
@@ -185,9 +185,9 @@ const Community = () => {
           <Button className="hidden sm:inline-flex" onClick={handleToggle}>
             {!isDiscussionOpen ? "Start a New Discussion" : "Close"}
           </Button>
-        </header>
-        <div className="flex flex-1 overflow-hidden">
-          <div className="hidden w-[240px] flex-col border-r bg-muted p-4 sm:flex">
+        </header> */}
+        <div className="hidden w-[15rem] flex-col border-r bg-muted p-4 sm:flex sm:justify-between">
+          <div>
             <div className="mb-4 text-lg font-semibold">Categories</div>
             <nav className="flex flex-col gap-2">
               <Link
@@ -222,68 +222,77 @@ const Community = () => {
               </Link>
             </nav>
           </div>
-          {!isDiscussionOpen && (
-            <div className="flex-1 overflow-auto p-4 sm:p-6">
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <div className="text-xl font-semibold">
-                    Latest Discussions
+          <Button className="hidden sm:inline-flex" onClick={handleToggle}>
+            {!isDiscussionOpen ? "Start a New Discussion" : "Close"}
+          </Button>
+        </div>
+
+        {!isDiscussionOpen && (
+          <div className="overflow-auto max-h-[calc(100vh-3.5rem)] flex flex-col justify-between w-full p-4 sm:p-6">
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <div className="text-xl font-semibold">Latest Discussions</div>
+                <div className="flex justify-between">
+                  <div className="text-sm text-muted-foreground">
+                    Browse the latest discussions on our platform.
                   </div>
-                  <div className="flex justify-between">
-                    <div className="text-sm text-muted-foreground">
-                      Browse the latest discussions on our platform.
+                  <div className="flex justify-evenly gap-5">
+                    <div
+                      className="text-sm text-muted-foreground cursor-pointer hover:text-black"
+                      onClick={() => handleSortedBy("createdAt")}
+                    >
+                      Latest
                     </div>
-                    <div className="flex justify-evenly gap-5">
-                      <div
-                        className="text-sm text-muted-foreground cursor-pointer hover:text-black"
-                        onClick={() => handleSortedBy("createdAt")}
-                      >
-                        Latest
-                      </div>
-                      <div
-                        className="text-sm text-muted-foreground cursor-pointer hover:text-black"
-                        onClick={() => handleSortedBy("likes")}
-                      >
-                        Most Liked
-                      </div>
-                      <div
-                        className="text-sm text-muted-foreground cursor-pointer hover:text-black"
-                        onClick={() => handleSortedBy("views")}
-                      >
-                        Most Viewed
-                      </div>
+                    <div
+                      className="text-sm text-muted-foreground cursor-pointer hover:text-black"
+                      onClick={() => handleSortedBy("likes")}
+                    >
+                      Most Liked
+                    </div>
+                    <div
+                      className="text-sm text-muted-foreground cursor-pointer hover:text-black"
+                      onClick={() => handleSortedBy("views")}
+                    >
+                      Most Viewed
                     </div>
                   </div>
                 </div>
+              </div>
+              <div className="h-full">
                 <div className="grid gap-4">
                   {posts.map((post: any, index: any) => (
-                    <Card className="grid grid-cols-[50px_1fr] gap-4 h-20">
-                      <div className="flex items-center justify-center rounded-md bg-accent text-accent-foreground h-20">
+                    <Card
+                      key={index}
+                      className="grid grid-cols-[50px_1fr] gap-4 h-20"
+                    >
+                      <div className="flex items-center justify-center rounded-tl-md rounded-bl-md bg-accent text-accent-foreground h-20">
                         <Link to={`/post/${post._id}`}>
                           <MessageCircleIcon className="h-5 w-5" />
                         </Link>
                       </div>
-                      <div>
-                        <div className="font-medium mt-1">
-                          <Link
-                            to={`/post/${post._id}`}
-                            onClick={() => handleUpdate(post._id, "views")}
-                          >
-                            {post.title}
-                          </Link>
-                        </div>
-                        <div className="text-sm text-muted-foreground mb-1 mt-1 text-gray-900">
-                          <Link to="#" className="font-medium">
-                            {post.username}
-                          </Link>
-                          <span style={{ marginLeft: "0.5rem" }}>
-                            •{timeAgo(post.createdAt)}
-                          </span>
+                      <div className="flex md:flex-row flex-col justify-between">
+                        <div className="flex-1 flex flex-col justify-center">
+                          <div className="font-medium mt-1 truncate sm:max-w-4xl">
+                            <Link
+                              to={`/post/${post._id}`}
+                              onClick={() => handleUpdate(post._id, "views")}
+                            >
+                              {post.title}
+                            </Link>
+                          </div>
+                          <div className="text-sm text-muted-foreground mb-1 mt-1 text-gray-900">
+                            <Link to="#" className="font-medium">
+                              {post.username}
+                            </Link>
+                            <span style={{ marginLeft: "0.5rem" }}>
+                              •{timeAgo(post.createdAt)}
+                            </span>
+                          </div>
                         </div>
                         {/* <div className="line-clamp-2 text-sm mb-1 text-gray-600">
-                  <Markdown>{truncateContent(post.content, 50)}</Markdown>
-                  </div> */}
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
+                    <Markdown>{truncateContent(post.content, 50)}</Markdown>
+                    </div> */}
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1 mr-4">
                           <div className="flex items-center gap-1">
                             {likedPosts.includes(post._id) ? (
                               <BiSolidLike
@@ -333,7 +342,8 @@ const Community = () => {
                     </Card>
                   ))}
                 </div>
-                <div className="flex justify-between">
+              </div>
+              {/* <div className="flex justify-between">
                   <Button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
@@ -346,22 +356,36 @@ const Community = () => {
                   >
                     <ChevronsRight />
                   </Button>
-                </div>
-              </div>
+                </div> */}
             </div>
-          )}
-          :
-          {isDiscussionOpen && (
-            <div className="flex-1 overflow-auto p-4 sm:p-6">
-              <NewDiscussion
-                isOpen={isDiscussionOpen}
-                onClose={handleToggle}
-                setPosts={setPosts}
-                mode="create"
-              />
+
+            <div className="flex justify-between mt-6">
+              <Button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <ChevronsLeft />
+              </Button>
+              <Button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                <ChevronsRight />
+              </Button>
             </div>
-          )}
-        </div>
+          </div>
+        )}
+
+        {isDiscussionOpen && (
+          <div className="flex-1 overflow-auto p-4 sm:p-6">
+            <NewDiscussion
+              isOpen={isDiscussionOpen}
+              onClose={handleToggle}
+              setPosts={setPosts}
+              mode="create"
+            />
+          </div>
+        )}
       </div>
     </>
   );

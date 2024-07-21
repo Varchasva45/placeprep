@@ -20,7 +20,11 @@ const NavBar = () => {
         <div className="flex h-14 items-center justify-between border-b border-zinc-200">
           <div className="flex space-x-12 mr-10">
             <div className="flex items-center">
-              <Link to="/" className="flex z-40 font-semibold">
+              <Link
+                to="/"
+                className="flex z-40 font-semibold"
+                onClick={() => setUrl("/")}
+              >
                 <span>PlacePrep</span>
               </Link>
             </div>
@@ -134,6 +138,7 @@ const NavBar = () => {
                   className={buttonVariants({
                     size: "sm",
                   })}
+                  onClick={() => setUrl("/signup")}
                   to={"/signup"}
                 >
                   Register <ArrowRight className="ml-1.5 h-5 w-5" />

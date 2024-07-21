@@ -121,6 +121,7 @@ const NewDiscussion: React.FC<NewDiscussionProps> = ({
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
             rows={1}
+            maxLength={80}
           />
           <h2 className="text-lg font-bold mb-2">Tag</h2>
           <Textarea
@@ -137,6 +138,7 @@ const NewDiscussion: React.FC<NewDiscussionProps> = ({
                 style={{ height: "300px" }}
                 value={markdown}
                 onChange={handleEditorChange}
+                loggerMaxSize={200}
                 renderHTML={(text) => <Markdown>{text}</Markdown>}
               />
             </div>
