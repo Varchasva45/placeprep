@@ -12,7 +12,7 @@ const chatSchema = new Schema<Chat>(
   {
     isDeleted: {
       type: Boolean,
-      default: false
+      default: false,
     },
     name: {
       type: String,
