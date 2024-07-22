@@ -7,6 +7,9 @@ export const fetchMessages = async (req: Request, res: Response) => {
   try {
     const chatId = req.params.chatId;
     const cursor = req.query.cursor;
+    if(chatId === "undefined") {
+      return res.status(404).json({ message: "Chat not found", success: false });
+    }
     let query;
     if (cursor !== "undefined") {
       query = { chatId, userId: req.user.id, _id: { $lte: cursor } };
@@ -74,10 +77,16 @@ export const sendMessage = async (req: Request, res: Response) => {
       content: msg.text,
     }));
 
+    res.writeHead(200, {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      "Connection": "keep-alive",
+    });
+
     const stream = await openai2.chat.completions.create({
       model: "meta-llama/Meta-Llama-3-8B-Instruct",
       temperature: 0,
-      stream: false,
+      stream: true,
       messages: [
         {
           role: "system",
@@ -117,7 +126,16 @@ export const sendMessage = async (req: Request, res: Response) => {
     //     // res.write(chunk);
     // }
 
-    const responseMessage = stream.choices[0].message.content;
+    let responseMessage = '';
+
+    for await (const part of stream) {
+      const chunk = part.choices[0]?.delta?.content;
+      if (chunk) {
+        console.log('chunk',chunk);
+        responseMessage += chunk;
+        res.write(chunk);
+      }
+    }
 
     await Message.create({
       text: responseMessage,
@@ -126,27 +144,7 @@ export const sendMessage = async (req: Request, res: Response) => {
       userId,
     });
 
-    const AIMessage = {
-      text: responseMessage,
-      isUserMessage: false,
-      chatId,
-      userId,
-    };
-
-    const userMessage = {
-      text: message,
-      isUserMessage: true,
-      chatId,
-      userId,
-    };
-
-    res.status(200).json({
-      message: "Message sent successfully",
-      success: true,
-      AIMessage,
-      userMessage,
-      chat,
-    });
+    res.end();
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Internal server error", success: false });

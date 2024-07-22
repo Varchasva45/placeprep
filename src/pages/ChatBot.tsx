@@ -63,6 +63,7 @@ const ChatBot = () => {
   const [newChatName, setNewChatName] = useState<string>("");
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState<boolean>(false);
+  const [isStreaming , setIsStreaming] = useState<boolean>(false);
 
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const backupMessageRef = useRef<string>("");
@@ -200,6 +201,7 @@ const ChatBot = () => {
   // };
 
   // New sending message function using useMutation
+  console.log('messages', messages);
   const { mutate: sendMessageMutation } = useMutation({
     mutationFn: async (chatId: string) => {
       try {
@@ -218,15 +220,81 @@ const ChatBot = () => {
           chatId,
         };
 
-        const response = await axios.post(sendMessage_API, requestBody, {
+        const response = await fetch(sendMessage_API, {
+          method: 'POST',
           headers: {
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${auth.token}`,
           },
+          body: JSON.stringify(requestBody),
         });
 
-        if (!response.data.success) {
-          throw new Error(response.data.message);
-        }
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+      const reader = response?.body?.getReader();
+      if(!reader){
+        console.log("Reader not found");
+      }
+
+      const decoder = new TextDecoder();
+      let done = false;
+      let aiMessage = '';
+
+      // queryClient.setQueryData("chatMessages", (oldData) => {
+      //   const newMessage = {
+      //     id: crypto.randomUUID(),
+      //     text: promptMessage,
+      //     isUserMessage: true,
+      //     createdAt: new Date().toISOString(),
+      //   };
+
+      //   if (!oldData) {
+      //     return {
+      //       pages: [{ messages: [newMessage] }],
+      //       pageParams: [],
+      //     };
+      //   }
+
+      //   const newPages = [...oldData.pages];
+      //   newPages[0].messages = [newMessage, ...newPages[0].messages];
+
+      //   return {
+      //     ...oldData,
+      //     pages: newPages,
+      //   };
+      // });
+      
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        aiMessage += decoder.decode(value, { stream: !done });
+        queryClient.setQueryData("chatMessages", (oldData) => {
+          if (!oldData) return oldData;
+
+          const newPages = [...oldData.pages];
+          const lastPage = newPages[0].messages;
+
+          if (!lastPage || lastPage.length === 0) {
+            newPages[0].messages = [{
+              id: crypto.randomUUID(),
+              text: aiMessage,
+              isUserMessage: false,
+              chatId,
+              userId: user.id,
+            }];
+          } else {
+            newPages[0].messages[0].text = aiMessage;
+            newPages[0].messages[0].isUserMessage = false;
+          }
+
+          return {
+            ...oldData,
+            pages: newPages,
+          };
+        });
+
+      }
       } catch (error) {
         console.log(error);
         throw new Error("Failed to send message");
@@ -449,7 +517,7 @@ const ChatBot = () => {
                     <div key={index}>
                       <Link
                         to={`/copilot/${chat._id}`}
-                        className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted justify-between"
+                        className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-muted justify-between ${chat._id === id ? "bg-muted" : ""}`}
                       >
                         {editModeIndex == index ? (
                           <input
