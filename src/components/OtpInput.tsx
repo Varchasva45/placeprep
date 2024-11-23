@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 
 const OTPInput = () => {
   const [otp, setOtp] = useState(new Array(6).fill(""));

@@ -20,7 +20,7 @@ import authState from "../recoil/atoms/auth";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { authEndpoints, userEndpoints } from "../services/apis";
-
+import Cookies from "js-cookie";
 interface IuserDetails {
   _id: mongoose.Types.ObjectId;
   name?: string;
@@ -59,7 +59,6 @@ const AccountInformationPage = ({
   userDetails,
   setUserDetails,
 }: EditProfilePageProps) => {
-  const navigate = useNavigate();
   const auth = useRecoilValue(authState);
   const [editMode, setEditMode] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -72,6 +71,7 @@ const AccountInformationPage = ({
   });
   const { sendOtp_API } = authEndpoints;
   const { updateEmail_API, updateUsername_API } = userEndpoints;
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (editMode) {
@@ -133,6 +133,15 @@ const AccountInformationPage = ({
       }
     } catch (error: any) {
       toast.dismiss(toastId);
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       const errorMessage = error.response?.data?.message || "Error sending OTP";
       toast.error(errorMessage);
     } finally {
@@ -188,7 +197,15 @@ const AccountInformationPage = ({
         );
       }
     } catch (error: any) {
-      console.log(error);
+      
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       toast.dismiss(toastId);
       toast.error(
         error.response.data.message
@@ -238,7 +255,15 @@ const AccountInformationPage = ({
         );
       }
     } catch (error: any) {
-      console.log(error);
+      
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       toast.error(
         error.response.data.message
           ? error.response.data.message

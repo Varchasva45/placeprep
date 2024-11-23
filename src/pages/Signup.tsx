@@ -18,7 +18,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
 } from "../components/ui/dialog";
 import OTPInput from "../components/OtpInput";
 
@@ -219,14 +218,16 @@ const Signup = () => {
                 </div>
               </div>
 
+              <Button
+                disabled={isLoading}
+                className="w-full py-3 bg-black text-white rounded-lg font-semibold hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              >
+                Sign Up
+              </Button>
+
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button
-                    disabled={isLoading || !email || !password}
-                    className="w-full py-3 bg-black text-white rounded-lg font-semibold hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                  >
-                    Sign Up
-                  </Button>
+                  
                 </DialogTrigger>
                 <DialogContent className="h-6/12 w-4/12 bg-gray-100 px-10 py-6">
                   <DialogHeader>

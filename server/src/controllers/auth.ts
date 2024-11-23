@@ -40,7 +40,7 @@ export const signup = async (req: Request, res: Response) => {
       email: newUser.email,
     };
 
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "3h" });
 
     res.status(201).json({
       success: true,
@@ -84,7 +84,7 @@ export const login = async (req: Request, res: Response) => {
       email: user.email,
     };
 
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "3h" });
 
     res.status(200).json({
       success: true,
@@ -131,7 +131,7 @@ export const googleLogin = async (req: Request, res: Response) => {
         imageUrl: userExists.imageUrl,
       };
 
-      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "3h" });
       res.cookie("token", token);
       res.cookie("user", JSON.stringify(userDetails));
       res.redirect(`http://localhost:5173/u/${userExists.username}`);
@@ -159,7 +159,7 @@ export const googleLogin = async (req: Request, res: Response) => {
         imageUrl: newUser.imageUrl,
       };
 
-      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "3h" });
       res.cookie("token", token);
       res.cookie("user", JSON.stringify(userDetails));
       res.redirect(`http://localhost:5173/u/${newUser.username}`);
@@ -197,7 +197,7 @@ export const githubLogin = async (req: Request, res: Response) => {
         imageUrl: userExists.imageUrl,
       };
 
-      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "3h" });
       res.cookie("token", token);
       res.cookie("user", JSON.stringify(userDetails));
       res.redirect(`http://localhost:5173/u/${userExists.username}`);
@@ -224,7 +224,7 @@ export const githubLogin = async (req: Request, res: Response) => {
         imageUrl: newUser.imageUrl,
       };
 
-      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "3h" });
       res.cookie("token", token);
       res.cookie("user", JSON.stringify(userDetails));
       res.redirect(`http://localhost:5173/u/${newUser.username}`);
@@ -249,7 +249,6 @@ export const handleSendOtp = async (req: Request, res: Response) => {
 
     const otp = Math.floor(100000 + Math.random() * 900000);
     console.log("otp", otp);
-    // Logic to send otp to this email
     await Otp.create({ userId, otp });
     res.status(200).json({ success: true, message: "OTP sent successfully" });
   } catch (error) {

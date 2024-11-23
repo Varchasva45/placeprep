@@ -131,7 +131,6 @@ export const sendMessage = async (req: Request, res: Response) => {
     for await (const part of stream) {
       const chunk = part.choices[0]?.delta?.content;
       if (chunk) {
-        console.log('chunk',chunk);
         responseMessage += chunk;
         res.write(chunk);
       }

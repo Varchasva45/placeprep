@@ -79,10 +79,6 @@ const UserAccountNav = ({ email, imageUrl, name }: UserAccountNavProps) => {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <Link to="/dashboard">Dashboard</Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem asChild>
           {user.isSubscribed ? (
             <Link to="/dashboard/billing">Manage Subscription</Link>
           ) : (
@@ -90,6 +86,14 @@ const UserAccountNav = ({ email, imageUrl, name }: UserAccountNavProps) => {
               Upgrade <Gem className="text-blue-600 h-4 w-4 ml-1.5" />
             </Link>
           )}
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild>
+          <Link to={`/u/${user.username}`}>Profile</Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild>
+          <Link to="/dashboard">AI Docs Dashboard</Link>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

@@ -10,6 +10,7 @@ export const authEndpoints = {
 export const userEndpoints = {
   fetchUserDetails_API: baseUrl + "/api/users",
   fetchSubmissions_API: baseUrl + "/api/users/submissions",
+  fetchDiscussions_API: baseUrl + "/api/users/discussions",
   updateUserDetails_API: baseUrl + "/api/users",
   updateUsername_API: baseUrl + "/api/users/username",
   updateEmail_API: baseUrl + "/api/users/email",

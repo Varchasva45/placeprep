@@ -11,6 +11,7 @@ import authState from "../recoil/atoms/auth";
 import ChatContextProvider from "./ChatContext";
 import Messages from "./Messages";
 import { askPDFEndpoints } from "../services/apis";
+import Cookies from "js-cookie";
 
 type ChatWrapperProps = {
   isSubscribed: boolean;
@@ -23,14 +24,25 @@ const ChatWrapper = ({ isSubscribed, fileId }: ChatWrapperProps) => {
   const { fetchFileStatus_API } = askPDFEndpoints;
 
   const fetchData = async () => {
-    const apiUrl = `${fetchFileStatus_API}/${fileId}`;
-    const response = await axios.get(apiUrl, {
-      headers: {
-        Authorization: `Bearer ${auth.token}`,
-      },
-    });
 
-    return response.data.status;
+    try {
+      const apiUrl = `${fetchFileStatus_API}/${fileId}`;
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+
+      return response.data.status;
+    } catch (error: any) {
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+    }
   };
 
   const { data } = useQuery("data", fetchData, {

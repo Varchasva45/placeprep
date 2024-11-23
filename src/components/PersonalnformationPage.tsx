@@ -17,6 +17,7 @@ import { useRecoilValue } from "recoil";
 import authState from "../recoil/atoms/auth";
 import mongoose from "mongoose";
 import { userEndpoints } from "../services/apis";
+import Cookies from "js-cookie";
 
 interface IuserDetails {
   _id: mongoose.Types.ObjectId;
@@ -141,7 +142,15 @@ const PersonalInformationPage = ({
         );
       }
     } catch (error: any) {
-      console.log(error);
+      
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       toast.error(
         error.response.data.message
           ? error.response.data.message

@@ -9,6 +9,7 @@ import LanguageDropdown from "../components/LanguageDropdown";
 import ThemeDropdown from "../components/ThemeDropdown";
 import CustomInput from "../components/CustomInput";
 import OutputWindow from "../components/OutputWindow";
+import { Button } from "../components/ui/button";
 
 type Language = {
   id: number;
@@ -70,7 +71,6 @@ const Playground = () => {
   };
 
   const checkStatus = async (token: string) => {
-    // We will come to the implementation later in the code
     console.log("Checking status...");
     const options = {
       method: "GET",
@@ -137,7 +137,6 @@ const Playground = () => {
       const response = await axios.request(options);
       console.log("res.data", response.data);
       const token = response.data.token;
-      console.log("Token", token);
       checkStatus(token);
     } catch (err: any) {
       let error = err.response ? err.response.data : err;
@@ -147,32 +146,34 @@ const Playground = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col p-4 gap-4 relative bg-gray-300">
-      <div className="lg:flex hidden gap-4">
-        <LanguageDropdown onSelectChange={onSelectChange} />
-        <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
-        <button
+    <div className="flex flex-col p-4 gap-4 bg-gray-100 h-[calc(100vh-3.5rem)]">
+      <div className="flex gap-4 justify-center items-center lg:justify-start relative">
+        <div className="hidden lg:flex gap-3">
+          <LanguageDropdown onSelectChange={onSelectChange} />
+          <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
+        </div>
+        <Button
           onClick={handleCompile}
-          className="bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-1/12 absolute left-1/2 transform -translate-x-1/2 shadow-lg flex flex-row gap-2 justify-center"
+          className="bg-blue-500 hover:bg-blue-500/90 font-bold px-4 rounded shadow-lg flex items-center justify-center gap-2 lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2"
         >
           {processing ? "Processing..." : "Compile"}
-          <span>
-            <FontAwesomeIcon icon={faPlay} />
-          </span>
-        </button>
+          <FontAwesomeIcon icon={faPlay} />
+        </Button>
       </div>
-      <div className="flex flex-row gap-4">
-        <div className="w-4/6">
+      <div className="flex flex-row gap-4 h-full">
+        <div className="w-2/3 shadow-lg h-full">
           <CodeEditorWindow
             onChange={onChange}
             language={language?.value}
             code={code}
             theme={theme}
-            shadow-lg
           />
         </div>
-        <div className="flex flex-col w-2/6 gap-5">
-          <OutputWindow outputDetails={outputDetails} />
+        <div className="flex flex-col w-1/3 gap-4 h-full">
+          <OutputWindow
+            outputDetails={outputDetails}
+            className="bg-white p-4 shadow-lg flex-grow"
+          />
           <CustomInput
             customInput={customInput}
             setCustomInput={setCustomInput}

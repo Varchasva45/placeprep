@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
 import { Card } from "../components/ui/card";
 import NewDiscussion from "../components/NewDiscussion";
 import { Eye } from "react-feather";
@@ -15,6 +14,8 @@ import { BiSolidLike } from "react-icons/bi";
 import axios from "axios";
 import userState from "../recoil/atoms/user";
 import authState from "../recoil/atoms/auth";
+import toast from "react-hot-toast";
+import Cookies from "js-cookie";
 
 const Community = () => {
   const auth = useRecoilValue(authState);
@@ -45,8 +46,16 @@ const Community = () => {
       console.log(response.data);
       setLikedPosts(response.data.userDetails.likedPosts);
       setDislikedPosts(response.data.userDetails.dislikedPosts);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
     }
   };
   useEffect(() => {
@@ -61,8 +70,17 @@ const Community = () => {
       setPosts(response.data.posts);
       setTotalPages(response.data.totalPages);
       setCurrentPage(response.data.currentPage);
-    } catch (error) {
+    } catch (error: any) {
+
       console.log(error);
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
     }
   };
 
@@ -133,8 +151,16 @@ const Community = () => {
           post._id === id ? { ...post, ...response.data.post } : post,
         ),
       );
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
     }
   };
 
@@ -222,8 +248,8 @@ const Community = () => {
               </Link>
             </nav>
           </div>
-          <Button className="hidden sm:inline-flex" onClick={handleToggle}>
-            {!isDiscussionOpen ? "Start a New Discussion" : "Close"}
+          <Button disabled={!auth?.isAuthenticated} className="hidden sm:inline-flex" onClick={handleToggle}>
+            {!isDiscussionOpen ? auth.isAuthenticated ? "Start a New Discussion" : "Login to start a new Discusion" : "Close"}
           </Button>
         </div>
 
@@ -298,6 +324,10 @@ const Community = () => {
                               <BiSolidLike
                                 className="h-4 w-4 hover:text-black cursor-pointer"
                                 onClick={() => {
+                                  if(!auth.isAuthenticated) {
+                                    toast.error('Please login to like the post!')
+                                    return;
+                                  }
                                   handleUpdate(post._id, "like");
                                   handleUnlike(post._id, "unlike");
                                 }}
@@ -306,6 +336,10 @@ const Community = () => {
                               <BiLike
                                 className="h-4 w-4 hover:text-black cursor-pointer"
                                 onClick={() => {
+                                  if(!auth.isAuthenticated) {
+                                    toast.error('Please login to like the post!')
+                                    return;
+                                  }
                                   handleUpdate(post._id, "like");
                                   handleLike(post._id, "like");
                                 }}
@@ -318,6 +352,10 @@ const Community = () => {
                               <BiSolidDislike
                                 className="h-4 w-4 hover:text-black cursor-pointer"
                                 onClick={() => {
+                                  if(!auth.isAuthenticated) {
+                                    toast.error('Please login to dislike the post!')
+                                    return;
+                                  }
                                   handleUpdate(post._id, "dislike");
                                   handleUnlike(post._id, "undislike");
                                 }}
@@ -326,6 +364,10 @@ const Community = () => {
                               <BiDislike
                                 className="h-4 w-4 hover:text-black cursor-pointer"
                                 onClick={() => {
+                                  if(!auth.isAuthenticated) {
+                                    toast.error('Please login to dislike the post!')
+                                    return;
+                                  }
                                   handleUpdate(post._id, "dislike");
                                   handleLike(post._id, "dislike");
                                 }}
@@ -392,25 +434,25 @@ const Community = () => {
 };
 export default Community;
 
-function DiscIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="12" r="2" />
-    </svg>
-  );
-}
+// function DiscIcon(props: any) {
+//   return (
+//     <svg
+//       {...props}
+//       xmlns="http://www.w3.org/2000/svg"
+//       width="24"
+//       height="24"
+//       viewBox="0 0 24 24"
+//       fill="none"
+//       stroke="currentColor"
+//       strokeWidth="2"
+//       strokeLinecap="round"
+//       strokeLinejoin="round"
+//     >
+//       <circle cx="12" cy="12" r="10" />
+//       <circle cx="12" cy="12" r="2" />
+//     </svg>
+//   );
+// }
 
 function MessageCircleIcon(props: any) {
   return (
@@ -431,22 +473,22 @@ function MessageCircleIcon(props: any) {
   );
 }
 
-function SearchIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="11" cy="11" r="8" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
-  );
-}
+// function SearchIcon(props: any) {
+//   return (
+//     <svg
+//       {...props}
+//       xmlns="http://www.w3.org/2000/svg"
+//       width="24"
+//       height="24"
+//       viewBox="0 0 24 24"
+//       fill="none"
+//       stroke="currentColor"
+//       strokeWidth="2"
+//       strokeLinecap="round"
+//       strokeLinejoin="round"
+//     >
+//       <circle cx="11" cy="11" r="8" />
+//       <path d="m21 21-4.3-4.3" />
+//     </svg>
+//   );
+// }

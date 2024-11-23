@@ -6,6 +6,7 @@ const LanguageDropdown: React.FC<any> = ({ onSelectChange }) => {
   return (
     <Select
       placeholder={`Filter By Category`}
+      className="hidden lg:flex"
       options={languageOptions}
       styles={customStyles}
       defaultValue={languageOptions[0]}

@@ -13,6 +13,8 @@ import {
 import axios from "axios";
 import userState from "../recoil/atoms/user";
 import { useRecoilValue } from "recoil";
+import authState from "../recoil/atoms/auth";
+import Cookies from "js-cookie";
 
 interface EditorChangeEvent {
   text: string;
@@ -40,6 +42,7 @@ const NewDiscussion: React.FC<NewDiscussionProps> = ({
   mode,
 }) => {
   const user = useRecoilValue(userState);
+  const auth = useRecoilValue(authState);
   const [topic, setTopic] = useState(initialTopic);
   const [tag, setTag] = useState(initialTag);
   const [markdown, setMarkdown] = useState(initialMarkdown);
@@ -66,15 +69,27 @@ const NewDiscussion: React.FC<NewDiscussionProps> = ({
           updatedBy: user.id,
           username: user.username,
         },
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        }
       );
-
-      console.log(response);
 
       if (response.status === 201) {
         onClose();
         setPosts((prevPosts: any) => [response.data.post, ...prevPosts]);
       }
-    } catch (error) {
+    } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       console.log(error);
     }
   };
@@ -87,13 +102,27 @@ const NewDiscussion: React.FC<NewDiscussionProps> = ({
           title: topic,
           content: markdown,
           tag: tag,
-        },
+        }, 
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        }
       );
       if (response.status === 200) {
         onClose();
         setPosts((prevPosts: any) => [response.data.post, ...prevPosts]);
       }
-    } catch (error) {
+    } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       console.log(error);
     }
   };

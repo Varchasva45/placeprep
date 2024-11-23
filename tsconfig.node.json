@@ -1,11 +1,29 @@
 {
   "compilerOptions": {
     "composite": true,
+    "target": "es6",
+    "module": "esnext",
+    "jsx": "react-jsx",
+    "strict": false,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "strictNullChecks": false,
+    "strictBindCallApply": false,
+    "strictFunctionTypes": false,
     "skipLibCheck": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noEmitOnError": false,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true
+    "forceConsistentCasingInFileNames": false,
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "moduleResolution": "node",
+    "outDir": "./build",
+    "allowJs": true,
+    "checkJs": false
   },
   "include": ["vite.config.ts"]
 }

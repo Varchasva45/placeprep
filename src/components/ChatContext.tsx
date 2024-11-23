@@ -5,6 +5,7 @@ import authState from "../recoil/atoms/auth";
 import toast from "react-hot-toast";
 import { useMutation, useQueryClient } from "react-query";
 import { askPDFEndpoints } from "../services/apis";
+import Cookies from "js-cookie";
 
 type StreamResponse = {
   addMessage: () => void;
@@ -79,7 +80,16 @@ const ChatContextProvider = ({
           throw new Error(response.data.message);
         }
         return response.data.responseMessage;
-      } catch (error) {
+      } catch (error: any) {
+        
+        if(error.response.status === 401) {
+          Object.keys(Cookies.get()).forEach(cookieName => {
+            Cookies.remove(cookieName);
+          });
+  
+          window.location.href = '/login'
+        }
+
         throw new Error("Error while fetching response message");
       }
     },

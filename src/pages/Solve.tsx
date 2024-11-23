@@ -44,7 +44,6 @@ const Solve = () => {
   const [questionId, setQuestionId] = useState<number>(0);
   const [difficulty, setDifficulty] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
-  const [showTopics, setShowTopics] = useState<boolean>(false);
 
   useEffect(() => {
     const setInitialTheme = async () => {
@@ -179,9 +178,9 @@ const Solve = () => {
   //     console.log(error);
   //   }
   // };
-  const toggleTopics = () => {
-    setShowTopics(!showTopics);
-  };
+  // const toggleTopics = () => {
+  //   setShowTopics(!showTopics);
+  // };
 
   return (
     <ResizablePanelGroup

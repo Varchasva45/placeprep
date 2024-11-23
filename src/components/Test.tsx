@@ -4,13 +4,9 @@ import { useEffect } from "react";
 export default function Test() {
   const [name, setName] = useState("");
   const prevName = useRef("");
-  let ppname;
 
   useEffect(() => {
     prevName.current = name;
-    ppname = name;
-    console.log("prevName", prevName.current);
-    console.log("changing name", name);
   }, [name]);
 
   return (

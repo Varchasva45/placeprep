@@ -4,7 +4,7 @@ import GaugeCircle from "../components/ui/circle";
 
 const Problems = () => {
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-4  w-fit h-fit">
+    <div className="h-[calc(100vh-3.5rem)] bg-slate-950 text-white p-4 overflow-auto w-fit">
       <div className="flex flex-row justify-between">
         <div className="flex-1 flex flex-col">
           {/* Study Plan Section */}

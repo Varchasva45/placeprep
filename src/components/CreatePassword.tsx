@@ -23,6 +23,7 @@ import authState from "../recoil/atoms/auth";
 import toast from "react-hot-toast";
 import userState from "../recoil/atoms/user";
 import { authEndpoints } from "../services/apis";
+import Cookies from "js-cookie";
 
 export default function CreatePassword() {
   const [newPassword, setNewPassword] = useState<string>("");
@@ -89,7 +90,15 @@ export default function CreatePassword() {
         toast.error("Error while changing password");
       }
     } catch (error: any) {
-      console.log(error);
+      
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       toast.error(
         error.response.data.message
           ? error.response.data.message

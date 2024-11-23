@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -19,10 +19,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../components/ui/dialog";
+import authState from "../recoil/atoms/auth";
+import Cookies from "js-cookie";
 
 const Post = () => {
   const navigate = useNavigate();
   const user = useRecoilValue(userState);
+  const auth = useRecoilValue(authState);
   const { id } = useParams<{ id: string }>();
   const [userPost, setUserPost] = useState<any>(null);
   const [newComment, setNewComment] = useState("");
@@ -71,13 +74,27 @@ const Post = () => {
           updatedBy: user.id,
           username: user.username,
         },
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        }
       );
       if (response.status === 200) {
         console.log("Comment posted:", response.data);
         setComments([response.data.comment, ...comments]);
         setNewComment("");
       }
-    } catch (error) {
+    } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       console.log("Error posting comment:", error);
     }
   };
@@ -86,12 +103,27 @@ const Post = () => {
     try {
       const response = await axios.patch(
         `http://localhost:3000/api/users/deletePost/${id}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        }
       );
       if (response.status === 200) {
         console.log("Post deleted:", response.data);
         navigate("/community");
       }
-    } catch (error) {
+    } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       console.log("Error deleting post:", error);
     }
   };
@@ -100,12 +132,27 @@ const Post = () => {
     try {
       const response = await axios.patch(
         `http://localhost:3000/api/users/deleteComment/${id}`,
+        null, 
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        }
       );
       if (response.status === 200) {
         console.log("Comment deleted:", response.data);
         setComments(comments.filter((comment) => comment._id !== id));
       }
-    } catch (error) {
+    } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       console.log("Error deleting comment:", error);
     }
   };
@@ -174,6 +221,11 @@ const Post = () => {
         {
           content: editContent,
         },
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`
+          }
+        }
       );
       if (response.status === 200) {
         const updatedComments = comments.map((comment) => {
@@ -185,7 +237,16 @@ const Post = () => {
         setComments(updatedComments);
         setEditingCommentId(null);
       }
-    } catch (error) {
+    } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       console.log("Error updating comment:", error);
     }
   };
@@ -198,7 +259,7 @@ const Post = () => {
             {userPost?.title}
           </h1>
           <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
+            <Link to={`/u/${userPost?.username}`} className="flex items-center space-x-2">
               <Avatar className="w-10 h-10 border">
                 <AvatarImage src="/placeholder-user.jpg" />
                 <AvatarFallback>
@@ -206,7 +267,7 @@ const Post = () => {
                 </AvatarFallback>
               </Avatar>
               <div className="text-sm font-medium">{userPost?.username}</div>
-            </div>
+            </Link>
             <div className="text-muted-foreground text-sm">
               Posted on {formattedDate(userPost?.createdAt)}
             </div>
@@ -244,8 +305,8 @@ const Post = () => {
         <p className="mt-1">
           <ReactMarkdown
             components={{
-              code({ node, inline, className, children, ...props }) {
-                return !inline ? (
+              code({ node, className, children, ...props }) {
+                return !true ? (
                   <pre className="code-block">
                     <code className={className} {...props}>
                       {children}
@@ -279,21 +340,23 @@ const Post = () => {
             </div>
           </div>
           <div className="flex justify-start">
-            <Button type="submit" onClick={handleSubmit}>
-              Post Comment
+            <Button disabled={!auth?.isAuthenticated} type="submit" onClick={handleSubmit}>
+              {auth.isAuthenticated ? 'Post Comment' : 'Login to post comment'}
             </Button>
           </div>
         </form>
         <div className="space-y-4 w-full">
           {comments?.map((comment: any) => (
             <div className="flex items-start space-x-4 w-full">
-              <Avatar className="w-10 h-10 border">
-                <AvatarImage src="/placeholder-user.jpg" />
-                <AvatarFallback>{getInitials(comment.username)}</AvatarFallback>
-              </Avatar>
+              <Link to={`/u/${comment.username}`}>
+                <Avatar className="w-10 h-10 border">
+                  <AvatarImage src="/placeholder-user.jpg" />
+                  <AvatarFallback>{getInitials(comment.username)}</AvatarFallback>
+                </Avatar>
+              </Link>
               <div className="space-y-2 w-full">
                 <div className="flex items-center space-x-2">
-                  <div className="font-medium">{comment.username}</div>
+                  <Link to={`/u/${comment?.username}`} className="font-medium">{comment.username}</Link>
                   <div className="text-muted-foreground text-sm">
                     {timeAgo(comment.createdAt)}
                   </div>

@@ -17,7 +17,8 @@ const CustomInput: React.FC<CustomInputProps> = ({
         value={customInput}
         onChange={(e) => setCustomInput(e.target.value)}
         placeholder="Custom Input"
-        className="focus:outline-none w-full border-2 border-black shadow-lg rounded-md p-2 bg-[#120b38] text-white"
+        className="focus:outline-none w-full border-2 shadow-lg p-2 bg-black text-white resize-none"
+        style={{background: '#1E1E1E'}}
       ></textarea>
     </div>
   );

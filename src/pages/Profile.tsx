@@ -62,16 +62,23 @@ const Profile = () => {
     role: string;
   }
 
+  interface IDiscussions {
+    _id: string;
+    title: string;
+    content: string;
+  }
+
   interface IRecentACSubmission {
     title: string;
     time: string;
   }
 
-  const { fetchUserDetails_API, fetchSubmissions_API } = userEndpoints;
+  const { fetchUserDetails_API, fetchSubmissions_API, fetchDiscussions_API } = userEndpoints;
   const [selectedTab, setSelectedTab] = useState<string>("Recent AC");
   const [isEditProfilePageVisible, setIsEditProfilePageVisible] =
     useState<boolean>(false);
   const [userDetails, setUserDetails] = useState<IuserDetails | null>(null);
+  const [discussions, setDiscussions] = useState<IDiscussions[] | null>(null);
   const [recentACSubmissions, setRecentACSubmissions] = useState<
     IRecentACSubmission[]
   >([]);
@@ -86,7 +93,8 @@ const Profile = () => {
 
   const getUserDetails = async () => {
     try {
-      const apiUrl = `${fetchUserDetails_API}/${user.id}`;
+      const username = window.location.href.split('/')[4];
+      const apiUrl = `${fetchUserDetails_API}/${username}`;
       const response = await axios.get(apiUrl, {
         headers: {
           Authorization: `Bearer ${auth.token}`,
@@ -99,7 +107,7 @@ const Profile = () => {
         toast.error(response.data.message || "Failed to fetch user details");
       }
     } catch (error: any) {
-      console.log("error while fetching user details", error);
+      console.log("error while fetching user details yaha se", error);
       toast.error(
         error.response.data.message
           ? error.response.data.message
@@ -125,6 +133,33 @@ const Profile = () => {
         );
       }
     } catch (error: any) {
+      // console.log("error while fetching user details", error);
+      // toast.error(
+      //   error.response.data.message
+      //     ? error.response.data.message
+      //     : "An error occurred, please try again",
+      // );
+    }
+  };
+
+  const fetchDiscussions = async () => {
+    const username = window.location.href.split('/')[4];
+    try {
+      const apiUrl = `${fetchDiscussions_API}/${username}`;
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
+
+      if (response.data.success) {
+        setDiscussions(response.data.discussions);
+      } else {
+        toast.error(
+          response.data.message || "Failed to fetch discussions",
+        );
+      }
+    } catch (error: any) {
       console.log("error while fetching user details", error);
       toast.error(
         error.response.data.message
@@ -132,15 +167,12 @@ const Profile = () => {
           : "An error occurred, please try again",
       );
     }
-  };
-
-  if (!auth.isAuthenticated || !user.id) {
-    return <Link to="/login" />;
   }
 
   useEffect(() => {
     getUserDetails();
     getRecentACSubmissions();
+    fetchDiscussions();
   }, []);
 
   var commitsPerDate: any = [];
@@ -221,12 +253,12 @@ const Profile = () => {
               {userDetails?.personalInformation.summary}
             </p>
 
-            <Button
+            {auth?.isAuthenticated && userDetails?.username === user?.username && <Button
               onClick={() => setIsEditProfilePageVisible((prev) => !prev)}
               className="w-full bg-green-100 text-green-400 hover:bg-green-200"
             >
               {isEditProfilePageVisible ? "Submissions" : "Edit Profile"}
-            </Button>
+            </Button>}
 
             <div className="text-gray-600 my-5 text-md space-y-5">
               {userDetails && userDetails?.personalInformation.location && (
@@ -486,17 +518,14 @@ const Profile = () => {
                     ))}
 
                   {selectedTab === "Discussion" &&
-                    (recentACSubmissions && recentACSubmissions.length > 0 ? (
+                    (discussions && discussions.length > 0 ? (
                       <div className="pt-4">
-                        {recentACSubmissions.map((submission, ind) => (
+                        {discussions.map((disccussion: IDiscussions, index: number) => (
                           <div
-                            key={ind}
-                            className={`flex items-center justify-between rounded-md ${ind % 2 === 0 ? "bg-gray-100" : ""} p-5`}
+                            key={index}
+                            className={`flex items-center justify-between rounded-md ${index % 2 === 0 ? "bg-gray-100" : ""} p-5`}
                           >
-                            <p className="font-semibold">{submission.title}</p>
-                            <p className="text-gray-600 hidden md:flex">
-                              {submission.time}
-                            </p>
+                            <Link to={`/post/${disccussion._id}`} className="font-semibold">{disccussion.title}</Link>
                           </div>
                         ))}
                       </div>

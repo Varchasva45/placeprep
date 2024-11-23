@@ -9,6 +9,7 @@ import userState from "../recoil/atoms/user";
 import axios from "axios";
 import authState from "../recoil/atoms/auth";
 import { askPDFEndpoints } from "../services/apis";
+import Cookies from "js-cookie";
 
 type UploadDropzoneProps = {
   isSubscribed: boolean;
@@ -100,7 +101,16 @@ const UploadDropzone = ({ isSubscribed }: UploadDropzoneProps) => {
       } else {
         toast.error("Failed to upload file");
       }
-    } catch (err: any) {
+    } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       toast.error("Failed to upload file");
     }
 

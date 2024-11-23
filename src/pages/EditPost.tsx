@@ -33,7 +33,7 @@ const EditPost: React.FC = () => {
     if (!isDiscussionOpen) {
       navigate(`/post/${id}`);
     }
-  }, [isDiscussionOpen, navigate, id]);
+  }, [isDiscussionOpen, navigate, id, posts]);
 
   if (!isDiscussionOpen) {
     return null;

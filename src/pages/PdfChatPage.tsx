@@ -7,6 +7,7 @@ import ChatWrapper from "../components/ChatWrapper";
 import authState from "../recoil/atoms/auth";
 import { askPDFEndpoints } from "../services/apis";
 import PdfRenderer from "../components/PdfRenderer";
+import Cookies from "js-cookie";
 
 const PdfChatPage = () => {
   const fileId = location.pathname.split("/").pop();
@@ -34,8 +35,17 @@ const PdfChatPage = () => {
 
       setFileUrl(file.url);
       setFileName(file.name);
-    } catch (err) {
-      console.error(err);
+    } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
+      console.error(error);
     }
   };
 

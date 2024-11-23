@@ -21,7 +21,6 @@ const ChatInput = ({ isDisabled }: ChatInputProps) => {
             <div className="relative">
               <Textarea
                 rows={1}
-                maxRows={4}
                 autoFocus
                 placeholder="Enter your question..."
                 onChange={handleInputChange}

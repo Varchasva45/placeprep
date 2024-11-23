@@ -42,17 +42,6 @@ const NavBar = () => {
               </Link>
 
               <Link
-                to="/sheets"
-                onClick={() => setUrl("/sheets")}
-                className={buttonVariants({
-                  variant: url === "/sheets" ? "selected" : "ghost",
-                  size: "sm",
-                })}
-              >
-                OA Sheet
-              </Link>
-
-              <Link
                 to="/interview"
                 onClick={() => setUrl("/interview")}
                 className={buttonVariants({

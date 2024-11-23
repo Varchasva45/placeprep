@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
-import { HTMLInputTypeAttribute, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CopyIcon,
   Loader2,
@@ -32,15 +32,16 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "../components/ui/dropdown-menu";
+import Cookies from "js-cookie";
 
 const ChatBot = () => {
-  interface IMessage {
-    text: string;
-    isUserMessage: boolean;
-    chatId: Number;
-    userId: string;
-    createdAt: string;
-  }
+  // interface IMessage {
+  //   text: string;
+  //   isUserMessage: boolean;
+  //   chatId: Number;
+  //   userId: string;
+  //   createdAt: string;
+  // }
   interface IChat {
     _id: string;
     isDeleted: boolean;
@@ -63,31 +64,40 @@ const ChatBot = () => {
   const [newChatName, setNewChatName] = useState<string>("");
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState<boolean>(false);
-  const [isStreaming , setIsStreaming] = useState<boolean>(false);
-
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const backupMessageRef = useRef<string>("");
   const lastMessageRef = useRef<HTMLDivElement>();
+  const isAuthenticated = auth.isAuthenticated;
 
   // Infinite Query
   const { data, fetchNextPage, isLoading } = useInfiniteQuery(
     "chatMessages",
     async ({ pageParam }) => {
-      if (id == undefined) {
-        return;
-      }
 
-      // console.log('Fetching next page with', pageParam);
-      const response = await axios.get(
-        fetchMessages_API + `/${id}?cursor=${pageParam}`,
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
+      try {
+        if (id == undefined) {
+          return;
+        }
+  
+        const response = await axios.get(
+          fetchMessages_API + `/${id}?cursor=${pageParam}`,
+          {
+            headers: {
+              Authorization: `Bearer ${auth.token}`,
+            },
           },
-        },
-      );
-      // console.log(response.data);
-      return response.data;
+        );
+        
+        return response.data;
+      } catch (error: any) {
+        if(error.response.status === 401) {
+          Object.keys(Cookies.get()).forEach(cookieName => {
+            Cookies.remove(cookieName);
+          });
+  
+          window.location.href = '/login'
+        }
+      }
     },
     {
       getNextPageParam: (lastPage) => lastPage?.nextCursor,
@@ -116,6 +126,11 @@ const ChatBot = () => {
   }, [entry, fetchNextPage]);
 
   const fetchChats = async () => {
+
+    if(!isAuthenticated) {
+      return ;
+    }
+
     try {
       const response = await axios.get(
         "http://localhost:3000/api/chatbot/chats",
@@ -129,6 +144,15 @@ const ChatBot = () => {
         setChats(response.data.chats);
       }
     } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       toast.error("Failed to fetch chats");
     }
   };
@@ -241,35 +265,35 @@ const ChatBot = () => {
       let done = false;
       let aiMessage = '';
 
-      // queryClient.setQueryData("chatMessages", (oldData) => {
-      //   const newMessage = {
-      //     id: crypto.randomUUID(),
-      //     text: promptMessage,
-      //     isUserMessage: true,
-      //     createdAt: new Date().toISOString(),
-      //   };
+      queryClient.setQueryData("chatMessages", (oldData: any) => {
+        const newMessage = {
+          id: crypto.randomUUID(),
+          text: promptMessage,
+          isUserMessage : true,
+          createdAt: new Date().toISOString(),
+        };
 
-      //   if (!oldData) {
-      //     return {
-      //       pages: [{ messages: [newMessage] }],
-      //       pageParams: [],
-      //     };
-      //   }
+        if (!oldData) {
+          return {
+            pages: [{ messages: [newMessage] }],
+            pageParams: [],
+          };
+        }
 
-      //   const newPages = [...oldData.pages];
-      //   newPages[0].messages = [newMessage, ...newPages[0].messages];
+        const newPages = [...oldData.pages];
+        newPages[0].messages = [newMessage, ...newPages[0].messages];
 
-      //   return {
-      //     ...oldData,
-      //     pages: newPages,
-      //   };
-      // });
+        return {
+          ...oldData,
+          pages: newPages,
+        };
+      });
       
       while (!done) {
-        const { value, done: doneReading } = await reader.read();
+        const { value, done: doneReading } = await reader!.read();
         done = doneReading;
         aiMessage += decoder.decode(value, { stream: !done });
-        queryClient.setQueryData("chatMessages", (oldData) => {
+        queryClient.setQueryData("chatMessages", (oldData: any) => {
           if (!oldData) return oldData;
 
           const newPages = [...oldData.pages];
@@ -300,10 +324,8 @@ const ChatBot = () => {
         throw new Error("Failed to send message");
       }
     },
-    onMutate: async (chatId: string) => {
-      console.log("Here reach onMutate");
-      // Mutation karte hue jo kaam hoga woh yaha pe hoga
-
+    onMutate: async () => {
+      setLoading(true);
       // Backup message ko store kar lo
       backupMessageRef.current = promptMessage;
 
@@ -408,11 +430,18 @@ const ChatBot = () => {
       }
     },
     onSettled: () => {
+      setLoading(false);
       queryClient.invalidateQueries("chatMessages");
     },
   });
 
   const handleCreateChat = async () => {
+
+    if(!isAuthenticated) {
+      toast.error('Please login first to create a chat');
+      return;
+    }
+
     try {
       const response = await axios.post(
         "http://localhost:3000/api/chatbot/createChat",
@@ -435,6 +464,15 @@ const ChatBot = () => {
         toast.error("Failed to create chat");
       }
     } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       toast.error("Failed to create chat");
     }
   };
@@ -465,6 +503,15 @@ const ChatBot = () => {
           toast.error("Failed to update chat name");
         }
       } catch (error: any) {
+
+        if(error.response.status === 401) {
+          Object.keys(Cookies.get()).forEach(cookieName => {
+            Cookies.remove(cookieName);
+          });
+  
+          window.location.href = '/login'
+        }
+
         toast.error("Failed to update chat name");
       }
     }
@@ -492,6 +539,15 @@ const ChatBot = () => {
         });
       }
     } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       toast.error("Failed to delete chat");
     }
   };
@@ -579,7 +635,7 @@ const ChatBot = () => {
           </div>
           <div className="flex-1 h-full overflow-auto">
             <div className="gap-4 h-full w-full flex flex-col-reverse overflow-auto p-4">
-              {isLoading || loading ? (
+              {isLoading ? (
                 <>
                   <div className="flex-1 flex flex-col items-center justify-center gap-2">
                     <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
@@ -607,12 +663,11 @@ const ChatBot = () => {
                             components={{
                               code({
                                 node,
-                                inline,
                                 className,
                                 children,
                                 ...props
                               }) {
-                                return !inline ? (
+                                return !true ? (
                                   <pre className="code-block">
                                     <code className={className} {...props}>
                                       {children}
@@ -667,14 +722,13 @@ const ChatBot = () => {
                             components={{
                               code({
                                 node,
-                                inline,
                                 className,
                                 children,
                                 ...props
                               }) {
                                 const codeString = String(children).trim();
                                 const index = message.text.indexOf(codeString);
-                                return !inline ? (
+                                return !true ? (
                                   <div className="code-block-wrapper">
                                     <pre className="code-block">
                                       <CopyToClipboard
@@ -718,14 +772,24 @@ const ChatBot = () => {
                   ),
                 )
               ) : (
-                <div className="flex-1 flex h-full flex-col items-center justify-center gap-2">
-                  <MessageSquare className="h-8 w-8 text-blue-500" />
-                  <h3 className="font-semibold text-xl">
-                    You&apos;re all set!
-                  </h3>
-                  <p className="text-zinc-500 text-sm">
-                    Ask your first question to Placeprep's Copilot.
-                  </p>
+                isAuthenticated 
+                ? <div className="flex-1 flex h-full flex-col items-center justify-center gap-2">
+                      <MessageSquare className="h-8 w-8 text-blue-500" />
+                      <h3 className="font-semibold text-xl">
+                        You&apos;re all set!
+                      </h3>
+                      <p className="text-zinc-500 text-sm">
+                        Ask your first question to Placeprep's Copilot.
+                      </p>
+                  </div>
+                : <div className="flex-1 flex h-full flex-col items-center justify-center gap-2">
+                    <MessageSquare className="h-8 w-8 text-blue-500" />
+                    <h3 className="font-semibold text-xl">
+                      You&apos;re not logged in!
+                    </h3>
+                    <p className="text-zinc-500 text-sm">
+                      Please login to ask your first question to Placeprep's Copilot.
+                    </p>
                 </div>
               )}
             </div>
@@ -733,6 +797,7 @@ const ChatBot = () => {
           <div className="sticky bottom-0 bg-gray-100 px-4 py-3">
             <div className="relative">
               <Textarea
+                disabled={!isAuthenticated || isLoading || loading}
                 rows={1}
                 ref={textAreaRef}
                 value={promptMessage}
@@ -743,7 +808,7 @@ const ChatBot = () => {
               />
 
               <Button
-                // disabled={isLoading || isDisabled}
+                disabled={!isAuthenticated || isLoading || loading}
                 className="absolute bottom-1.5 right-[8px]"
                 aria-label="send message"
                 type="submit"

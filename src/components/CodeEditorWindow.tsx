@@ -27,10 +27,10 @@ const CodeEditorWindow: React.FC<CodeEditorWindowProps> = ({
   return (
     <div className="overlay overflow-hidden w-full h-full">
       <Editor
-        height="88vh"
+        height="80vh"
         width={`100%`}
         language={language || "javascript"}
-        value={code}
+        value={code || value}
         theme={theme}
         defaultValue="Yaha se code likho..."
         onChange={handleEditorChange}

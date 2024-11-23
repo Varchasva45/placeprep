@@ -20,6 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../components/ui/alert-dialog";
+import Cookies from "js-cookie";
 
 type file = {
   _id: string;
@@ -62,6 +63,15 @@ const AIDocsDashboard = () => {
         );
       }
     } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       toast.error(
         error.response.data.message
           ? error.response.data.message
@@ -100,6 +110,15 @@ const AIDocsDashboard = () => {
         );
       }
     } catch (error: any) {
+
+      if(error.response.status === 401) {
+        Object.keys(Cookies.get()).forEach(cookieName => {
+          Cookies.remove(cookieName);
+        });
+
+        window.location.href = '/login'
+      }
+
       toast.dismiss(toastId);
       toast.error(
         error.response.data.message

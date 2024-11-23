@@ -8,8 +8,8 @@ import mongoose from "mongoose";
 
 export const getUserDetails = async (req: Request, res: Response) => {
   try {
-    const userId = req.params.userId;
-    const user = await User.findById(userId);
+    const username = req.params.username;
+    const user = await User.findOne({username});
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -26,7 +26,6 @@ export const getUserDetails = async (req: Request, res: Response) => {
 export const getSubmissionDetails = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
-    const result = req.query.result;
     const submissions = await Submission.find({ userId, result: "Accepted" })
       .limit(10)
       .sort({ createdAt: -1 })
@@ -89,8 +88,6 @@ export const handleUpdateEmail = async (req: Request, res: Response) => {
     const userId = req.params.userId;
     const { email, otp } = req.body;
 
-    console.log(email, otp, typeof otp);
-
     const user = await User.findById({ _id: userId });
 
     if (!user) {
@@ -111,8 +108,6 @@ export const handleUpdateEmail = async (req: Request, res: Response) => {
     const otpData = await Otp.findOne({ userId })
       .limit(1)
       .sort({ createdAt: -1 });
-
-    console.log("otpData", otpData, typeof otpData!.otp);
 
     if (!otpData || otpData.otp != otp) {
       return res.status(400).json({ success: false, message: "Invalid OTP" });
@@ -358,3 +353,14 @@ export const editCommentController = async (req: Request, res: Response) => {
       .json({ success: false, message: "Error while updating comment" });
   }
 };
+
+export const getUserPosts = async (req: Request, res: Response) => {
+  try {
+    const username = req.params.username;
+    const discussions = await Post.find({username}).limit(10).sort({createdAt: -1});
+    return res.status(200).json({success: true, message: 'Fetched Disccussions Successfully', discussions});
+  } catch (error) {
+    console.log('Error while fetching user posts', error);
+    return res.status(500).json({success: false, message: 'Failed to fetch discussions'});
+  }
+}
